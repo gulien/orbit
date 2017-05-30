@@ -25,7 +25,7 @@ func init() {
 }
 
 func run(cmd *cobra.Command, args []string) {
-	// if no args, exits
+	// if no args, bye!
 	if len(args) == 0 {
 		jww.ERROR.Println("No command to run")
 		os.Exit(1)

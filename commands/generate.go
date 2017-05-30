@@ -28,5 +28,5 @@ func init() {
 
 func generate(cmd *cobra.Command, args []string) {
 	jww.ERROR.Println("Nothing to generate")
-	os.Exit(0)
+	os.Exit(1)
 }

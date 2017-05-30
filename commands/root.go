@@ -6,5 +6,5 @@ import (
 
 var RootCmd = &cobra.Command{
 	Use:   "orbit",
-	Short: "A simple tool for generating templates and running commands",
+	Short: "A simple tool for running commands and generating templates",
 }

@@ -15,15 +15,15 @@ var (
 // TODO describe
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "Run one or more commands defined in a configuration file",
+	Short: "Runs one or more stack of commands defined in a configuration file",
 	Run:   run,
 }
 
 // TODO describe
 func init() {
-	runCmd.Flags().StringVarP(&configFile, "config", "c", "orbit.yml", "File or template (YAML) defining commands")
-	runCmd.Flags().StringVarP(&ValuesFile, "values", "v", "", "File (YAML) defining values used in the template")
-	runCmd.Flags().StringVarP(&EnvFile, "env_file", "e", "", "File storing env values used in the template")
+	runCmd.Flags().StringVarP(&configFile, "config", "c", "orbit.yml", "specify an alternate configuration file")
+	runCmd.Flags().StringVarP(&ValuesFile, "values", "v", "", "specify a YAML file listing values used in the configuration file")
+	runCmd.Flags().StringVarP(&EnvFile, "env_file", "e", "", "specify a .env file listing values used in the configuration file")
 	RootCmd.AddCommand(runCmd)
 }
 

@@ -6,7 +6,7 @@ import (
 
 var (
 	// TODO describe
-	EnvFile    string
+	EnvFile string
 	// TODO describe
 	ValuesFile string
 )

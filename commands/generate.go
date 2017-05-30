@@ -11,7 +11,7 @@ var (
 	// TODO describe
 	templateFile string
 	// TODO describe
-	outputFile   string
+	outputFile string
 )
 
 // TODO describe
@@ -23,10 +23,10 @@ var generateCmd = &cobra.Command{
 
 // TODO describe
 func init() {
-	generateCmd.Flags().StringVarP(&templateFile, "template", "t", "", "Template to read")
-	generateCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file to generate from template")
-	generateCmd.Flags().StringVarP(&ValuesFile, "values", "v", "", "File (YAML) defining values used in the template")
-	generateCmd.Flags().StringVarP(&EnvFile, "env_file", "e", "", "File storing env values used in the template")
+	generateCmd.Flags().StringVarP(&templateFile, "template", "t", "", "specify the template")
+	generateCmd.Flags().StringVarP(&outputFile, "output", "o", "", "specify the output file which will be generated from the template")
+	generateCmd.Flags().StringVarP(&ValuesFile, "values", "v", "", "specify a YAML file listing values used in the template")
+	generateCmd.Flags().StringVarP(&EnvFile, "env_file", "e", "", "specify a .env file listing values used in the template")
 	RootCmd.AddCommand(generateCmd)
 }
 

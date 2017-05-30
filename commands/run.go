@@ -8,15 +8,18 @@ import (
 )
 
 var (
+	// TODO describe
 	configFile string
 )
 
+// TODO describe
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run one or more commands defined in a configuration file",
 	Run:   run,
 }
 
+// TODO describe
 func init() {
 	runCmd.Flags().StringVarP(&configFile, "config", "c", "orbit.yml", "File or template (YAML) defining commands")
 	runCmd.Flags().StringVarP(&ValuesFile, "values", "v", "", "File (YAML) defining values used in the template")
@@ -24,6 +27,7 @@ func init() {
 	RootCmd.AddCommand(runCmd)
 }
 
+// TODO describe
 func run(cmd *cobra.Command, args []string) {
 	// if no args, bye!
 	if len(args) == 0 {

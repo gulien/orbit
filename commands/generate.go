@@ -8,16 +8,20 @@ import (
 )
 
 var (
+	// TODO describe
 	templateFile string
+	// TODO describe
 	outputFile   string
 )
 
+// TODO describe
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generates a file according to a template",
 	Run:   generate,
 }
 
+// TODO describe
 func init() {
 	generateCmd.Flags().StringVarP(&templateFile, "template", "t", "", "Template to read")
 	generateCmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file to generate from template")
@@ -26,6 +30,7 @@ func init() {
 	RootCmd.AddCommand(generateCmd)
 }
 
+// TODO describe
 func generate(cmd *cobra.Command, args []string) {
 	jww.ERROR.Println("Nothing to generate")
 	os.Exit(1)

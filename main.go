@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/gulien/orbit/commands"
 	"os"
+
+	"github.com/gulien/orbit/commands"
 
 	jww "github.com/spf13/jwalterweatherman"
 )

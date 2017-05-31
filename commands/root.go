@@ -14,5 +14,5 @@ var (
 // RootCmd is the instance of the root of all orbit's commands.
 var RootCmd = &cobra.Command{
 	Use:   "orbit",
-	Short: "A simple tool for running commands and generating templates",
+	Short: "A simple tool for running commands and generating files from templates",
 }

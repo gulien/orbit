@@ -5,13 +5,13 @@ import (
 )
 
 var (
-	// TODO describe
+	// EnvFile is the path of a .env file listing values used in templates.
 	EnvFile string
-	// TODO describe
+	// ValuesFile is the path of a YAML file listing values used in templates.
 	ValuesFile string
 )
 
-// TODO describe
+// RootCmd is the instance of the root of all orbit's commands.
 var RootCmd = &cobra.Command{
 	Use:   "orbit",
 	Short: "A simple tool for running commands and generating templates",

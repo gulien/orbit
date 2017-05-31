@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	// configFile is the path of a file describing commands.
-	configFile string
+	// configFilePath is the path of a file describing commands.
+	configFilePath string
 )
 
 // runCmd is the instance of orbit's run command.
@@ -21,9 +21,9 @@ var runCmd = &cobra.Command{
 
 // init function initializes runCmd instance with some flags and adds it to the RootCmd.
 func init() {
-	runCmd.Flags().StringVarP(&configFile, "config", "c", "orbit.yml", "specify an alternate configuration file")
-	runCmd.Flags().StringVarP(&ValuesFile, "values", "v", "", "specify a YAML file listing values used in the configuration file")
-	runCmd.Flags().StringVarP(&EnvFile, "env_file", "e", "", "specify a .env file listing values used in the configuration file")
+	runCmd.Flags().StringVarP(&configFilePath, "config", "c", "orbit.yml", "specify an alternate configuration file")
+	runCmd.Flags().StringVarP(&ValuesFilePath, "values", "v", "", "specify a YAML file listing values used in the configuration file")
+	runCmd.Flags().StringVarP(&EnvFilePath, "env_file", "e", "", "specify a .env file listing values used in the configuration file")
 	RootCmd.AddCommand(runCmd)
 }
 

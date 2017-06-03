@@ -67,7 +67,8 @@ func run(cmd *cobra.Command, args []string) {
 	// then handles the data as YAML.
 	var config = &runner.OrbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
-		jww.ERROR.Printf("Configuration file %s is not a valid YAML file: %s", configFilePath, err)
+		err := fmt.Errorf("Configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
+		jww.ERROR.Println(err)
 		os.Exit(1)
 	}
 

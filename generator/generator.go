@@ -41,7 +41,7 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	return data, nil
 }
 
-// WriteOutputFile function write data into a file.
+// WriteOutputFile function writes data into a file.
 func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {

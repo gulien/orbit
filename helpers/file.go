@@ -20,5 +20,5 @@ func FileDoesNotExist(path string) bool {
 // IsYAML returns true is the specified file name has .yml or .yaml extension.
 func IsYAML(fileName string) bool {
 	fileExt := path.Ext(fileName)
-	return fileExt == "yml" || fileExt == "yaml"
+	return fileExt == ".yml" || fileExt == ".yaml"
 }

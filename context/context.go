@@ -1,6 +1,7 @@
 package context
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"runtime"
@@ -9,7 +10,6 @@ import (
 	"github.com/gulien/orbit/helpers"
 
 	"github.com/joho/godotenv"
-	jww "github.com/spf13/jwalterweatherman"
 	"gopkg.in/yaml.v2"
 )
 
@@ -30,69 +30,74 @@ type (
 )
 
 // NewOrbitContext function instantiates a new OrbitContext.
-func NewOrbitContext(templateFilePath string, valuesFilePath string, envFilePath string) *OrbitContext {
+func NewOrbitContext(templateFilePath string, valuesFilePath string, envFilePath string) (*OrbitContext, error) {
 	// as the template is mandatory, we must check its validity.
 	if templateFilePath == "" || helpers.FileDoesNotExist(templateFilePath) {
-		jww.ERROR.Println("Template file %s does not exist", templateFilePath)
-		os.Exit(1)
+		return nil, fmt.Errorf("Template file %s does not exist", templateFilePath)
 	}
 
 	// let's instantiates our OrbitContext!
-	orbitContext := &OrbitContext{
+	ctx := &OrbitContext{
 		TemplateFilePath: templateFilePath,
 		Os:               runtime.GOOS,
 	}
 
 	// checks if a file with values has been specified.
 	if valuesFilePath != "" && helpers.FileExist(valuesFilePath) {
-		orbitContext.Values = getValuesMap(valuesFilePath)
+		data, err := getValuesMap(valuesFilePath)
+		if err != nil {
+			return nil, err
+		}
+
+		ctx.Values = data
 	}
 
 	// checks if a .env file has been specified.
 	if envFilePath != "" && helpers.FileExist(envFilePath) {
-		orbitContext.EnvFile = getEnvFileMap(envFilePath)
+		data, err := getEnvFileMap(envFilePath)
+		if err != nil {
+			return nil, err
+		}
+
+		ctx.EnvFile = data
 	}
 
 	// last but not least, populates the Env map.
-	orbitContext.Env = getEnvMap()
+	ctx.Env = getEnvMap()
 
-	return orbitContext
+	return ctx, nil
 }
 
 // getValuesMap function retrieves values from a YAML file.
-func getValuesMap(valuesFilePath string) map[interface{}]interface{} {
+func getValuesMap(valuesFilePath string) (map[interface{}]interface{}, error) {
 	// the file containing values must be a valid YAML file.
 	if !helpers.IsYAML(valuesFilePath) {
-		jww.ERROR.Println("Values file %s is not a valid YAML file", valuesFilePath)
-		os.Exit(1)
+		return nil, fmt.Errorf("Values file %s is not a valid YAML file", valuesFilePath)
 	}
 
 	// alright, let's read it to retrieve its data!
 	data, err := ioutil.ReadFile(valuesFilePath)
 	if err != nil {
-		jww.FATAL.Println("Failed to read the values file %s: %s", valuesFilePath, err)
-		os.Exit(1)
+		return nil, fmt.Errorf("Failed to read the values file %s:\n%s", valuesFilePath, err)
 	}
 
 	// last but not least, parses the YAML.
-	valuesMaps := make(map[interface{}]interface{})
-	if err := yaml.Unmarshal(data, &valuesMaps); err != nil {
-		jww.ERROR.Println("Values file %s is not a valid YAML file: %s", valuesFilePath, err)
-		os.Exit(1)
+	valuesMap := make(map[interface{}]interface{})
+	if err := yaml.Unmarshal(data, &valuesMap); err != nil {
+		return nil, fmt.Errorf("Values file %s is not a valid YAML file:\n%s", valuesFilePath, err)
 	}
 
-	return valuesMaps
+	return valuesMap, nil
 }
 
 // getEnvFileMap function retrieves pairs from a .env file.
-func getEnvFileMap(envFilePath string) map[string]string {
+func getEnvFileMap(envFilePath string) (map[string]string, error) {
 	envFileMap, err := godotenv.Read(envFilePath)
 	if err != nil {
-		jww.ERROR.Println("Unable to parse the env file %s: %s", envFilePath, err)
-		os.Exit(1)
+		return nil, fmt.Errorf("Unable to parse the env file %s:\n%s", envFilePath, err)
 	}
 
-	return envFileMap
+	return envFileMap, nil
 }
 
 // getEnvMap function retrieves all pairs from environment variables.

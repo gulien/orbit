@@ -1,16 +1,14 @@
 package main
 
 import (
-	"os"
-
 	"github.com/gulien/orbit/commands"
-
-	jww "github.com/spf13/jwalterweatherman"
+	"github.com/gulien/orbit/notifier"
 )
 
 func main() {
+	notifier.Start()
+
 	if err := commands.RootCmd.Execute(); err != nil {
-		jww.ERROR.Println(err)
-		os.Exit(1)
+		notifier.Error(err)
 	}
 }

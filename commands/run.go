@@ -1,16 +1,15 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/gulien/orbit/context"
 	"github.com/gulien/orbit/generator"
 	"github.com/gulien/orbit/helpers"
+	"github.com/gulien/orbit/notifier"
 	"github.com/gulien/orbit/runner"
 
 	"github.com/spf13/cobra"
-	jww "github.com/spf13/jwalterweatherman"
 	"gopkg.in/yaml.v2"
 )
 
@@ -38,44 +37,36 @@ func init() {
 func run(cmd *cobra.Command, args []string) {
 	// if no args, bye!
 	if len(args) == 0 {
-		jww.ERROR.Println("No command to run")
-		os.Exit(1)
+		notifier.Error("No command to run")
 	}
 
 	// alright, let's instantiate our Orbit context.
 	ctx, err := context.NewOrbitContext(configFilePath, ValuesFilePath, EnvFilePath)
 	if err != nil {
-		jww.ERROR.Println(err)
-		os.Exit(1)
+		notifier.Error(err)
 	}
 
 	// checks if the config file is a YAML file.
 	if !helpers.IsYAML(configFilePath) {
-		err := fmt.Errorf("Configuration file %s is not a valid YAML file", configFilePath)
-		jww.ERROR.Println(err)
-		os.Exit(1)
+		notifier.Errorf("Configuration file %s is not a valid YAML file", configFilePath)
 	}
 
 	// then retrieves the data from the configuration file.
 	gen := generator.NewOrbitGenerator(ctx)
 	data, err := gen.Parse()
 	if err != nil {
-		jww.ERROR.Println(err)
-		os.Exit(1)
+		notifier.Error(err)
 	}
 
 	// then handles the data as YAML.
 	var config = &runner.OrbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
-		err := fmt.Errorf("Configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
-		jww.ERROR.Println(err)
-		os.Exit(1)
+		notifier.Errorf("Configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
 	}
 
 	r := runner.NewOrbitRunner(config, ctx)
 	if err := r.Exec(args[:]...); err != nil {
-		jww.ERROR.Println(err)
-		os.Exit(1)
+		notifier.Error(err)
 	}
 
 	// everything good!

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/notifier"
 )
 
 type (
@@ -57,6 +58,7 @@ func (r *OrbitRunner) Exec(names ...string) error {
 
 	// alright, let's execute each Orbit command.
 	for _, cmd := range cmds {
+		notifier.Infof("Running Orbit command %s", cmd.Use)
 		if err := r.exec(cmd); err != nil {
 			return err
 		}

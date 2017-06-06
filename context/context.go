@@ -1,6 +1,7 @@
 package context
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/gulien/orbit/helpers"
 
-	"encoding/json"
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v2"
 )

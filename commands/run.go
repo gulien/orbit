@@ -28,8 +28,8 @@ var runCmd = &cobra.Command{
 // init function initializes runCmd instance with some flags and adds it to the RootCmd.
 func init() {
 	runCmd.Flags().StringVarP(&configFilePath, "config", "c", "orbit.yml", "specify an alternate configuration file")
-	runCmd.Flags().StringVarP(&ValuesFilePath, "values", "v", "", "specify a YAML file listing values used in the configuration file")
-	runCmd.Flags().StringVarP(&EnvFilePath, "env_file", "e", "", "specify a .env file listing values used in the configuration file")
+	runCmd.Flags().StringVarP(&ValuesFiles, "values", "v", "", "specify a YAML file or a map of YAML files listing values used in the configuration file")
+	runCmd.Flags().StringVarP(&EnvFiles, "env", "e", "", "specify a .env file or a map of .env files listing values used in the configuration file")
 	RootCmd.AddCommand(runCmd)
 }
 
@@ -41,7 +41,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	// alright, let's instantiate our Orbit context.
-	ctx, err := context.NewOrbitContext(configFilePath, ValuesFilePath, EnvFilePath)
+	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles)
 	if err != nil {
 		notifier.Error(err)
 	}

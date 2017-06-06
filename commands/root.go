@@ -5,10 +5,10 @@ import (
 )
 
 var (
-	// EnvFilePath is the path of a .env file listing values used in templates.
-	EnvFilePath string
-	// ValuesFilePath is the path of a YAML file listing values used in templates.
-	ValuesFilePath string
+	// ValuesFiles is the path or a map of paths of YAML files listing values used in templates.
+	ValuesFiles string
+	// EnvFiles is the path or a map of paths of .env files listing values used in templates.
+	EnvFiles string
 )
 
 // RootCmd is the instance of the root of all Orbit's commands.

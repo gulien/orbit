@@ -44,7 +44,7 @@ func NewOrbitRunner(config *OrbitRunnerConfig, context *context.OrbitContext) *O
 	}
 }
 
-// Exec func executes the given Orbit commands.
+// Exec function executes the given Orbit commands.
 func (r *OrbitRunner) Exec(names ...string) error {
 	// populates a slice of instances of Orbit Command.
 	// if a given name doest not match with any Orbit Command defined in the configuration file, throws an error.

@@ -17,7 +17,7 @@ type (
 	}
 )
 
-// NewOrbitGenerator func instantiates a new instance of OrbitGenerator.
+// NewOrbitGenerator function instantiates a new instance of OrbitGenerator.
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	return &OrbitGenerator{
 		context,

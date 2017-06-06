@@ -127,6 +127,7 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 			return nil, fmt.Errorf("Env file %s does not exist", f.Path)
 		}
 
+		// then parses the .env file to retrieve pairs.
 		envFilesMap[f.Name], err = godotenv.Read(f.Path)
 		if err != nil {
 			return nil, fmt.Errorf("Unable to parse the env file %s:\n%s", f.Path, err)

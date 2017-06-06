@@ -80,7 +80,7 @@ func (r *OrbitRunner) exec(cmd *OrbitCommand) error {
 		e.Stderr = os.Stderr
 
 		if err := e.Run(); err != nil {
-			return fmt.Errorf("Failed to execute Orbit command %s (%s):\n%s", cmd.Use, c, err)
+			return fmt.Errorf("Something happened while running Orbit command %s (%s):\n%s", cmd.Use, c, err)
 		}
 	}
 

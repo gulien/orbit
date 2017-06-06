@@ -1,12 +1,12 @@
 package commands
 
 import (
-	"os"
+	"errors"
+	"fmt"
 
 	"github.com/gulien/orbit/context"
 	"github.com/gulien/orbit/generator"
 	"github.com/gulien/orbit/helpers"
-	"github.com/gulien/orbit/notifier"
 	"github.com/gulien/orbit/runner"
 
 	"github.com/spf13/cobra"
@@ -22,7 +22,7 @@ var (
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Runs one or more stack of commands defined in a configuration file",
-	Run:   run,
+	RunE:   run,
 }
 
 // init function initializes a runCmd instance with some flags and adds it to the RootCmd.
@@ -34,41 +34,40 @@ func init() {
 }
 
 // runner function executes one or more stacks of commands defined in the configuration file.
-func run(cmd *cobra.Command, args []string) {
+func run(cmd *cobra.Command, args []string) error {
 	// if no args, bye!
 	if len(args) == 0 {
-		notifier.Error("No command to run")
+		return errors.New("No command to run")
 	}
 
 	// alright, let's instantiate our Orbit context.
 	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles)
 	if err != nil {
-		notifier.Error(err)
+		return err
 	}
 
 	// checks if the config file is a YAML file.
 	if !helpers.IsYAML(configFilePath) {
-		notifier.Errorf("Configuration file %s is not a valid YAML file", configFilePath)
+		return fmt.Errorf("Configuration file %s is not a valid YAML file", configFilePath)
 	}
 
 	// then retrieves the data from the configuration file.
 	gen := generator.NewOrbitGenerator(ctx)
 	data, err := gen.Parse()
 	if err != nil {
-		notifier.Error(err)
+		return err
 	}
 
 	// then handles the data as YAML.
 	var config = &runner.OrbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
-		notifier.Errorf("Configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
+		return fmt.Errorf("Configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
 	}
 
 	r := runner.NewOrbitRunner(config, ctx)
 	if err := r.Exec(args[:]...); err != nil {
-		notifier.Error(err)
+		return err
 	}
 
-	// everything good!
-	os.Exit(0)
+	return nil
 }

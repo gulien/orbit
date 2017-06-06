@@ -2,12 +2,10 @@ package commands
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/gulien/orbit/context"
-	"github.com/gulien/orbit/notifier"
-
 	"github.com/gulien/orbit/generator"
+
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +20,7 @@ var (
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generates a file according to a template",
-	Run:   generate,
+	RunE:   generate,
 }
 
 // init function initializes a generateCmd instance with some flags and adds it to the RootCmd.
@@ -36,30 +34,29 @@ func init() {
 
 // generate function transforms a template to a resulting file.
 // if no output specified, prints the result to stdout.
-func generate(cmd *cobra.Command, args []string) {
+func generate(cmd *cobra.Command, args []string) error {
 	// first, let's instantiate our Orbit context.
 	ctx, err := context.NewOrbitContext(templateFilePath, ValuesFiles, EnvFiles)
 	if err != nil {
-		notifier.Error(err)
+		return err
 	}
 
 	// then retrieves the data from the template file.
 	gen := generator.NewOrbitGenerator(ctx)
 	data, err := gen.Parse()
 	if err != nil {
-		notifier.Error(err)
+		return err
 	}
 
 	// if an output file path has been specified, writes the result into it.
 	if outputFilePath != "" {
 		if err := gen.WriteOutputFile(outputFilePath, data); err != nil {
-			notifier.Error(err)
+			return err
 		}
 	} else {
 		// ok, no output specified, let's print the result to stdout.
 		fmt.Println(data)
 	}
 
-	// everything good!
-	os.Exit(0)
+	return nil
 }

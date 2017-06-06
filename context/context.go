@@ -157,7 +157,7 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	// if not, considers the string as a path.
 	// otherwise tries to populate an array of OrbitFileMap instances.
 	parts := strings.Split(s, ";")
-	if len(parts) == 1 {
+	if len(parts) == 1 && len(strings.Split(s, ",")) == 1 {
 		filesMap = append(filesMap, &OrbitFileMap{"default", s})
 	} else {
 		for _, part := range parts {

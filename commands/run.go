@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	// configFilePath is the path of a file describing commands.
+	// configFilePath is the path of the file describing commands.
 	configFilePath string
 )
 
@@ -25,7 +25,7 @@ var runCmd = &cobra.Command{
 	Run:   run,
 }
 
-// init function initializes runCmd instance with some flags and adds it to the RootCmd.
+// init function initializes a runCmd instance with some flags and adds it to the RootCmd.
 func init() {
 	runCmd.Flags().StringVarP(&configFilePath, "config", "c", "orbit.yml", "specify an alternate configuration file")
 	runCmd.Flags().StringVarP(&ValuesFiles, "values", "v", "", "specify a YAML file or a map of YAML files listing values used in the configuration file")

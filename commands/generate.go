@@ -20,7 +20,7 @@ var (
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generates a file according to a template",
-	RunE:   generate,
+	RunE:  generate,
 }
 
 // init function initializes a generateCmd instance with some flags and adds it to the RootCmd.
@@ -55,7 +55,7 @@ func generate(cmd *cobra.Command, args []string) error {
 		}
 	} else {
 		// ok, no output specified, let's print the result to stdout.
-		fmt.Println(data)
+		fmt.Println(string(data.Bytes()))
 	}
 
 	return nil

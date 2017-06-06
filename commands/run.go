@@ -22,7 +22,7 @@ var (
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Runs one or more stack of commands defined in a configuration file",
-	RunE:   run,
+	RunE:  run,
 }
 
 // init function initializes a runCmd instance with some flags and adds it to the RootCmd.

@@ -153,7 +153,7 @@ func getEnvMap() map[string]string {
 func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	var filesMap []*OrbitFileMap
 
-	// checks if the given string is map of files:
+	// checks if the given string is a map of files:
 	// if not, considers the string as a path.
 	// otherwise tries to populate an array of OrbitFileMap instances.
 	parts := strings.Split(s, ";")

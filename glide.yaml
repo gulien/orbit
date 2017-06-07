@@ -1,0 +1,6 @@
+package: github.com/gulien/orbit
+import:
+- package: github.com/joho/godotenv
+  version: ^1.1.0
+- package: github.com/spf13/cobra
+- package: gopkg.in/yaml.v2

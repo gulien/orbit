@@ -119,15 +119,8 @@ func loadFile(filename string, overload bool) error {
 		return err
 	}
 
-	currentEnv := map[string]bool{}
-	rawEnv := os.Environ()
-	for _, rawEnvLine := range rawEnv {
-		key := strings.Split(rawEnvLine, "=")[0]
-		currentEnv[key] = true
-	}
-
 	for key, value := range envMap {
-		if !currentEnv[key] || overload {
+		if os.Getenv(key) == "" || overload {
 			os.Setenv(key, value)
 		}
 	}
@@ -219,23 +212,18 @@ func parseLine(line string) (key string, value string, err error) {
 
 	// Parse the value
 	value = splitString[1]
-
 	// trim
 	value = strings.Trim(value, " ")
 
 	// check if we've got quoted values
-	if value != "" {
-		first := string(value[0:1])
-		last := string(value[len(value)-1:])
-		if first == last && strings.ContainsAny(first, `"'`) {
-			// pull the quotes off the edges
-			value = strings.Trim(value, `"'`)
+	if strings.Count(value, "\"") == 2 || strings.Count(value, "'") == 2 {
+		// pull the quotes off the edges
+		value = strings.Trim(value, "\"'")
 
-			// expand quotes
-			value = strings.Replace(value, `\"`, `"`, -1)
-			// expand newlines
-			value = strings.Replace(value, `\n`, "\n", -1)
-		}
+		// expand quotes
+		value = strings.Replace(value, "\\\"", "\"", -1)
+		// expand newlines
+		value = strings.Replace(value, "\\n", "\n", -1)
 	}
 
 	return

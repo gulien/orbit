@@ -1,14 +1,15 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/gulien/orbit/commands"
-	"github.com/gulien/orbit/notifier"
 )
 
 func main() {
-	notifier.Start()
-
 	if err := commands.RootCmd.Execute(); err != nil {
-		notifier.Error(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }

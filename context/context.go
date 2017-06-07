@@ -41,7 +41,7 @@ type (
 // NewOrbitContext function instantiates a new OrbitContext.
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
 	// as the template is mandatory, we must check its validity.
-	if templateFilePath == "" || helpers.FileDoesNotExist(templateFilePath) {
+	if templateFilePath == "" || !helpers.FileExist(templateFilePath) {
 		return nil, fmt.Errorf("Template file %s does not exist", templateFilePath)
 	}
 
@@ -87,13 +87,8 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	valuesMap := make(map[string]interface{})
 	for _, f := range filesMap {
 		// first, checks if the file exists
-		if helpers.FileDoesNotExist(f.Path) {
+		if !helpers.FileExist(f.Path) {
 			return nil, fmt.Errorf("Values file %s does not exist", f.Path)
-		}
-
-		// the file containing values must be a valid YAML file.
-		if !helpers.IsYAML(f.Path) {
-			return nil, fmt.Errorf("Values file %s is not a valid YAML file", f.Path)
 		}
 
 		// alright, let's read it to retrieve its data!
@@ -124,7 +119,7 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	envFilesMap := make(map[string]map[string]string)
 	for _, f := range filesMap {
 		// first, checks if the file exists
-		if helpers.FileDoesNotExist(f.Path) {
+		if !helpers.FileExist(f.Path) {
 			return nil, fmt.Errorf("Env file %s does not exist", f.Path)
 		}
 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/gulien/orbit/context"
 	"github.com/gulien/orbit/generator"
-	"github.com/gulien/orbit/helpers"
 	"github.com/gulien/orbit/runner"
 
 	"github.com/spf13/cobra"
@@ -44,11 +43,6 @@ func run(cmd *cobra.Command, args []string) error {
 	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles)
 	if err != nil {
 		return err
-	}
-
-	// checks if the config file is a YAML file.
-	if !helpers.IsYAML(configFilePath) {
-		return fmt.Errorf("Configuration file %s is not a valid YAML file", configFilePath)
 	}
 
 	// then retrieves the data from the configuration file.

@@ -9,7 +9,7 @@ import (
 func TestFileExists(t *testing.T) {
 	t.Log("Tests if file \"orbit.yml\" exists...")
 
-	file, _ := filepath.Abs("../.assets/orbit.yml")
+	file, _ := filepath.Abs("../.assets/tests/orbit.yml")
 	if !FileExists(file) {
 		t.Error("\"orbit.yml\" should exist!")
 	}

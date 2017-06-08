@@ -4,6 +4,7 @@
 <h3 align="center">Orbit</h3>
 <p align="center">A simple tool for running commands and generating files from templates</p>
 <p align="center">
+    <a href="https://travis-ci.org/gulien/orbit"><img src="https://travis-ci.org/gulien/orbit.svg?branch=maste" alt="Travis CI"></a>
     <a href="https://godoc.org/github.com/gulien/orbit"><img src="https://godoc.org/github.com/gulien/orbit?status.svg" alt="GoDoc"></a>
     <a href="https://goreportcard.com/report/gulien/orbit"><img src="https://goreportcard.com/badge/github.com/gulien/orbit" alt="Go Report Card"></a>
 </p>

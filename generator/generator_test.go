@@ -19,12 +19,12 @@ var (
 
 // init instantiates the OrbitContext ctxDefault and ctxMany.
 func init() {
-	defaultTemplateFilePath := getAbsPath("../.assets/template.txt")
-	manyTemplateFilePath := getAbsPath("../.assets/template_many.txt")
-	valuesRu := getAbsPath("../.assets/values_ru.yml")
-	valuesUsa := getAbsPath("../.assets/values_usa.yml")
-	envFileRu := getAbsPath("../.assets/.env_ru")
-	envFileUsa := getAbsPath("../.assets/.env_usa")
+	defaultTemplateFilePath := getAbsPath("../.assets/tests/template.txt")
+	manyTemplateFilePath := getAbsPath("../.assets/tests/template_many.txt")
+	valuesRu := getAbsPath("../.assets/tests/values_ru.yml")
+	valuesUsa := getAbsPath("../.assets/tests/values_usa.yml")
+	envFileRu := getAbsPath("../.assets/tests/.env_ru")
+	envFileUsa := getAbsPath("../.assets/tests/.env_usa")
 
 	c, err := context.NewOrbitContext(defaultTemplateFilePath, valuesUsa, envFileRu)
 	if err != nil {

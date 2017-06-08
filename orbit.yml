@@ -1,0 +1,37 @@
+commands:
+  - use: "install"
+    run:
+      - go get github.com/Masterminds/glide
+      - glide install
+      - go get github.com/golang/lint/golint
+      - go get github.com/alecthomas/gometalinter
+      - go get github.com/client9/misspell/cmd/misspell
+      - go get github.com/gordonklaus/ineffassign
+      - go get golang.org/x/tools/cmd/goimports
+      - go get github.com/tsenart/deadcode
+  - use: "fmt"
+    run:
+      - go fmt github.com/gulien/orbit/commands
+      - go fmt github.com/gulien/orbit/context
+      - go fmt github.com/gulien/orbit/generator
+      - go fmt github.com/gulien/orbit/helpers
+      - go fmt github.com/gulien/orbit/notifier
+      - go fmt github.com/gulien/orbit/runner
+      - go fmt orbit.go
+  - use: "lint"
+    run:
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./commands
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./context
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./generator
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./helpers
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./notifier
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./runner
+      # FIXME
+      #- gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./orbit.go
+  - use: "test"
+    run:
+      - go test github.com/gulien/orbit/commands
+      - go test github.com/gulien/orbit/context
+      - go test github.com/gulien/orbit/generator
+      - go test github.com/gulien/orbit/helpers
+      - go test github.com/gulien/orbit/runner

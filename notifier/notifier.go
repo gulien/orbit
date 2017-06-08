@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/shiena/ansicolor"
 )
 
 // OrbitNotifier provides the underlying implementation that displays output to users.
@@ -24,8 +26,8 @@ type OrbitNotifier struct {
 // newOrbitNotifier creates a default OrbitNotifier to display output.
 func newOrbitNotifier() *OrbitNotifier {
 	return &OrbitNotifier{
-		Stdout: os.Stdout,
-		Stderr: os.Stderr,
+		Stdout: ansicolor.NewAnsiColorWriter(os.Stdout),
+		Stderr: ansicolor.NewAnsiColorWriter(os.Stderr),
 	}
 }
 
@@ -34,13 +36,13 @@ var Houston = newOrbitNotifier()
 
 // Info logs information using the Houston notifier.
 func Info(notification string, args ...interface{}) {
-	prefix := "[INF]\t"
+	prefix := fmt.Sprintf("[%sINF%s]\t", "\x1b[36m", "\x1b[0m")
 	Houston.notify(prefix+notification, nil, args...)
 }
 
 // Error logs error information using the Houston notifier.
 func Error(err error) {
-	prefix := "[ERR]\t"
+	prefix := fmt.Sprintf("[%sERR%s]\t", "\x1b[31m", "\x1b[0m")
 	Houston.notify(prefix+err.Error(), err)
 }
 

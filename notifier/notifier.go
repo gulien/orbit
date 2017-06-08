@@ -1,4 +1,4 @@
-// Package notifier
+// Package notifier implements a simple helper for displaying output to users.
 // Credits: this package has been heavily inspired by https://github.com/Masterminds/glide/blob/master/msg/msg.go.
 package notifier
 

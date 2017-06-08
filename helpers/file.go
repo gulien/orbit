@@ -2,8 +2,8 @@ package helpers
 
 import "os"
 
-// FileExist returns true if the specified path exists.
-func FileExist(path string) bool {
+// FileExists returns true if the specified path exists.
+func FileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
 }

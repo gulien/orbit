@@ -46,7 +46,7 @@ type (
 // NewOrbitContext instantiates a new OrbitContext.
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
 	// as the template is mandatory, we must check its validity.
-	if templateFilePath == "" || !helpers.FileExist(templateFilePath) {
+	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {
 		return nil, fmt.Errorf("template file \"%s\" does not exist", templateFilePath)
 	}
 
@@ -92,7 +92,7 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	valuesMap := make(map[string]interface{})
 	for _, f := range filesMap {
 		// first, checks if the file exists
-		if !helpers.FileExist(f.Path) {
+		if !helpers.FileExists(f.Path) {
 			return nil, fmt.Errorf("values file \"%s\" does not exist", f.Path)
 		}
 
@@ -124,7 +124,7 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	envFilesMap := make(map[string]map[string]string)
 	for _, f := range filesMap {
 		// first, checks if the file exists
-		if !helpers.FileExist(f.Path) {
+		if !helpers.FileExists(f.Path) {
 			return nil, fmt.Errorf("env file \"%s\" does not exist", f.Path)
 		}
 

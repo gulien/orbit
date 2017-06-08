@@ -2,9 +2,9 @@
 commands:
   - use: "install"
     run:
-      - go install
       - go get github.com/Masterminds/glide
       - glide install
+      - go install
       - go get github.com/golang/lint/golint
       - go get github.com/alecthomas/gometalinter
       - go get github.com/client9/misspell/cmd/misspell

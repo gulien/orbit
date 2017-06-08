@@ -10,6 +10,8 @@ matrix:
   fast_finish: true
 
 install:
+  - go get github.com/Masterminds/glide
+  - glide install
   - go install
 
 script:

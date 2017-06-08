@@ -39,18 +39,18 @@ func TestOrbitCommandDoesNotExist(t *testing.T) {
 	}
 }
 
-// Tests if Orbit command "glide_1" exists.
-func TestOrbitCommandExists(t *testing.T) {
-	t.Log("Tests if Orbit command \"glide_1\" xexists...")
+// Tests Orbit command "glide_1".
+func TestOrbitCommand(t *testing.T) {
+	t.Log("Tests Orbit command \"glide_1\"...")
 
 	if err := testRunner.Exec("glide_1"); err != nil {
 		t.Error("\"glide_1\" should exist!")
 	}
 }
 
-// Tests if Orbit commands "glide_1" and "glide_2" exist.
-func TestNestedOrbitCommandExist(t *testing.T) {
-	t.Log("Tests if Orbit commands \"glide_1\" and \"glide_2\" exist...")
+// Tests nested Orbit commands "glide_1" and "glide_2".
+func TestNestedOrbitCommands(t *testing.T) {
+	t.Log("Tests nested Orbit commands \"glide_1\" and \"glide_2\"...")
 
 	if err := testRunner.Exec("glide_1", "glide_2"); err != nil {
 		t.Error("\"glide_1\" and \"glide_2\" should exist!")

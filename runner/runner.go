@@ -7,7 +7,10 @@ import (
 	"strings"
 
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/generator"
 	"github.com/gulien/orbit/notifier"
+
+	"gopkg.in/yaml.v2"
 )
 
 type (
@@ -40,11 +43,24 @@ type (
 )
 
 // NewOrbitRunner instantiates a new instance of OrbitRunner.
-func NewOrbitRunner(config *OrbitRunnerConfig, context *context.OrbitContext) *OrbitRunner {
+func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
+	// first retrieves the data from the configuration file.
+	gen := generator.NewOrbitGenerator(context)
+	data, err := gen.Parse()
+	if err != nil {
+		return nil, err
+	}
+
+	// then handles the data as YAML.
+	var config = &OrbitRunnerConfig{}
+	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
+		return nil, fmt.Errorf("configuration file \"%s\" is not a valid YAML file:\n%s", context.TemplateFilePath, err)
+	}
+
 	return &OrbitRunner{
 		config:  config,
 		context: context,
-	}
+	}, nil
 }
 
 // Exec executes the given Orbit commands.

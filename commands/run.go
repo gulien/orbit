@@ -2,14 +2,11 @@ package commands
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/gulien/orbit/context"
-	"github.com/gulien/orbit/generator"
 	"github.com/gulien/orbit/runner"
 
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -47,20 +44,11 @@ func run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// then retrieves the data from the configuration file.
-	gen := generator.NewOrbitGenerator(ctx)
-	data, err := gen.Parse()
+	r, err := runner.NewOrbitRunner(ctx)
 	if err != nil {
 		return err
 	}
 
-	// then handles the data as YAML.
-	var config = &runner.OrbitRunnerConfig{}
-	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
-		return fmt.Errorf("configuration file \"%s\" is not a valid YAML file:\n%s", configFilePath, err)
-	}
-
-	r := runner.NewOrbitRunner(config, ctx)
 	if err := r.Exec(args[:]...); err != nil {
 		return err
 	}

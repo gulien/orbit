@@ -25,9 +25,8 @@ func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 // Parse parses a template and populates it.
 func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	var data bytes.Buffer
-	tmpl := template.New(g.context.TemplateFilePath)
-	tmpl, err := tmpl.ParseFiles(g.context.TemplateFilePath)
 
+	tmpl, err := template.ParseFiles(g.context.TemplateFilePath)
 	if err != nil {
 		return data, fmt.Errorf("unable to parse the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
 	}

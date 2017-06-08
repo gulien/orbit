@@ -7,6 +7,7 @@ import (
 	"github.com/gulien/orbit/notifier"
 )
 
+// main is the root function of the Orbit application.
 func main() {
 	if err := commands.RootCmd.Execute(); err != nil {
 		notifier.Error(err)

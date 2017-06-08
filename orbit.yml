@@ -16,10 +16,18 @@ commands:
       - go get github.com/tsenart/deadcode
   - use: "fmt"
     run:
+    {{- if ne .Os "windows" }}
       - sh .assets/bin/fmt.sh
+    {{- else }}
+      - cmd .asserts\bin\fmt.cmd
+    {{- end }}
   - use: "lint"
     run:
       - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
   - use: "test"
     run:
+    {{- if ne .Os "windows" }}
       - sh .assets/bin/test.sh
+    {{- else }}
+      - cmd .asserts\bin\test.cmd
+    {{- end }}

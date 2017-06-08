@@ -13,9 +13,10 @@ install:
   - go get github.com/Masterminds/glide
   - glide install
   - go install
+  - orbit run lint-install
 
 script:
-  - orbit run lint-install lint test
+  - orbit run lint test
 
 notifications:
   email: false

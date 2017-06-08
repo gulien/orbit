@@ -15,7 +15,7 @@ func TestFileExists(t *testing.T) {
 	}
 }
 
-// Tests if file "foo.yml" does not exist
+// Tests if file "foo.yml" does not exist.
 func TestFileDoesNotExist(t *testing.T) {
 	t.Log("Tests if file \"orbit.yml\" does not exist...")
 

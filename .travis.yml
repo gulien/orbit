@@ -15,7 +15,7 @@ install:
   - go install
 
 script:
-  - orbit run install lint test
+  - orbit run lint-install lint test
 
 notifications:
   email: false

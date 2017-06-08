@@ -12,7 +12,7 @@ var testRunner *OrbitRunner
 
 // init instantiates the OrbitRunner testRunner.
 func init() {
-	configFilePath, err := filepath.Abs("../.tests/orbit.yml")
+	configFilePath, err := filepath.Abs("../.assets/orbit.yml")
 	if err != nil {
 		panic(err)
 	}

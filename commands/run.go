@@ -15,16 +15,18 @@ import (
 var (
 	// configFilePath is the path of the file describing commands.
 	configFilePath string
+
+	// runCmd is the instance of Orbit's runner command.
+	runCmd = &cobra.Command{
+		Use:           "run",
+		Short:         "Runs one or more stack of commands defined in a configuration file",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		RunE:          run,
+	}
 )
 
-// runCmd is the instance of Orbit's runner command.
-var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "Runs one or more stack of commands defined in a configuration file",
-	RunE:  run,
-}
-
-// init function initializes a runCmd instance with some flags and adds it to the RootCmd.
+// init initializes a runCmd instance with some flags and adds it to the RootCmd.
 func init() {
 	runCmd.Flags().StringVarP(&configFilePath, "config", "c", "orbit.yml", "specify an alternate configuration file")
 	runCmd.Flags().StringVarP(&ValuesFiles, "values", "v", "", "specify a YAML file or a map of YAML files listing values used in the configuration file")
@@ -32,11 +34,11 @@ func init() {
 	RootCmd.AddCommand(runCmd)
 }
 
-// runner function executes one or more stacks of commands defined in the configuration file.
+// runner executes one or more stacks of commands defined in the configuration file.
 func run(cmd *cobra.Command, args []string) error {
 	// if no args, bye!
 	if len(args) == 0 {
-		return errors.New("No command to run")
+		return errors.New("no command to run")
 	}
 
 	// alright, let's instantiate our Orbit context.
@@ -55,7 +57,7 @@ func run(cmd *cobra.Command, args []string) error {
 	// then handles the data as YAML.
 	var config = &runner.OrbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
-		return fmt.Errorf("Configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
+		return fmt.Errorf("configuration file %s is not a valid YAML file:\n%s", configFilePath, err)
 	}
 
 	r := runner.NewOrbitRunner(config, ctx)

@@ -14,35 +14,40 @@ import (
 )
 
 type (
-	// OrbitContext struct contains the data necessary for generating a file from a template.
+	// OrbitContext contains the data necessary for generating a file from a template.
 	OrbitContext struct {
 		// TemplateFilePath is the path of the template.
 		TemplateFilePath string
+
 		// Values map contains data from YAML files.
 		Values map[string]interface{}
+
 		// EnvFiles map contains pairs from .env files.
 		EnvFiles map[string]map[string]string
+
 		// Env map contains pairs from environment variables.
 		Env map[string]string
+
 		// Os is the OS name at runtime.
 		Os string
 	}
 
-	// OrbitFileMap struct represents a parameter given to some flags of an Orbit command.
+	// OrbitFileMap represents a parameter given to some flags of an Orbit command.
 	// Flags: -v --values, -e --env
 	OrbitFileMap struct {
 		// Name is the given name of the file.
 		Name string
+
 		// Path is the path of the file.
 		Path string
 	}
 )
 
-// NewOrbitContext function instantiates a new OrbitContext.
+// NewOrbitContext instantiates a new OrbitContext.
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
 	// as the template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExist(templateFilePath) {
-		return nil, fmt.Errorf("Template file %s does not exist", templateFilePath)
+		return nil, fmt.Errorf("template file %s does not exist", templateFilePath)
 	}
 
 	// let's instantiates our OrbitContext!
@@ -77,7 +82,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 	return ctx, nil
 }
 
-// getValuesMap function retrieves values from YAML files.
+// getValuesMap retrieves values from YAML files.
 func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	filesMap, err := getFilesMap(valuesFiles)
 	if err != nil {
@@ -88,19 +93,19 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	for _, f := range filesMap {
 		// first, checks if the file exists
 		if !helpers.FileExist(f.Path) {
-			return nil, fmt.Errorf("Values file %s does not exist", f.Path)
+			return nil, fmt.Errorf("values file %s does not exist", f.Path)
 		}
 
 		// alright, let's read it to retrieve its data!
 		data, err := ioutil.ReadFile(f.Path)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to read the values file %s:\n%s", f.Path, err)
+			return nil, fmt.Errorf("failed to read the values file %s:\n%s", f.Path, err)
 		}
 
 		// last but not least, parses the YAML.
 		var values interface{}
 		if err := yaml.Unmarshal(data, &values); err != nil {
-			return nil, fmt.Errorf("Values file %s is not a valid YAML file:\n%s", f.Path, err)
+			return nil, fmt.Errorf("unable to parse the values file %s:\n%s", f.Path, err)
 		}
 
 		valuesMap[f.Name] = values
@@ -109,7 +114,7 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	return valuesMap, nil
 }
 
-// getEnvFilesMap function retrieves pairs from .env files.
+// getEnvFilesMap retrieves pairs from .env files.
 func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	filesMap, err := getFilesMap(envFiles)
 	if err != nil {
@@ -120,20 +125,20 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	for _, f := range filesMap {
 		// first, checks if the file exists
 		if !helpers.FileExist(f.Path) {
-			return nil, fmt.Errorf("Env file %s does not exist", f.Path)
+			return nil, fmt.Errorf("env file %s does not exist", f.Path)
 		}
 
 		// then parses the .env file to retrieve pairs.
 		envFilesMap[f.Name], err = godotenv.Read(f.Path)
 		if err != nil {
-			return nil, fmt.Errorf("Unable to parse the env file %s:\n%s", f.Path, err)
+			return nil, fmt.Errorf("unable to parse the env file %s:\n%s", f.Path, err)
 		}
 	}
 
 	return envFilesMap, nil
 }
 
-// getEnvMap function retrieves all pairs from environment variables.
+// getEnvMap retrieves all pairs from environment variables.
 func getEnvMap() map[string]string {
 	envMap := make(map[string]string)
 	for _, e := range os.Environ() {
@@ -144,7 +149,7 @@ func getEnvMap() map[string]string {
 	return envMap
 }
 
-// getFilesMap function reads a string and populates an array of OrbitFileMap instances.
+// getFilesMap reads a string and populates an array of OrbitFileMap instances.
 func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	var filesMap []*OrbitFileMap
 
@@ -158,7 +163,7 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 		for _, part := range parts {
 			data := strings.Split(part, ",")
 			if len(data) != 2 {
-				return filesMap, fmt.Errorf("Unable to process the files map %s", s)
+				return filesMap, fmt.Errorf("unable to process the files map %s", s)
 			}
 
 			filesMap = append(filesMap, &OrbitFileMap{data[0], data[1]})

@@ -9,53 +9,51 @@ import (
 	"github.com/gulien/orbit/context"
 )
 
-type (
-	// OrbitGenerator struct helps to generate a file from a template.
-	OrbitGenerator struct {
-		// context is an instance of OrbitContext.
-		context *context.OrbitContext
-	}
-)
+// OrbitGenerator helps to generate a file from a template.
+type OrbitGenerator struct {
+	// context is an instance of OrbitContext.
+	context *context.OrbitContext
+}
 
-// NewOrbitGenerator function instantiates a new instance of OrbitGenerator.
+// NewOrbitGenerator instantiates a new instance of OrbitGenerator.
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	return &OrbitGenerator{
-		context,
+		context: context,
 	}
 }
 
-// Parse function parses a template and populates it.
+// Parse parses a template and populates it.
 func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	var data bytes.Buffer
 	tmpl := template.New(g.context.TemplateFilePath)
 	tmpl, err := tmpl.ParseFiles(g.context.TemplateFilePath)
 
 	if err != nil {
-		return data, fmt.Errorf("Failed to parse the template file %s:\n%s", g.context.TemplateFilePath, err)
+		return data, fmt.Errorf("unable to parse the template file %s:\n%s", g.context.TemplateFilePath, err)
 	}
 
 	if err := tmpl.Execute(&data, g.context); err != nil {
-		return data, fmt.Errorf("Failed to execute the template file %s:\n%s", g.context.TemplateFilePath, err)
+		return data, fmt.Errorf("unable to execute the template file %s:\n%s", g.context.TemplateFilePath, err)
 	}
 
 	return data, nil
 }
 
-// WriteOutputFile function writes data into a file.
+// WriteOutputFile writes data into a file.
 func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
-		return fmt.Errorf("Failed to create the output file %s:\n%s", outputPath, err)
+		return fmt.Errorf("unable to create the output file %s:\n%s", outputPath, err)
 	}
 
 	_, err = file.Write(data.Bytes())
 	if err != nil {
-		return fmt.Errorf("Failed to write into the output file %s:\n%s", outputPath, err)
+		return fmt.Errorf("unable to write into the output file %s:\n%s", outputPath, err)
 	}
 
 	err = file.Close()
 	if err != nil {
-		return fmt.Errorf("Failed to close the writer:\n%s", err)
+		return err
 	}
 
 	return nil

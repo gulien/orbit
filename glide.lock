@@ -1,10 +1,12 @@
-hash: 1f53618740968059acd41c385517841096ad93f11676802527b96d1bbead91ae
-updated: 2017-06-07T23:13:06.602034123+02:00
+hash: 9a60359e14ef3375a88385fa788e173232bf48ef9dba42ce18109072a5acd57e
+updated: 2017-06-08T12:30:49.419986897+02:00
 imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/joho/godotenv
   version: 726cc8b906e3d31c70a9671c90a13716a8d3f50d
+- name: github.com/shiena/ansicolor
+  version: a422bbe96644373c5753384a59d678f7d261ff10
 - name: github.com/spf13/cobra
   version: 99ff9334bda26384b5ef4a4aaa4d444d29bdde73
 - name: github.com/spf13/pflag

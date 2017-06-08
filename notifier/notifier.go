@@ -1,3 +1,4 @@
+// Package notifier
 // Credits: this package has been heavily inspired by https://github.com/Masterminds/glide/blob/master/msg/msg.go.
 package notifier
 
@@ -35,7 +36,6 @@ var Houston = newOrbitNotifier()
 func Info(notification string, args ...interface{}) {
 	prefix := "[INF]\t"
 	Houston.notify(prefix+notification, nil, args...)
-
 }
 
 // Error logs error information using the Houston notifier.

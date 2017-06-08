@@ -5,11 +5,11 @@ import (
 	"testing"
 )
 
-// Tests if file orbit.yml exists.
+// Tests if file "orbit.yml" exists.
 func TestFileExists(t *testing.T) {
 	t.Log("Tests if file \"orbit.yml\" exists...")
 
-	file, _ := filepath.Abs("../tests/orbit.yml")
+	file, _ := filepath.Abs("../.tests/orbit.yml")
 	if !FileExists(file) {
 		t.Error("\"orbit.yml\" should exist!")
 	}

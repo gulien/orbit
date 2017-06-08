@@ -10,19 +10,10 @@ matrix:
   fast_finish: true
 
 install:
-  - go get -v github.com/Masterminds/glide
-  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout tags/0.12.3 && go install && cd -
-  - glide install
-  - go get -t $(go list ./... | grep -v /vendor/)
-  - go get github.com/golang/lint/golint
-  - go get github.com/alecthomas/gometalinter
-  - go get github.com/client9/misspell/cmd/misspell
-  - go get github.com/gordonklaus/ineffassign
-  - go get golang.org/x/tools/cmd/goimports
-  - go get github.com/tsenart/deadcode
+  - go install
 
 script:
-  - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor $(go list ./... | grep -v /vendor/)
+  - orbit run install lint test
 
 notifications:
   email: false

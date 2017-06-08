@@ -1,6 +1,8 @@
+# FIXME make it cross platform!
 commands:
   - use: "install"
     run:
+      - go install
       - go get github.com/Masterminds/glide
       - glide install
       - go get github.com/golang/lint/golint
@@ -20,14 +22,14 @@ commands:
       - go fmt orbit.go
   - use: "lint"
     run:
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./commands
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./context
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./generator
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./helpers
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./notifier
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./runner
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./commands
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./context
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./generator
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./helpers
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./notifier
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./runner
       # FIXME
-      #- gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests ./orbit.go
+      #- gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --.tests ./orbit.go
   - use: "test"
     run:
       - go test github.com/gulien/orbit/commands

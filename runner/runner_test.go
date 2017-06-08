@@ -12,7 +12,7 @@ var testRunner *OrbitRunner
 
 // init instantiates the OrbitRunner testRunner.
 func init() {
-	configFilePath, err := filepath.Abs("../tests/orbit.yml")
+	configFilePath, err := filepath.Abs("../.tests/orbit.yml")
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ func TestOrbitCommand(t *testing.T) {
 	t.Log("Tests Orbit command \"glide_1\"...")
 
 	if err := testRunner.Exec("glide_1"); err != nil {
-		t.Error("\"glide_1\" should exist!")
+		t.Error("\"glide_1\" should have been executed!")
 	}
 }
 
@@ -53,6 +53,6 @@ func TestNestedOrbitCommands(t *testing.T) {
 	t.Log("Tests nested Orbit commands \"glide_1\" and \"glide_2\"...")
 
 	if err := testRunner.Exec("glide_1", "glide_2"); err != nil {
-		t.Error("\"glide_1\" and \"glide_2\" should exist!")
+		t.Error("\"glide_1\" and \"glide_2\" should have been executed!")
 	}
 }

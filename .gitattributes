@@ -1,3 +1,5 @@
+# credits: https://github.com/mholt/caddy/blob/master/.gitattributes
+
 # go fmt will enforce this, but in case a user has not called "go fmt" allow GIT to catch this:
 *.go      text eol=lf core.whitespace whitespace=indent-with-non-tab,trailing-space,tabwidth=4
 

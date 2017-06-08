@@ -38,17 +38,19 @@ func run(cmd *cobra.Command, args []string) error {
 		return errors.New("no command to run")
 	}
 
-	// alright, let's instantiate our Orbit context.
+	// alright, let's instantiate our Orbit context...
 	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles)
 	if err != nil {
 		return err
 	}
 
+	// then our runner...
 	r, err := runner.NewOrbitRunner(ctx)
 	if err != nil {
 		return err
 	}
 
+	// last but not least, executes Orbit commands.
 	if err := r.Exec(args[:]...); err != nil {
 		return err
 	}

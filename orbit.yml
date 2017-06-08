@@ -19,7 +19,7 @@ commands:
     {{- if ne .Os "windows" }}
       - sh .assets/bin/fmt.sh
     {{- else }}
-      - cmd.exe /c '.\.asserts\bin\fmt.bat'
+      - cmd.exe /c '.\.assets\bin\fmt.bat'
     {{- end }}
   - use: "lint"
     run:
@@ -29,5 +29,5 @@ commands:
     {{- if ne .Os "windows" }}
       - sh .assets/bin/test.sh
     {{- else }}
-      - cmd.exe /c '\.asserts\bin\test.bat'
+      - cmd.exe /c '\.assets\bin\test.bat'
     {{- end }}

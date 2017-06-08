@@ -19,7 +19,7 @@ commands:
     {{- if ne .Os "windows" }}
       - sh .assets/bin/fmt.sh
     {{- else }}
-      - cmd .asserts\bin\fmt.cmd
+      - call ".\.asserts\bin\fmt.bat"
     {{- end }}
   - use: "lint"
     run:
@@ -29,5 +29,5 @@ commands:
     {{- if ne .Os "windows" }}
       - sh .assets/bin/test.sh
     {{- else }}
-      - cmd .asserts\bin\test.cmd
+      - call ".\.asserts\bin\test.bat"
     {{- end }}

@@ -10,10 +10,8 @@ matrix:
   fast_finish: true
 
 install:
-  - wget "https://github.com/Masterminds/glide/releases/download/0.12.3/glide-0.12.3-linux-amd64.tar.gz"
-  - mkdir -p $HOME/bin
-  - tar -vxz -C $HOME/bin --strip=1 -f glide-0.12.3-linux-amd64.tar.gz
-  - export PATH="$HOME/bin:$PATH"
+  - go get -v github.com/Masterminds/glide
+  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout tags/0.12.3 && go install && cd -
   - glide install
   - go get -t $(go list ./... | grep -v /vendor/)
   - go get github.com/golang/lint/golint

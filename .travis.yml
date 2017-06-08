@@ -10,7 +10,9 @@ matrix:
   fast_finish: true
 
 install:
-  - go get -t ./...
+  - curl https://glide.sh/get | sh
+  - glide install
+  - go get -t $(go list ./... | grep -v /vendor/)
   - go get github.com/golang/lint/golint
   - go get github.com/alecthomas/gometalinter
   - go get github.com/client9/misspell/cmd/misspell
@@ -19,4 +21,7 @@ install:
   - go get github.com/tsenart/deadcode
 
 script:
-  - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
+  - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor $(go list ./... | grep -v /vendor/)
+
+notifications:
+  email: false

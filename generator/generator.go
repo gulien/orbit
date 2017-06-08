@@ -29,11 +29,11 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	tmpl, err := tmpl.ParseFiles(g.context.TemplateFilePath)
 
 	if err != nil {
-		return data, fmt.Errorf("unable to parse the template file %s:\n%s", g.context.TemplateFilePath, err)
+		return data, fmt.Errorf("unable to parse the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
 	}
 
 	if err := tmpl.Execute(&data, g.context); err != nil {
-		return data, fmt.Errorf("unable to execute the template file %s:\n%s", g.context.TemplateFilePath, err)
+		return data, fmt.Errorf("unable to execute the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
 	}
 
 	return data, nil
@@ -43,12 +43,12 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
-		return fmt.Errorf("unable to create the output file %s:\n%s", outputPath, err)
+		return fmt.Errorf("unable to create the output file \"%s\":\n%s", outputPath, err)
 	}
 
 	_, err = file.Write(data.Bytes())
 	if err != nil {
-		return fmt.Errorf("unable to write into the output file %s:\n%s", outputPath, err)
+		return fmt.Errorf("unable to write into the output file \"%s\":\n%s", outputPath, err)
 	}
 
 	err = file.Close()

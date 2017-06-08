@@ -55,7 +55,7 @@ func (r *OrbitRunner) Exec(names ...string) error {
 	for index, name := range names {
 		cmds[index] = r.getOrbitCommand(name)
 		if cmds[index] == nil {
-			return fmt.Errorf("orbit command %s does not exist in configuration file %s", name, r.context.TemplateFilePath)
+			return fmt.Errorf("orbit command %s does not exist in configuration file \"%s\"", name, r.context.TemplateFilePath)
 		}
 	}
 
@@ -71,10 +71,10 @@ func (r *OrbitRunner) Exec(names ...string) error {
 
 // exec executes the stack of commands from the given Orbit command.
 func (r *OrbitRunner) exec(cmd *OrbitCommand) error {
-	notifier.Info("starting Orbit Command %s", cmd.Use)
+	notifier.Info("starting Orbit Command \"%s\"", cmd.Use)
 
 	for _, c := range cmd.Run {
-		notifier.Info("executing %s", c)
+		notifier.Info("executing \"%s\"", c)
 		parts := strings.Fields(c)
 
 		// parts[0] contains the name of the current command.

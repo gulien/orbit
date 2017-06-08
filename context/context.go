@@ -47,7 +47,7 @@ type (
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
 	// as the template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExist(templateFilePath) {
-		return nil, fmt.Errorf("template file %s does not exist", templateFilePath)
+		return nil, fmt.Errorf("template file \"%s\" does not exist", templateFilePath)
 	}
 
 	// let's instantiates our OrbitContext!
@@ -93,19 +93,19 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	for _, f := range filesMap {
 		// first, checks if the file exists
 		if !helpers.FileExist(f.Path) {
-			return nil, fmt.Errorf("values file %s does not exist", f.Path)
+			return nil, fmt.Errorf("values file \"%s\" does not exist", f.Path)
 		}
 
 		// alright, let's read it to retrieve its data!
 		data, err := ioutil.ReadFile(f.Path)
 		if err != nil {
-			return nil, fmt.Errorf("failed to read the values file %s:\n%s", f.Path, err)
+			return nil, fmt.Errorf("failed to read the values file \"%s\":\n%s", f.Path, err)
 		}
 
 		// last but not least, parses the YAML.
 		var values interface{}
 		if err := yaml.Unmarshal(data, &values); err != nil {
-			return nil, fmt.Errorf("unable to parse the values file %s:\n%s", f.Path, err)
+			return nil, fmt.Errorf("unable to parse the values file \"%s\":\n%s", f.Path, err)
 		}
 
 		valuesMap[f.Name] = values
@@ -125,13 +125,13 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	for _, f := range filesMap {
 		// first, checks if the file exists
 		if !helpers.FileExist(f.Path) {
-			return nil, fmt.Errorf("env file %s does not exist", f.Path)
+			return nil, fmt.Errorf("env file \"%s\" does not exist", f.Path)
 		}
 
 		// then parses the .env file to retrieve pairs.
 		envFilesMap[f.Name], err = godotenv.Read(f.Path)
 		if err != nil {
-			return nil, fmt.Errorf("unable to parse the env file %s:\n%s", f.Path, err)
+			return nil, fmt.Errorf("unable to parse the env file \"%s\":\n%s", f.Path, err)
 		}
 	}
 
@@ -163,7 +163,7 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 		for _, part := range parts {
 			data := strings.Split(part, ",")
 			if len(data) != 2 {
-				return filesMap, fmt.Errorf("unable to process the files map %s", s)
+				return filesMap, fmt.Errorf("unable to process the files map \"%s\"", s)
 			}
 
 			filesMap = append(filesMap, &OrbitFileMap{data[0], data[1]})

@@ -23,5 +23,5 @@ commands:
     {{- if ne .Os "windows" }}
       - sh .assets/bin/test.sh
     {{- else }}
-      - cmd.exe /c '%~dp0\.assets\bin\test.bat'
+      - cmd.exe /c '.assets/bin/test.bat'
     {{- end }}

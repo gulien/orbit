@@ -7,6 +7,9 @@ clone_folder: c:\gopath\src\github.com\gulien\orbit
 environment:
   GOPATH: c:\gopath
 
+matrix:
+  fast_finish: true
+
 install:
   - rmdir c:\go /s /q
   - appveyor DownloadFile https://storage.googleapis.com/golang/go1.8.3.windows-amd64.zip

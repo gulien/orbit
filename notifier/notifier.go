@@ -36,13 +36,13 @@ var Houston = newOrbitNotifier()
 
 // Info logs information using the Houston notifier.
 func Info(notification string, args ...interface{}) {
-	prefix := fmt.Sprintf("[%sINF%s]\t", "\x1b[36m", "\x1b[0m")
+	prefix := fmt.Sprintf("[%si%s] ", "\x1b[36m", "\x1b[0m")
 	Houston.notify(prefix+notification, nil, args...)
 }
 
 // Error logs error information using the Houston notifier.
 func Error(err error) {
-	prefix := fmt.Sprintf("[%sERR%s]\t", "\x1b[31m", "\x1b[0m")
+	prefix := fmt.Sprintf("[%se%s] ", "\x1b[31m", "\x1b[0m")
 	Houston.notify(prefix+err.Error(), err)
 }
 

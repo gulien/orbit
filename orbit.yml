@@ -1,11 +1,12 @@
 # FIXME make it cross platform!
 commands:
-  - use: "install"
+  - use: "fmt"
     run:
-      - go get github.com/Masterminds/glide
-      - glide install
-      - go install
-      - orbit run lint-install
+    {{- if ne .Os "windows" }}
+      - sh .assets/bin/fmt.sh
+    {{- else }}
+      - cmd.exe /c '.assets\bin\fmt.bat'
+    {{- end }}
   - use: "lint-install"
     run:
       - go get github.com/golang/lint/golint
@@ -14,13 +15,6 @@ commands:
       - go get github.com/gordonklaus/ineffassign
       - go get golang.org/x/tools/cmd/goimports
       - go get github.com/tsenart/deadcode
-  - use: "fmt"
-    run:
-    {{- if ne .Os "windows" }}
-      - sh .assets/bin/fmt.sh
-    {{- else }}
-      - cmd.exe /c '.\.assets\bin\fmt.bat'
-    {{- end }}
   - use: "lint"
     run:
       - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
@@ -29,5 +23,5 @@ commands:
     {{- if ne .Os "windows" }}
       - sh .assets/bin/test.sh
     {{- else }}
-      - cmd.exe /c '\.assets\bin\test.bat'
+      - cmd.exe /c '.assets\bin\test.bat'
     {{- end }}

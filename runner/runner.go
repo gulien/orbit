@@ -2,10 +2,10 @@
 Package runner implements a solution to runs one or more commands which have been defined in
 a configuration file (by default "orbit.yml").
 
-These commands, also called Orbit commands, lists one ore more external commands, which will be executed
+These commands, also called Orbit commands, lists one ore more external commands which will be executed
 one by one.
 
-Thanks to the generator package, the configuration file may be a template which is executed at runtime.
+Thanks to the generator package, the configuration file may be a data-driven template which is executed at runtime.
 */
 package runner
 

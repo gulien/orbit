@@ -19,9 +19,9 @@ import (
 )
 
 type (
-	// OrbitContext contains the data necessary for executing a data-driver template.
+	// OrbitContext contains the data necessary for executing a data-driven template.
 	OrbitContext struct {
-		// TemplateFilePath is the path of the template.
+		// TemplateFilePath is the path of the data-driven template.
 		TemplateFilePath string
 
 		// Values map contains data from YAML files.
@@ -37,9 +37,13 @@ type (
 		Os string
 	}
 
-	// OrbitFileMap represents a value given to some flags of an Orbit command.
-	// Flags: -v --values, -e --env
-	// Value format: name,path;name,path;...
+	/*
+	 OrbitFileMap represents a value given to some flags of generate and run commands.
+
+	 Flags: -v --values, -e --env
+
+	 Value format: name,path;name,path;...
+	*/
 	OrbitFileMap struct {
 		// Name is the given name of the file.
 		Name string
@@ -51,7 +55,7 @@ type (
 
 // NewOrbitContext instantiates a new OrbitContext.
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
-	// as the template is mandatory, we must check its validity.
+	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {
 		return nil, fmt.Errorf("template file \"%s\" does not exist", templateFilePath)
 	}

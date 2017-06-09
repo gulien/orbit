@@ -28,7 +28,7 @@ func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 }
 
 /*
-Parse execute a template by applying it the data structure provided by the application context
+Parse executes a data-driven template by applying it the data structure provided by the application context
 
 Returns the resulting bytes.
 */

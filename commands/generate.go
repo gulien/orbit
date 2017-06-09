@@ -10,13 +10,13 @@ import (
 )
 
 var (
-	// templateFilePath is the path of the template.
+	// templateFilePath is the path of the data-driven template.
 	templateFilePath string
 
-	// outputFilePath is the path of the resulting file from the template.
+	// outputFilePath is the path of the resulting file.
 	outputFilePath string
 
-	// generateCmd is the instance of Orbit's generate command.
+	// generateCmd is the instance of generate command.
 	generateCmd = &cobra.Command{
 		Use:           "generate",
 		Short:         "Generates a file according to a template",

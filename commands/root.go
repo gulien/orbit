@@ -1,12 +1,4 @@
-/*
-Package commands implements all commands of the application.
-
-- generate for generating a file from a data-driven template.
-
-- run for executing one or more Orbit commands.
-
-- version for printing the Orbit version
-*/
+// Package commands implements all commands of the application.
 package commands
 
 import "github.com/spf13/cobra"

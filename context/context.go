@@ -168,7 +168,10 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	// otherwise tries to populate an array of OrbitFileMap instances.
 	parts := strings.Split(s, ";")
 	if len(parts) == 1 && len(strings.Split(s, ",")) == 1 {
-		filesMap = append(filesMap, &OrbitFileMap{"default", s})
+		filesMap = append(filesMap, &OrbitFileMap{
+			Name: "default",
+			Path: s,
+		})
 	} else {
 		for _, part := range parts {
 			data := strings.Split(part, ",")
@@ -176,7 +179,10 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 				return filesMap, fmt.Errorf("unable to process the files map \"%s\"", s)
 			}
 
-			filesMap = append(filesMap, &OrbitFileMap{data[0], data[1]})
+			filesMap = append(filesMap, &OrbitFileMap{
+				Name: data[0],
+				Path: data[1],
+			})
 		}
 	}
 

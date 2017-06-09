@@ -1,5 +1,5 @@
 /*
-Package commands implements all commands of the application:
+Package commands implements all commands of the application.
 
 - generate for generating a file from a data-driven template.
 

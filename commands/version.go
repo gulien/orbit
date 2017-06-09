@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	// version is a string representing the current version of Orbit.
+	// version is the current version of Orbit.
 	version = "1.0.0-alpha1"
 
 	// versionCmd is the instance of version command.

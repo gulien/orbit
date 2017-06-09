@@ -1,0 +1,7 @@
+commands:
+  - use: "glide_1"
+    run:
+      - glide
+  - use: "glide_2"
+    run:
+      - glide

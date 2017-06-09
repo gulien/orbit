@@ -1,7 +1,0 @@
-# Credits: https://github.com/mholt/caddy/blob/master/.gitattributes
-
-# go fmt will enforce this, but in case a user has not called "go fmt" allow GIT to catch this:
-*.go      text eol=lf core.whitespace whitespace=indent-with-non-tab,trailing-space,tabwidth=4
-
-*.yml     text eol=lf core.whitespace whitespace=tab-in-indent,trailing-space,tabwidth=2
-.git*     text eol=auto core.whitespace whitespace=trailing-space

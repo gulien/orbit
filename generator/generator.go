@@ -1,3 +1,8 @@
+/*
+Package generator implements a solution to parse data-driven templates and generate output.
+
+A data-driven template is executed by applying it the data structure provided by the application context.
+*/
 package generator
 
 import (
@@ -9,7 +14,7 @@ import (
 	"github.com/gulien/orbit/context"
 )
 
-// OrbitGenerator helps to generate a file from a template.
+// OrbitGenerator provides a set of functions which help to execute a data-driven template.
 type OrbitGenerator struct {
 	// context is an instance of OrbitContext.
 	context *context.OrbitContext
@@ -22,7 +27,11 @@ func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	}
 }
 
-// Parse parses a template and populates it.
+/*
+Parse execute a template by applying it the data structure provided by the application context
+
+Returns the resulting bytes.
+*/
 func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	var data bytes.Buffer
 
@@ -38,7 +47,13 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	return data, nil
 }
 
-// WriteOutputFile writes data into a file.
+/*
+WriteOutputFile writes bytes into a file.
+
+If this file does not exist, this function will create it.
+
+This function should be called after Parse function.
+*/
 func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {

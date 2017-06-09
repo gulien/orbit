@@ -35,8 +35,11 @@ func init() {
 	RootCmd.AddCommand(generateCmd)
 }
 
-// generate transforms a template to a resulting file.
-// If no output file is given, prints the result to Stdout.
+/*
+generate transforms a template to a resulting file.
+
+If no output file is given, prints the result to Stdout.
+*/
 func generate(cmd *cobra.Command, args []string) error {
 	// first, let's instantiate our Orbit context.
 	ctx, err := context.NewOrbitContext(templateFilePath, ValuesFiles, EnvFiles)

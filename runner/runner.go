@@ -1,3 +1,12 @@
+/*
+Package runner implements a solution to runs one or more commands which have been defined in
+a configuration file (by default "orbit.yml").
+
+These commands, also called Orbit commands, lists one ore more external commands, which will be executed
+one by one.
+
+Thanks to the generator package, the configuration file may be a template which is executed at runtime.
+*/
 package runner
 
 import (
@@ -28,7 +37,7 @@ type (
 		// Short describes what the Orbit command does.
 		Short string `yaml:"short,omitempty"`
 
-		// Run is the stack of commands to execute.
+		// Run is the stack of external commands to execute.
 		Run []string `yaml:"run"`
 	}
 
@@ -85,7 +94,7 @@ func (r *OrbitRunner) Exec(names ...string) error {
 	return nil
 }
 
-// exec executes the stack of commands from the given Orbit command.
+// exec executes the stack of external commands from the given Orbit command.
 func (r *OrbitRunner) exec(cmd *OrbitCommand) error {
 	notifier.Info("starting Orbit Command \"%s\"", cmd.Use)
 
@@ -93,8 +102,8 @@ func (r *OrbitRunner) exec(cmd *OrbitCommand) error {
 		notifier.Info("executing \"%s\"", c)
 		parts := strings.Fields(c)
 
-		// parts[0] contains the name of the current command.
-		// parts[1:] contains the arguments of the current command.
+		// parts[0] contains the name of the current external command.
+		// parts[1:] contains the arguments of the current external command.
 		e := exec.Command(parts[0], parts[1:]...)
 		e.Stdout = os.Stdout
 		e.Stderr = os.Stderr

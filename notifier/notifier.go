@@ -1,5 +1,8 @@
-// Package notifier implements a simple helper for displaying output to users.
-// Credits: this package has been heavily inspired by https://github.com/Masterminds/glide/blob/master/msg/msg.go.
+/*
+Package notifier implements a simple helper for displaying output to users.
+
+Credits: this package has been inspired by https://github.com/Masterminds/glide/blob/master/msg/msg.go.
+*/
 package notifier
 
 import (
@@ -31,7 +34,7 @@ func newOrbitNotifier() *OrbitNotifier {
 	}
 }
 
-// Houston contains the default OrbitNotifier used by the application.
+// Houston contains the OrbitNotifier instance used by the application.
 var Houston = newOrbitNotifier()
 
 // Info logs information using the Houston notifier.
@@ -46,8 +49,11 @@ func Error(err error) {
 	Houston.notify(prefix+err.Error(), err)
 }
 
-// notify prints a notification with optional parameters.
-// If err is not nil, prints the notification to Stderr.
+/*
+notify prints a notification with optional parameters.
+
+If err is not nil, prints the notification to Stderr.
+*/
 func (n *OrbitNotifier) notify(notification string, err error, args ...interface{}) {
 	n.Lock()
 	defer n.Unlock()

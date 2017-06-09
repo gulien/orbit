@@ -1,3 +1,8 @@
+/*
+Package context helps to populate the application context.
+
+The main goal of the application context is to gather all the data which will be applied to a data-driven template.
+*/
 package context
 
 import (
@@ -14,7 +19,7 @@ import (
 )
 
 type (
-	// OrbitContext contains the data necessary for generating a file from a template.
+	// OrbitContext contains the data necessary for executing a data-driver template.
 	OrbitContext struct {
 		// TemplateFilePath is the path of the template.
 		TemplateFilePath string
@@ -32,8 +37,9 @@ type (
 		Os string
 	}
 
-	// OrbitFileMap represents a parameter given to some flags of an Orbit command.
+	// OrbitFileMap represents a value given to some flags of an Orbit command.
 	// Flags: -v --values, -e --env
+	// Value format: name,path;name,path;...
 	OrbitFileMap struct {
 		// Name is the given name of the file.
 		Name string

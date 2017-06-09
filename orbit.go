@@ -1,3 +1,6 @@
+/*
+TODO describes project
+*/
 package main
 
 import (
@@ -7,7 +10,7 @@ import (
 	"github.com/gulien/orbit/notifier"
 )
 
-// main is the root function of the Orbit application.
+// main is the root function of the application.
 func main() {
 	if err := commands.RootCmd.Execute(); err != nil {
 		notifier.Error(err)

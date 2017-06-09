@@ -1,3 +1,4 @@
+// Package helpers implements simple functions used across the application.
 package helpers
 
 import "os"

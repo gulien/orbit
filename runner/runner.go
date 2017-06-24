@@ -34,9 +34,6 @@ type (
 		// Use is the name of the Orbit command.
 		Use string `yaml:"use"`
 
-		// Short describes what the Orbit command does (optional).
-		Short string `yaml:"short,omitempty"`
-
 		// Run is the stack of external commands to run.
 		Run []string `yaml:"run"`
 	}

@@ -1,0 +1,12 @@
+usa:
+  info: {{ .EnvFiles.usa.USA }}
+  satellites:
+    {{- range $value := .Values.usa.satellites.usa }}
+    - {{ $value }}
+    {{- end}}
+ru:
+  info: {{ .EnvFiles.ru.RU }}
+  satellites:
+    {{- range $value := .Values.ru.satellites.ru }}
+    - {{ $value }}
+    {{- end}}

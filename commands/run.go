@@ -13,7 +13,7 @@ var (
 	// configFilePath is the path of the file describing commands.
 	configFilePath string
 
-	// runCmd is the instance of Orbit's run command.
+	// runCmd is the instance of run command.
 	runCmd = &cobra.Command{
 		Use:           "run",
 		Short:         "Runs one or more stack of commands defined in a configuration file",

@@ -1,11 +1,11 @@
 /*
-Package runner implements a solution to runs one or more commands which have been defined in
-a configuration file (by default "orbit.yml").
+Package runner implements a solution to executes one or more commands which have been defined
+in a configuration file (by default "orbit.yml").
 
-These commands, also called Orbit commands, lists one ore more external commands, which will be executed
-one by one.
+These commands, also called Orbit commands, runs one ore more external commands one by one.
 
-Thanks to the generator package, the configuration file may be a template which is executed at runtime.
+Thanks to the generator package, the configuration file may be a data-driven template which is executed at runtime
+(e.g. no file generated).
 */
 package runner
 
@@ -34,14 +34,14 @@ type (
 		// Use is the name of the Orbit command.
 		Use string `yaml:"use"`
 
-		// Short describes what the Orbit command does.
+		// Short describes what the Orbit command does (optional).
 		Short string `yaml:"short,omitempty"`
 
-		// Run is the stack of external commands to execute.
+		// Run is the stack of external commands to run.
 		Run []string `yaml:"run"`
 	}
 
-	// OrbitRunner helps running Orbit commands.
+	// OrbitRunner helps executing Orbit commands.
 	OrbitRunner struct {
 		// config is an instance of OrbitRunnerConfig.
 		config *OrbitRunnerConfig
@@ -53,14 +53,14 @@ type (
 
 // NewOrbitRunner instantiates a new instance of OrbitRunner.
 func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
-	// first retrieves the data from the configuration file.
+	// first retrieves the data from the configuration file...
 	gen := generator.NewOrbitGenerator(context)
 	data, err := gen.Parse()
 	if err != nil {
 		return nil, err
 	}
 
-	// then handles the data as YAML.
+	// then populates the OrbitRunnerConfig.
 	var config = &OrbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
 		return nil, fmt.Errorf("configuration file \"%s\" is not a valid YAML file:\n%s", context.TemplateFilePath, err)
@@ -80,13 +80,13 @@ func (r *OrbitRunner) Exec(names ...string) error {
 	for index, name := range names {
 		cmds[index] = r.getOrbitCommand(name)
 		if cmds[index] == nil {
-			return fmt.Errorf("orbit command %s does not exist in configuration file \"%s\"", name, r.context.TemplateFilePath)
+			return fmt.Errorf("Orbit command \"%s\" does not exist in configuration file \"%s\"", name, r.context.TemplateFilePath)
 		}
 	}
 
-	// alright, let's execute each Orbit command.
+	// alright, let's run each Orbit command.
 	for _, cmd := range cmds {
-		if err := r.exec(cmd); err != nil {
+		if err := r.run(cmd); err != nil {
 			return err
 		}
 	}
@@ -94,16 +94,16 @@ func (r *OrbitRunner) Exec(names ...string) error {
 	return nil
 }
 
-// exec executes the stack of external commands from the given Orbit command.
-func (r *OrbitRunner) exec(cmd *OrbitCommand) error {
-	notifier.Info("starting Orbit Command \"%s\"", cmd.Use)
+// run runs the stack of external commands from the given Orbit command.
+func (r *OrbitRunner) run(cmd *OrbitCommand) error {
+	notifier.Info("starting Orbit command \"%s\"", cmd.Use)
 
 	for _, c := range cmd.Run {
-		notifier.Info("executing \"%s\"", c)
+		notifier.Info("running \"%s\"", c)
 		parts := strings.Fields(c)
 
-		// parts[0] contains the name of the current external command.
-		// parts[1:] contains the arguments of the current external command.
+		// parts[0] contains the name of the external command.
+		// parts[1:] contains the arguments of the external command.
 		e := exec.Command(parts[0], parts[1:]...)
 		e.Stdout = os.Stdout
 		e.Stderr = os.Stderr

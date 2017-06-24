@@ -28,7 +28,7 @@ func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 }
 
 /*
-Parse execute a template by applying it the data structure provided by the application context
+Parse executes a data-driven template by applying it the data structure provided by the application context.
 
 Returns the resulting bytes.
 */
@@ -50,7 +50,7 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 /*
 WriteOutputFile writes bytes into a file.
 
-If this file does not exist, this function will create it.
+If the file does not exist, this function will create it.
 
 This function should be called after Parse function.
 */

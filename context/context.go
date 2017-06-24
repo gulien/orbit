@@ -8,7 +8,6 @@ package context
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"runtime"
 	"strings"
 
@@ -19,9 +18,9 @@ import (
 )
 
 type (
-	// OrbitContext contains the data necessary for executing a data-driver template.
+	// OrbitContext contains the data necessary for executing a data-driven template.
 	OrbitContext struct {
-		// TemplateFilePath is the path of the template.
+		// TemplateFilePath is the path of the data-driven template.
 		TemplateFilePath string
 
 		// Values map contains data from YAML files.
@@ -30,16 +29,17 @@ type (
 		// EnvFiles map contains pairs from .env files.
 		EnvFiles map[string]map[string]string
 
-		// Env map contains pairs from environment variables.
-		Env map[string]string
-
 		// Os is the OS name at runtime.
 		Os string
 	}
 
-	// OrbitFileMap represents a value given to some flags of an Orbit command.
-	// Flags: -v --values, -e --env
-	// Value format: name,path;name,path;...
+	/*
+	 OrbitFileMap represents a value given to some flags of generate and run commands.
+
+	 Flags: -v --values, -e --env
+
+	 Value format: name,path;name,path;...
+	*/
 	OrbitFileMap struct {
 		// Name is the given name of the file.
 		Name string
@@ -51,7 +51,7 @@ type (
 
 // NewOrbitContext instantiates a new OrbitContext.
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
-	// as the template is mandatory, we must check its validity.
+	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {
 		return nil, fmt.Errorf("template file \"%s\" does not exist", templateFilePath)
 	}
@@ -62,7 +62,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		Os:               runtime.GOOS,
 	}
 
-	// checks if a file with values has been specified.
+	// checks if files with values has been specified.
 	if valuesFiles != "" {
 		data, err := getValuesMap(valuesFiles)
 		if err != nil {
@@ -72,7 +72,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.Values = data
 	}
 
-	// checks if a .env file has been specified.
+	// checks if .env files has been specified.
 	if envFiles != "" {
 		data, err := getEnvFilesMap(envFiles)
 		if err != nil {
@@ -81,9 +81,6 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 
 		ctx.EnvFiles = data
 	}
-
-	// last but not least, populates the Env map.
-	ctx.Env = getEnvMap()
 
 	return ctx, nil
 }
@@ -144,17 +141,6 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	return envFilesMap, nil
 }
 
-// getEnvMap retrieves all pairs from environment variables.
-func getEnvMap() map[string]string {
-	envMap := make(map[string]string)
-	for _, e := range os.Environ() {
-		pair := strings.Split(e, "=")
-		envMap[pair[0]] = pair[1]
-	}
-
-	return envMap
-}
-
 // getFilesMap reads a string and populates an array of OrbitFileMap instances.
 func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	var filesMap []*OrbitFileMap
@@ -164,7 +150,10 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	// otherwise tries to populate an array of OrbitFileMap instances.
 	parts := strings.Split(s, ";")
 	if len(parts) == 1 && len(strings.Split(s, ",")) == 1 {
-		filesMap = append(filesMap, &OrbitFileMap{"default", s})
+		filesMap = append(filesMap, &OrbitFileMap{
+			Name: "default",
+			Path: s,
+		})
 	} else {
 		for _, part := range parts {
 			data := strings.Split(part, ",")
@@ -172,7 +161,10 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 				return filesMap, fmt.Errorf("unable to process the files map \"%s\"", s)
 			}
 
-			filesMap = append(filesMap, &OrbitFileMap{data[0], data[1]})
+			filesMap = append(filesMap, &OrbitFileMap{
+				Name: data[0],
+				Path: data[1],
+			})
 		}
 	}
 

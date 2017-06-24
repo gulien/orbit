@@ -1,56 +1,97 @@
 package generator
 
 import (
-	"path/filepath"
+	"os"
+	"reflect"
 	"testing"
 
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/helpers"
 )
 
 var (
-	// ctxDefault is an instance of OrbitContext used in this test suite which contains one values file and one
+	// defaultGenerator is an instance of OrbitGenerator used in this test suite which contains one values file and one
 	// .env file.
-	ctxDefault *context.OrbitContext
+	defaultGenerator *OrbitGenerator
 
-	// ctxMany is an instance of OrbitContext used in this test suite which contains two values files and two
+	// manyGenerator is an instance of OrbitGenerator used in this test suite which contains two values files and two
 	// .env files.
-	ctxMany *context.OrbitContext
+	manyGenerator *OrbitGenerator
+
+	// expectedResult contains the data from the file "expected_result.yml"
+	expectedResult interface{}
 )
 
-// init instantiates the OrbitContext ctxDefault and ctxMany.
+// init instantiates expectedResult plus the OrbitGenerator defaultGenerator and manyGenerator.
 func init() {
-	defaultTemplateFilePath := getAbsPath("../.assets/tests/template.txt")
-	manyTemplateFilePath := getAbsPath("../.assets/tests/template_many.txt")
-	valuesRu := getAbsPath("../.assets/tests/values_ru.yml")
-	valuesUsa := getAbsPath("../.assets/tests/values_usa.yml")
-	envFileRu := getAbsPath("../.assets/tests/.env_ru")
-	envFileUsa := getAbsPath("../.assets/tests/.env_usa")
+	// retrieves the data from the file "expected_result.yml".
+	expectedResultPath := helpers.Abs("../.assets/tests/expected_result.yml")
+	expectedResult = helpers.ReadYAML(expectedResultPath)
 
-	c, err := context.NewOrbitContext(defaultTemplateFilePath, valuesUsa, envFileRu)
+	// loads assets.
+	defaultTmpl := helpers.Abs("../.assets/tests/template.yml")
+	manyTmpl := helpers.Abs("../.assets/tests/template_many.yml")
+	values := helpers.Abs("../.assets/tests/values.yml")
+	envFile := helpers.Abs("../.assets/tests/.env")
+
+	// last but not least, creates our OrbitGenerator instances.
+	ctx, err := context.NewOrbitContext(defaultTmpl, values, envFile)
 	if err != nil {
 		panic(err)
 	}
 
-	cMany, err := context.NewOrbitContext(manyTemplateFilePath, "ru,"+valuesRu+";usa,"+valuesUsa, "ru,"+envFileRu+";usa,"+envFileUsa)
+	defaultGenerator = NewOrbitGenerator(ctx)
+
+	ctx, err = context.NewOrbitContext(manyTmpl, "ru,"+values+";usa,"+values, "ru,"+envFile+";usa,"+envFile)
 	if err != nil {
 		panic(err)
 	}
 
-	ctxDefault = c
-	ctxMany = cMany
+	manyGenerator = NewOrbitGenerator(ctx)
 }
 
-// getAbsPath is a simple wrapper which returns the absolute path of a given relative path.
-func getAbsPath(path string) string {
-	absPath, err := filepath.Abs(path)
-	if err != nil {
-		panic(err)
-	}
+/*
+Tests to parse the template "template.yml" and generate a resulting file "result.yml".
 
-	return absPath
-}
-
-// Tests to parse the template "template.txt" and generate a resulting file "result.txt".
+Expects the file "result.yml" to be the same as "expected_result.yml".
+*/
 func TestDefaultTemplate(t *testing.T) {
+	data, err := defaultGenerator.Parse()
+	if err != nil {
+		t.Error("Failed to parse the default template!")
+	}
 
+	if err := defaultGenerator.WriteOutputFile("result.yml", data); err != nil {
+		t.Error("Failed to write the outpout file from the default template!")
+	}
+
+	result := helpers.ReadYAML("result.yml")
+	os.Remove("result.yml")
+
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("Result file from the default template should be equal to the expected result!")
+	}
+}
+
+/*
+Tests to parse the template "template_many.yml" and generate a resulting file "result.yml".
+
+Expects the file "result.yml" to be the same as "expected_result.yml".
+*/
+func TestManyTemplate(t *testing.T) {
+	data, err := manyGenerator.Parse()
+	if err != nil {
+		t.Error("Failed to parse the many template!")
+	}
+
+	if err := manyGenerator.WriteOutputFile("result.yml", data); err != nil {
+		t.Error("Failed to write the outpout file from the many template!")
+	}
+
+	result := helpers.ReadYAML("result.yml")
+	os.Remove("result.yml")
+
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("Result file from the many template should be equal to the expected result!")
+	}
 }

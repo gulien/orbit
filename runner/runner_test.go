@@ -1,10 +1,10 @@
 package runner
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/helpers"
 )
 
 // testRunner is the instance of OrbitRunner used in this test suite.
@@ -12,47 +12,48 @@ var testRunner *OrbitRunner
 
 // init instantiates the OrbitRunner testRunner.
 func init() {
-	configFilePath, err := filepath.Abs("../.assets/tests/orbit.yml")
+	config := helpers.Abs("../.assets/tests/orbit.yml")
+
+	ctx, err := context.NewOrbitContext(config, "", "")
 	if err != nil {
 		panic(err)
 	}
 
-	ctx, err := context.NewOrbitContext(configFilePath, "", "")
+	testRunner, err = NewOrbitRunner(ctx)
 	if err != nil {
 		panic(err)
 	}
-
-	r, err := NewOrbitRunner(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	testRunner = r
 }
 
-// Tests if Orbit command "glide_x" does not exist.
-func TestOrbitCommandDoesNotExist(t *testing.T) {
-	t.Log("Tests if Orbit command \"glide_x\" does not exist...")
+/*
+Tests if calling an unknown Orbit command throws an error.
 
-	if err := testRunner.Exec("glide_x"); err == nil {
-		t.Error("\"glide_x\" should not exist!")
+Expects an error.
+*/
+func TestNotFound(t *testing.T) {
+	if err := testRunner.Exec("discovery"); err == nil {
+		t.Error("Orbit command should not exist!")
 	}
 }
 
-// Tests Orbit command "glide_1".
-func TestOrbitCommand(t *testing.T) {
-	t.Log("Tests Orbit command \"glide_1\"...")
+/*
+Tests a simple run.
 
-	if err := testRunner.Exec("glide_1"); err != nil {
-		t.Error("\"glide_1\" should have been executed!")
+Expects no error.
+*/
+func TestRun(t *testing.T) {
+	if err := testRunner.Exec("explorer"); err != nil {
+		t.Error("Orbit command should have run!")
 	}
 }
 
-// Tests nested Orbit commands "glide_1" and "glide_2".
-func TestNestedOrbitCommands(t *testing.T) {
-	t.Log("Tests nested Orbit commands \"glide_1\" and \"glide_2\"...")
+/*
+Tests a nested run.
 
-	if err := testRunner.Exec("glide_1", "glide_2"); err != nil {
-		t.Error("\"glide_1\" and \"glide_2\" should have been executed!")
+Expects no error.
+*/
+func TestNestedRun(t *testing.T) {
+	if err := testRunner.Exec("explorer", "sputnik"); err != nil {
+		t.Error("Nested Orbit commands should have run!")
 	}
 }

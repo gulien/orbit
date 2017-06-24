@@ -8,7 +8,6 @@ package context
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"runtime"
 	"strings"
 
@@ -29,9 +28,6 @@ type (
 
 		// EnvFiles map contains pairs from .env files.
 		EnvFiles map[string]map[string]string
-
-		// Env map contains pairs from environment variables.
-		Env map[string]string
 
 		// Os is the OS name at runtime.
 		Os string
@@ -66,7 +62,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		Os:               runtime.GOOS,
 	}
 
-	// checks if a file with values has been specified.
+	// checks if files with values has been specified.
 	if valuesFiles != "" {
 		data, err := getValuesMap(valuesFiles)
 		if err != nil {
@@ -76,7 +72,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.Values = data
 	}
 
-	// checks if a .env file has been specified.
+	// checks if .env files has been specified.
 	if envFiles != "" {
 		data, err := getEnvFilesMap(envFiles)
 		if err != nil {
@@ -85,9 +81,6 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 
 		ctx.EnvFiles = data
 	}
-
-	// last but not least, populates the Env map.
-	ctx.Env = getEnvMap()
 
 	return ctx, nil
 }
@@ -146,17 +139,6 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	}
 
 	return envFilesMap, nil
-}
-
-// getEnvMap retrieves all pairs from environment variables.
-func getEnvMap() map[string]string {
-	envMap := make(map[string]string)
-	for _, e := range os.Environ() {
-		pair := strings.Split(e, "=")
-		envMap[pair[0]] = pair[1]
-	}
-
-	return envMap
 }
 
 // getFilesMap reads a string and populates an array of OrbitFileMap instances.

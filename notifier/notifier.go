@@ -19,18 +19,18 @@ import (
 type OrbitNotifier struct {
 	sync.Mutex
 
-	// Stdout is the location where this prints output.
-	Stdout io.Writer
+	// stdout is the location where this prints output.
+	stdout io.Writer
 
-	// Stderr is the location where this prints logs.
-	Stderr io.Writer
+	// stderr is the location where this prints logs.
+	stderr io.Writer
 }
 
 // newOrbitNotifier creates a default OrbitNotifier to display output.
 func newOrbitNotifier() *OrbitNotifier {
 	return &OrbitNotifier{
-		Stdout: ansicolor.NewAnsiColorWriter(os.Stdout),
-		Stderr: ansicolor.NewAnsiColorWriter(os.Stderr),
+		stdout: ansicolor.NewAnsiColorWriter(os.Stdout),
+		stderr: ansicolor.NewAnsiColorWriter(os.Stderr),
 	}
 }
 
@@ -52,7 +52,7 @@ func Error(err error) {
 /*
 notify prints a notification with optional parameters.
 
-If err is not nil, prints the notification to Stderr.
+If err is not nil, prints the notification to stderr.
 */
 func (n *OrbitNotifier) notify(notification string, err error, args ...interface{}) {
 	n.Lock()
@@ -63,8 +63,8 @@ func (n *OrbitNotifier) notify(notification string, err error, args ...interface
 	}
 
 	if err != nil {
-		fmt.Fprint(n.Stderr, notification)
+		fmt.Fprint(n.stderr, notification)
 	} else {
-		fmt.Fprintf(n.Stdout, notification, args...)
+		fmt.Fprintf(n.stdout, notification, args...)
 	}
 }

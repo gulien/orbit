@@ -1,1 +1,0 @@
-Os is {{ .Os }}, values are {{ .Values.default.value_1 }} and {{ .Values.default.value_2 }}, env file values are {{ .EnvFiles.default.VALUE_1 }} and {{ .EnvFiles.default.VALUE_2 }}.

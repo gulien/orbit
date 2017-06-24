@@ -1,0 +1,12 @@
+usa:
+  info: Some satellites launched by the USA (1950s)
+  satellites:
+    - Explorer 1
+    - Explorer 2
+    - Explorer 3
+ru:
+  info: Some satellites launched by Russia (1950s)
+  satellites:
+    - Sputnik 1
+    - Sputnik 2
+    - Sputnik 3

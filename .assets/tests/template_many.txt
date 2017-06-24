@@ -1,1 +1,0 @@
-Os is {{ .Os }}, values are {{ .Values.ru.value_1 }} and {{ .Values.usa.value_2 }}, env file values are {{ .EnvFiles.ru.VALUE_1 }} and {{ .EnvFiles.usa.VALUE_2 }}.

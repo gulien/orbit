@@ -33,13 +33,9 @@ type (
 		Os string
 	}
 
-	/*
-	 OrbitFileMap represents a value given to some flags of generate and run commands.
-
-	 Flags: -v --values, -e --env
-
-	 Value format: name,path;name,path;...
-	*/
+	// OrbitFileMap represents a value given to some flags of generate and run commands.
+	// Flags: -v --values, -e --env
+	// Value format: name,path;name,path;...
 	OrbitFileMap struct {
 		// Name is the given name of the file.
 		Name string

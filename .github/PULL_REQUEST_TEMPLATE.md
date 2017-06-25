@@ -1,11 +1,44 @@
-### 1. What does this change do, exactly?
+A similar PR may already be submitted!
+Please search among the [Pull request](../) before creating one.
 
-### 2. Please link to the relevant issues.
+Thanks for submitting a pull request! Please provide enough information so that others can review your pull request:
 
-### 3. Which documentation changes (if any) need to be made because of this PR?
+For more information, see the [CONTRIBUTING](CONTRIBUTING.md) guide.
 
-### 4. Checklist
+**Summary**
 
-- [ ] I have written tests and verified that they fail without my change
+<!-- Summary of the PR -->
+
+This PR fixes/implements the following **bugs/features**
+
+* [ ] Bug 1
+* [ ] Bug 2
+* [ ] Feature 1
+* [ ] Feature 2
+* [ ] Breaking changes
+
+<!-- You can skip this if you're fixing a typo or adding an app to the Showcase. -->
+
+Explain the **motivation** for making this change. What existing problem does the pull request solve?
+
+<!-- Example: When "Adding a function to do X", explain why it is necessary to have a way to do X. -->
+
+**Test plan (required)**
+
+Demonstrate the code is solid. Example: The exact commands you ran and their output.
+
+<!-- Make sure tests pass on both Travis and Circle CI. -->
+
+**Closing issues**
+
+<!-- Put `closes #XXXX` in your comment to auto-close the issue that your PR fixes (if such). -->
+Fixes #
+
+**Checklist**
+
+- [ ] Have you followed the guidelines in our [CONTRIBUTING](CONTRIBUTING.md) guide?
+- [ ] Have you lint your code locally prior to submission (`orbit run fmt lint`)?
+- [ ] Have you written new tests for your core changes, as applicable?
+- [ ] Have you successfully ran tests with your changes locally (`orbit run test`)?
 - [ ] I have squashed any insignificant commits
 - [ ] This change has comments for package types, values, functions, and non-obvious lines of code

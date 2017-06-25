@@ -9,7 +9,7 @@ find below useful information about how to contribute to the Orbit project.
 
 1. Fork this repository
 2. Clone it to your local GO environment
-3. Install the package manager `Glide`: `go get github.com/Masterminds/glide`
+3. Install the package manager *Glide*: `go get github.com/Masterminds/glide`
 4. Install vendor dependencies: `glide install`
 5. Install the latest Orbit release
 6. Install lint dependencies by running `orbit run lint-install`
@@ -24,7 +24,7 @@ find below useful information about how to contribute to the Orbit project.
 ## Reporting bugs and feature request
 
 Your issue or feature request may already be reported!
-Please search on the [issue tracker](../) before creating one.
+Please search on the [issue tracker](../../../issues) before creating one.
 
 If you do not find any relevant issue or feature request, feel free to
 add a new one!

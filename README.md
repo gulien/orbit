@@ -25,7 +25,7 @@ files from templates, whatever the platform you're using.
 
 ## Install
 
-Download the latest release of Orbit from the [releases page](../../../releases).
+Download the latest release of Orbit from the [releases page](../../releases).
 You can get Orbit for a large range of OS and architecture.
 
 The file you downloaded is a compressed archive. You'll need to extract the
@@ -178,4 +178,4 @@ you can provide it thanks to the `-c` flag.
 
 ---
 
-Would you like to update this documentation ? Feel free to open an [issue](../../../issues).
+Would you like to update this documentation ? Feel free to open an [issue](../../issues).

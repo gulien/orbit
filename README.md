@@ -61,7 +61,7 @@ engine. It provides a interesting amount of logic for your templates.
 
 The [Go documentation](https://golang.org/pkg/text/template/) and the
 [Hugo documentation](http://gohugo.io/templates/go-templates/) cover
-a lot of feature that aren't mentioned here. Don't hesitate to take a look
+a lot of features that aren't mentioned here. Don't hesitate to take a look
 at these links to understood the *Go* template engine! :smiley:
 
 ### Command description
@@ -196,8 +196,8 @@ commands:
 * the `run` attribute is the stack of external commands to run.
 * an external command is a binary which is available in your `$PATH`.
 
-Once you've create your `orbit.yml` file, you're able
-to run your Orbit command with:
+Once you've created your `orbit.yml` file, you're able
+to run your Orbit commands with:
 
 ```
 orbit run my_first_command
@@ -262,7 +262,7 @@ orbit run os
 This command will print something like:
 
 ```
-[i] starting Orbit command "echo"
+[i] starting Orbit command "os"
 [i] running "echo "Current OS is darwin""
 "Current OS is darwin"
 ```

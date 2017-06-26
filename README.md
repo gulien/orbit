@@ -109,7 +109,7 @@ As you can see, it works the same way as the `-v` flag:
 * with mapping, your data will be accessible in your template through `{{ .EnvFiles.my_key.my_data }}`.
 * otherwise through `{{ .EnvFiles.default.my_data }}`.
 
-**Good to know:** you'll find interesting examples in the [assets folder](.assets).
+**Good to know:** you'll find interesting examples in the [assets folder](.assets/tests).
 
 ## Defining and running commands
 

@@ -25,7 +25,7 @@ files from templates, whatever the platform you're using.
 
 ## Install
 
-Download the latest release of Orbit from the [releases page](./releases).
+Download the latest release of Orbit from the [releases page](../../releases).
 You can get Orbit for a large range of OS and architecture.
 
 The file you downloaded is a compressed archive. You'll need to extract the
@@ -109,7 +109,7 @@ As you can see, it works the same way as the `-v` flag:
 * with mapping, your data will be accessible in your template through `{{ .EnvFiles.my_key.my_data }}`.
 * otherwise through `{{ .EnvFiles.default.my_data }}`.
 
-**Good to know:** you'll find interesting examples in the [assets folder](.assets).
+**Good to know:** you'll find interesting examples in the [assets folder](.assets/tests).
 
 ## Defining and running commands
 
@@ -178,4 +178,4 @@ you can provide it thanks to the `-c` flag.
 
 ---
 
-Would you like to update this documentation ? Feel free to open an [issue](./issues)).
+Would you like to update this documentation ? Feel free to open an [issue](../../issues).

@@ -56,35 +56,40 @@ orbit version
 
 ## Generating a file from a template
 
-Orbit uses the *Go* package `html/template` under the hood to generate a
-file from a template.
+Orbit uses the *Go* package `html/template` under the hood as a template
+engine. It provides a interesting amount of logic for your templates.
 
-You'll find interesting information in the official documentation:
+The [Go documentation](https://golang.org/pkg/text/template/) and the
+[Hugo documentation](http://gohugo.io/templates/go-templates/) cover
+a lot of feature that aren't mentioned here. Don't hesitate to take a look
+at these links to understood the *Go* template engine! :smiley:
 
-* https://golang.org/pkg/text/template/
-* https://golang.org/pkg/html/template/
+### Command description
 
-### Simple case
-
-The command for generating a file is quite simple:
+#### Base
 
 ```
-orbit generate -t=the_path_of_your_template -o=the_path_of_the_resulting_file
+orbit generate [flags]
 ```
 
-If no output is specified, Orbit will print the result to *Stdout*.
+#### Flags
 
-### Providing data
+##### `-t --template`
 
-Of course, you're able to tell Orbit where to find data which will be applied
-to the template.
+Specify the path of the template. This flag is **required**.
 
-**YAML files:**
+##### `-o --output`
+
+Specify the output file which will be generated from the template.
+
+**Good to know:** if no output is specified, Orbit will print the result to *Stdout*.
+
+##### `-v --values`
 
 The flag `-v` allows you to specify one or many *YAML* files:
 
 ```
-orbit generate [...] -v=the_path.yml
+orbit generate [...] -v=file.yml
 orbit generate [...] -v=key_1,file_1.yml
 orbit generate [...] -v=key_1,file_1.yml;key_2,file_2.yml
 ```
@@ -94,7 +99,7 @@ As you can see, you're able to provide a basic mapping for your files:
 * with mapping, your data will be accessible in your template through `{{ .Values.my_key.my_data }}`.
 * otherwise through `{{ .Values.default.my_data }}`.
 
-**.env files:**
+##### `-e --env`
 
 The flag `-e` allows you to specify one or many *.env* files:
 
@@ -109,15 +114,71 @@ As you can see, it works the same way as the `-v` flag:
 * with mapping, your data will be accessible in your template through `{{ .EnvFiles.my_key.my_data }}`.
 * otherwise through `{{ .EnvFiles.default.my_data }}`.
 
-**Good to know:** you'll find interesting examples in the [assets folder](.assets/tests).
+### Basic example
+
+Let's create our simple template `satellites_tmpl.yml`:
+
+```yaml
+usa:
+  info: {{ .EnvFiles.default.USA }}
+  satellites:
+    {{- range $value := .Values.default.satellites.usa }}
+    - {{ $value }}
+    {{- end}}
+```
+
+And the data provided by:
+
+* a *YAML* file named `usa_satellites.yml`:
+
+```yaml
+satellites:
+  usa:
+    - Explorer 1
+    - Explorer 2
+    - Explorer 3
+```
+
+* a .env file named `.env`:
+
+```
+USA="Some satellites launched by the USA (1950s)"
+```
+
+The command for generating a file from this template is quite simple:
+
+```
+orbit generate -t=satellites_tmpl.yml -e=.env -v=usa_satellites.yml -o=satellites.yml
+```
+
+This command will create the `satellites.yml` file with this content:
+
+```yaml
+usa:
+  info: Some satellites launched by the USA (1950s)
+  satellites:
+    - Explorer 1
+    - Explorer 2
+    - Explorer 3
+```
 
 ## Defining and running commands
 
-Like the `make` command with its `Makefile`, Orbit requires a
-configuration file (by default, `orbit.yml`) where you define
-your Orbit commands:
+### Base
 
 ```
+orbit run [commands] [flags]
+```
+
+### Flags
+
+##### `-c --config`
+
+Like the `make` command with its `Makefile`, Orbit requires a
+configuration file (*YAML*, by default `orbit.yml`) where you define
+your Orbit commands:
+
+```yaml
 commands:
   - use: "my_first_command"
     run:
@@ -135,7 +196,7 @@ commands:
 * the `run` attribute is the stack of external commands to run.
 * an external command is a binary which is available in your `$PATH`.
 
-Once you've defined your `orbit.yml` file, you're able
+Once you've create your `orbit.yml` file, you're able
 to run your Orbit command with:
 
 ```
@@ -146,14 +207,12 @@ orbit run my_first_command my_second_command
 
 Notice that you may run nested Orbit commands :metal:!
 
-### A configuration file as a template
-
-A cool feature of Orbit is its ability to read its configuration through
+Also a cool feature of Orbit is its ability to read its configuration through
 a template.
 
 For example, if you need to run a platform specific script, you may write:
 
-```
+```yaml
 commands:
   - use: "script"
     run:
@@ -171,10 +230,44 @@ all available names in the [official documentation](https://golang.org/doc/insta
 2. Adding a dash (e.g `{{-`) will not add break lines / spaces, otherwise
 Orbit might fail to read your configuration file.
 
-You may also use `-v` and `-e` flags for providing custom data.
+##### `-v --values`
 
-If you need to specify a custom configuration file path (e.g different from `orbit.yml`),
-you can provide it thanks to the `-c` flag.
+The flag `-v` allows you to specify one or many *YAML* files.
+
+It works the same as the `-v` flag from the `generate` command.
+
+##### `-e --env`
+
+The flag `-e` allows you to specify one or many *.env* files.
+
+It works the same as the `-e` flag from the `generate` command.
+
+### Basic example
+
+Let's create our simple configuration file `orbit.yml`:
+
+```yaml
+commands:
+  - use: "os"
+    run:
+      - echo "Current OS is {{ .Os }}"
+```
+
+You are now able to run:
+
+```
+orbit run os
+```
+
+This command will print something like:
+
+```
+[i] starting Orbit command "echo"
+[i] running "echo "Current OS is darwin""
+"Current OS is darwin"
+```
+
+Voilà! :smiley:
 
 ---
 

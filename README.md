@@ -164,13 +164,15 @@ usa:
 
 ## Defining and running commands
 
-### Base
+### Command description
+
+#### Base
 
 ```
 orbit run [commands] [flags]
 ```
 
-### Flags
+#### Flags
 
 ##### `-c --config`
 
@@ -219,7 +221,7 @@ commands:
     {{- if ne .Os "windows" }}
       - sh my_script.sh
     {{- else }}
-      - cmd.exe /c .my_script.bat
+      - cmd.exe /c .\my_script.bat
     {{- end }}
 ```
 

@@ -24,6 +24,9 @@ type OrbitNotifier struct {
 
 	// stderr is the location where this prints logs.
 	stderr io.Writer
+
+	// silent disables the notifications if true.
+	silent bool
 }
 
 // newOrbitNotifier creates a default OrbitNotifier to display output.
@@ -37,16 +40,25 @@ func newOrbitNotifier() *OrbitNotifier {
 // Houston contains the OrbitNotifier instance used by the application.
 var Houston = newOrbitNotifier()
 
+// Mute disables the notifications.
+func Mute() {
+	Houston.silent = true
+}
+
 // Info logs information using the Houston notifier.
 func Info(notification string, args ...interface{}) {
-	prefix := fmt.Sprintf("[%si%s] ", "\x1b[36m", "\x1b[0m")
-	Houston.notify(prefix+notification, nil, args...)
+	if !Houston.silent {
+		prefix := fmt.Sprintf("[%si%s] ", "\x1b[36m", "\x1b[0m")
+		Houston.notify(prefix+notification, nil, args...)
+	}
 }
 
 // Error logs error information using the Houston notifier.
 func Error(err error) {
-	prefix := fmt.Sprintf("[%se%s] ", "\x1b[31m", "\x1b[0m")
-	Houston.notify(prefix+err.Error(), err)
+	if !Houston.silent {
+		prefix := fmt.Sprintf("[%se%s] ", "\x1b[31m", "\x1b[0m")
+		Houston.notify(prefix+err.Error(), err)
+	}
 }
 
 /*

@@ -114,6 +114,10 @@ As you can see, it works the same way as the `-v` flag:
 * with mapping, your data will be accessible in your template through `{{ .EnvFiles.my_key.my_data }}`.
 * otherwise through `{{ .EnvFiles.default.my_data }}`.
 
+##### `-s --silent`
+
+Disables the notifications.
+
 ### Basic example
 
 Let's create our simple template `satellites_tmpl.yml`:
@@ -243,6 +247,10 @@ It works the same as the `-v` flag from the `generate` command.
 The flag `-e` allows you to specify one or many *.env* files.
 
 It works the same as the `-e` flag from the `generate` command.
+
+##### `-s --silent`
+
+Disables the notifications.
 
 ### Basic example
 

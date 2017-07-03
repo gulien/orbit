@@ -30,8 +30,6 @@ var (
 func init() {
 	generateCmd.Flags().StringVarP(&templateFilePath, "template", "t", "", "specify the template")
 	generateCmd.Flags().StringVarP(&outputFilePath, "output", "o", "", "specify the output file which will be generated from the template")
-	generateCmd.Flags().StringVarP(&ValuesFiles, "values", "v", "", "specify a YAML file or a map of YAML files listing values used in the template")
-	generateCmd.Flags().StringVarP(&EnvFiles, "env", "e", "", "specify a .env file or a map of .env files listing values used in the template")
 	RootCmd.AddCommand(generateCmd)
 }
 

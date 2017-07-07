@@ -37,7 +37,7 @@ func newOrbitNotifier() *OrbitNotifier {
 	}
 }
 
-// Houston contains the OrbitNotifier instance used by the application.
+// Houston is the OrbitNotifier instance used by the application.
 var Houston = newOrbitNotifier()
 
 // Mute disables the notifications.

@@ -1,15 +1,8 @@
+/*
+Package version is used as a dead simple bridge between main
+and command packages.
+*/
 package version
 
-type OrbitVersion struct {
-	version string
-}
-
-var handler = &OrbitVersion{}
-
-func SetVersion(version string) {
-	handler.version = version
-}
-
-func GetVersion() string {
-	return handler.version
-}
+// Current is the current version of Orbit.
+var Current string

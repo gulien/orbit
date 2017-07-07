@@ -15,14 +15,20 @@ import (
 
 	"github.com/gulien/orbit/commands"
 	"github.com/gulien/orbit/notifier"
-	orbitVersion "github.com/gulien/orbit/version"
+	OrbitVersion "github.com/gulien/orbit/version"
 )
 
+/*
+version will be set by GoReleaser.
+
+It will be the current Git tag (with v prefix stripped) or
+the name of the snapshot if you're using the --snapshot flag.
+*/
 var version = "master"
 
 // main is the root function of the application.
 func main() {
-	orbitVersion.SetVersion(version)
+	OrbitVersion.Current = version
 
 	if err := commands.RootCmd.Execute(); err != nil {
 		notifier.Error(err)

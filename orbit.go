@@ -15,10 +15,15 @@ import (
 
 	"github.com/gulien/orbit/commands"
 	"github.com/gulien/orbit/notifier"
+	orbitVersion "github.com/gulien/orbit/version"
 )
+
+var version = "master"
 
 // main is the root function of the application.
 func main() {
+	orbitVersion.SetVersion(version)
+
 	if err := commands.RootCmd.Execute(); err != nil {
 		notifier.Error(err)
 		os.Exit(1)

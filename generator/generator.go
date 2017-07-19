@@ -8,8 +8,8 @@ package generator
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"os"
+	"text/template"
 
 	"github.com/gulien/orbit/context"
 )

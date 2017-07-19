@@ -278,7 +278,7 @@ This command will print something like:
 ```
 [i] starting Orbit command "os"
 [i] running "echo Current OS is darwin"
-"Current OS is darwin"
+Current OS is darwin
 ```
 
 Voilà! :smiley:

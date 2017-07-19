@@ -56,7 +56,7 @@ orbit version
 
 ## Generating a file from a template
 
-Orbit uses the *Go* package `html/template` under the hood as a template
+Orbit uses the *Go* package `text/template` under the hood as a template
 engine. It provides a interesting amount of logic for your templates.
 
 The [Go documentation](https://golang.org/pkg/text/template/) and the

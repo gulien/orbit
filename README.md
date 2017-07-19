@@ -260,7 +260,11 @@ Let's create our simple configuration file `orbit.yml`:
 commands:
   - use: "os"
     run:
-      - echo "Current OS is {{ .Os }}"
+    {{- if ne .Os "windows" }}
+      - echo Current OS is {{ .Os }}
+    {{- else }}
+      - cmd.exe /c echo Current OS is {{ .Os }}
+    {(- end }}
 ```
 
 You are now able to run:
@@ -273,7 +277,7 @@ This command will print something like:
 
 ```
 [i] starting Orbit command "os"
-[i] running "echo "Current OS is darwin""
+[i] running "echo Current OS is darwin"
 "Current OS is darwin"
 ```
 

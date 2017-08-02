@@ -62,7 +62,7 @@ engine. It provides a interesting amount of logic for your templates.
 The [Go documentation](https://golang.org/pkg/text/template/) and the
 [Hugo documentation](http://gohugo.io/templates/go-templates/) cover
 a lot of features that aren't mentioned here. Don't hesitate to take a look
-at these links to understood the *Go* template engine! :smiley:
+at these links to understand the *Go* template engine! :smiley:
 
 ### Command description
 
@@ -233,8 +233,7 @@ There are two important things to notice:
 
 1. Orbit provides the OS name at runtime with `{{ .Os }}` (you may find
 all available names in the [official documentation](https://golang.org/doc/install/source#environment) - `$GOOS` column).
-2. Adding a dash (e.g `{{-`) will not add break lines / spaces, otherwise
-Orbit might fail to read your configuration file.
+2. Adding a dash (e.g `{{-`) will not add break lines / spaces.
 
 ##### `-v --values`
 

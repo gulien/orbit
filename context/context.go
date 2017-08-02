@@ -58,7 +58,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		Os:               runtime.GOOS,
 	}
 
-	// checks if files with values has been specified.
+	// checks if files with values have been specified.
 	if valuesFiles != "" {
 		data, err := getValuesMap(valuesFiles)
 		if err != nil {
@@ -68,7 +68,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.Values = data
 	}
 
-	// checks if .env files has been specified.
+	// checks if .env files have been specified.
 	if envFiles != "" {
 		data, err := getEnvFilesMap(envFiles)
 		if err != nil {

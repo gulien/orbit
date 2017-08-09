@@ -1,3 +1,5 @@
+author: Julien Neuhart
+comment: A simple file for testing purpose
 usa:
   info: Some satellites launched by the USA (1950s)
   satellites:

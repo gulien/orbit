@@ -14,7 +14,7 @@ var testRunner *OrbitRunner
 func init() {
 	config := helpers.Abs("../.assets/tests/orbit.yml")
 
-	ctx, err := context.NewOrbitContext(config, "", "")
+	ctx, err := context.NewOrbitContext(config, "", "", "")
 	if err != nil {
 		panic(err)
 	}

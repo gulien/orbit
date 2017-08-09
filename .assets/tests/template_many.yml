@@ -1,3 +1,5 @@
+author: {{ .RawData.author }}
+comment: {{ .RawData.comment }}
 usa:
   info: {{ .EnvFiles.usa.USA }}
   satellites:

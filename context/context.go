@@ -29,6 +29,9 @@ type (
 		// EnvFiles map contains pairs from .env files.
 		EnvFiles map[string]map[string]string
 
+		// RawData contains data past directly in the CLI.
+		RawData map[string]string
+
 		// Os is the OS name at runtime.
 		Os string
 	}
@@ -46,7 +49,7 @@ type (
 )
 
 // NewOrbitContext instantiates a new OrbitContext.
-func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string) (*OrbitContext, error) {
+func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string, rawData string) (*OrbitContext, error) {
 	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {
 		return nil, fmt.Errorf("template file \"%s\" does not exist", templateFilePath)
@@ -76,6 +79,16 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		}
 
 		ctx.EnvFiles = data
+	}
+
+	// checks if raw data have been specified.
+	if rawData != "" {
+		data, err := getRawDataMap(rawData)
+		if err != nil {
+			return nil, err
+		}
+
+		ctx.RawData = data
 	}
 
 	return ctx, nil
@@ -165,4 +178,21 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 	}
 
 	return filesMap, nil
+}
+
+// getRawDataMap reads a string and populates a map of strings.
+func getRawDataMap(s string) (map[string]string, error) {
+	parts := strings.Split(s, ";")
+
+	rawDataMap := make(map[string]string)
+	for _, part := range parts {
+		data := strings.Split(part, "=")
+		if len(data) != 2 {
+			return rawDataMap, fmt.Errorf("unable to process the raw data \"%s\"", s)
+		}
+
+		rawDataMap[data[0]] = data[1]
+	}
+
+	return rawDataMap, nil
 }

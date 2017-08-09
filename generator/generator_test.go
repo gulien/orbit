@@ -33,16 +33,17 @@ func init() {
 	manyTmpl := helpers.Abs("../.assets/tests/template_many.yml")
 	values := helpers.Abs("../.assets/tests/values.yml")
 	envFile := helpers.Abs("../.assets/tests/.env")
+	rawData := "author=Julien Neuhart;comment=A simple file for testing purpose"
 
 	// last but not least, creates our OrbitGenerator instances.
-	ctx, err := context.NewOrbitContext(defaultTmpl, values, envFile)
+	ctx, err := context.NewOrbitContext(defaultTmpl, values, envFile, rawData)
 	if err != nil {
 		panic(err)
 	}
 
 	defaultGenerator = NewOrbitGenerator(ctx)
 
-	ctx, err = context.NewOrbitContext(manyTmpl, "ru,"+values+";usa,"+values, "ru,"+envFile+";usa,"+envFile)
+	ctx, err = context.NewOrbitContext(manyTmpl, "ru,"+values+";usa,"+values, "ru,"+envFile+";usa,"+envFile, rawData)
 	if err != nil {
 		panic(err)
 	}

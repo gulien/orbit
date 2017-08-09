@@ -114,6 +114,17 @@ As you can see, it works the same way as the `-v` flag:
 * with mapping, your data will be accessible in your template through `{{ .EnvFiles.my_key.my_data }}`.
 * otherwise through `{{ .EnvFiles.default.my_data }}`.
 
+##### `-r --raw`
+
+The flag `-r` allows you to specify data directly from the CLI.
+
+```
+orbit generate [...] -r=key_1=value_1
+orbit generate [...] -r=key_1=value_1;key_2=value_2
+```
+
+Your data will be accessible in your template through `{{ .RawData.my_key }}`.
+
 ##### `-s --silent`
 
 Disables the notifications.
@@ -246,6 +257,12 @@ It works the same as the `-v` flag from the `generate` command.
 The flag `-e` allows you to specify one or many *.env* files.
 
 It works the same as the `-e` flag from the `generate` command.
+
+##### `-r --raw`
+
+The flag `-r` allows you to specify data directly from the CLI.
+
+It works the same as the `-r` flag from the `generate` command.
 
 ##### `-s --silent`
 

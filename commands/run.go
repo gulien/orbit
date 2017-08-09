@@ -37,7 +37,7 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	// alright, let's instantiate our Orbit context...
-	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles)
+	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles, RawData)
 	if err != nil {
 		return err
 	}

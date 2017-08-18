@@ -13,7 +13,7 @@ matrix:
 install:
   - rmdir c:\go /s /q
   - appveyor DownloadFile https://storage.googleapis.com/golang/go1.9rc2.windows-amd64.zip
-  - 7z x go1.8.3.windows-amd64.zip -y -oC:\ > NUL
+  - 7z x go1.9rc2.windows-amd64.zip -y -oC:\ > NUL
   - set PATH=%GOPATH%\bin;%PATH%
   - go version
   - go env

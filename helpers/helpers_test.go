@@ -5,11 +5,7 @@ import (
 	"testing"
 )
 
-/*
-Tests the function FileExists.
-
-Expects the file to exist.
-*/
+// Tests the function FileExists.
 func TestFileExists(t *testing.T) {
 	file, _ := filepath.Abs("../.assets/tests/orbit.yml")
 	if !FileExists(file) {

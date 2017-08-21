@@ -1,59 +1,79 @@
 package runner
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/gulien/orbit/context"
-	"github.com/gulien/orbit/helpers"
 )
 
-// testRunner is the instance of OrbitRunner used in this test suite.
-var testRunner *OrbitRunner
-
-// init instantiates the OrbitRunner testRunner.
-func init() {
-	config := helpers.Abs("../.assets/tests/orbit.yml")
+// Tests if initializing an OrbitRunner with a wrong configuration file
+// throw an error.
+func TestInstantiate(t *testing.T) {
+	config, err := filepath.Abs("../.assets/tests/wrong_template.yml")
+	if err != nil {
+		panic(err)
+	}
 
 	ctx, err := context.NewOrbitContext(config, "", "", "")
 	if err != nil {
 		panic(err)
 	}
 
-	testRunner, err = NewOrbitRunner(ctx)
+	if _, err := NewOrbitRunner(ctx); err == nil {
+		t.Error("OrbitRunner should not have been instantiated!")
+	}
+
+	config, err = filepath.Abs("../.assets/tests/.env")
 	if err != nil {
 		panic(err)
 	}
+
+	ctx, err = context.NewOrbitContext(config, "", "", "")
+	if err != nil {
+		panic(err)
+	}
+
+	if _, err := NewOrbitRunner(ctx); err == nil {
+		t.Error("OrbitRunner should not have been instantiated!")
+	}
 }
 
-/*
-Tests if calling an unknown Orbit command throws an error.
+// Tests executing commands.
+func TestExec(t *testing.T) {
+	config, err := filepath.Abs("../.assets/tests/orbit.yml")
+	if err != nil {
+		panic(err)
+	}
 
-Expects an error.
-*/
-func TestNotFound(t *testing.T) {
-	if err := testRunner.Exec("discovery"); err == nil {
+	ctx, err := context.NewOrbitContext(config, "", "", "")
+	if err != nil {
+		panic(err)
+	}
+
+	r, err := NewOrbitRunner(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	// tests if calling an unknown Orbit command throws an error.
+	if err := r.Exec("discovery"); err == nil {
 		t.Error("Orbit command should not exist!")
 	}
-}
 
-/*
-Tests a simple run.
-
-Expects no error.
-*/
-func TestRun(t *testing.T) {
-	if err := testRunner.Exec("explorer"); err != nil {
-		t.Error("Orbit command should have run!")
+	// tests if calling an Orbit command with a non-existing external command
+	// throws an error.
+	if err := r.Exec("challenger"); err == nil {
+		t.Error("Orbit command should have failed!")
 	}
-}
 
-/*
-Tests a nested run.
+	// tests a simple exec.
+	if err := r.Exec("explorer"); err != nil {
+		t.Error("Orbit command should have been executed!")
+	}
 
-Expects no error.
-*/
-func TestNestedRun(t *testing.T) {
-	if err := testRunner.Exec("explorer", "sputnik"); err != nil {
-		t.Error("Nested Orbit commands should have run!")
+	// tests a nested exec.
+	if err := r.Exec("explorer", "sputnik"); err != nil {
+		t.Error("Nested Orbit commands should been executed!")
 	}
 }

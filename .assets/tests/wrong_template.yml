@@ -1,0 +1,3 @@
+usa:
+  satellites:
+    {{- range $value := .Values.default.satellites.usa

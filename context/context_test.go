@@ -7,7 +7,7 @@ import (
 
 // Tests if initializing an OrbitContext with wrong parameters
 // throws an error or no error if the parameters are OK.
-func TestInstantiate(t *testing.T) {
+func TestNewOrbitContext(t *testing.T) {
 	if _, err := NewOrbitContext("", "", "", ""); err == nil {
 		t.Error("OrbitContext should not have been instantiated!")
 	}
@@ -49,7 +49,7 @@ func TestInstantiate(t *testing.T) {
 }
 
 // Tests getValuesMap function.
-func TestGetValuesMap(t *testing.T) {
+func TestOrbitContext_getValuesMap(t *testing.T) {
 	if _, err := getValuesMap("key1,values;key2"); err == nil {
 		t.Error("getValuesMap should not have been able to parse \"key1,values;key2\"!")
 	}
@@ -78,7 +78,7 @@ func TestGetValuesMap(t *testing.T) {
 }
 
 // Tests getEnvFilesMap function.
-func TestGetEnvFilesMap(t *testing.T) {
+func TestOrbitContext_getEnvFilesMap(t *testing.T) {
 	if _, err := getEnvFilesMap("key1,.env;key2"); err == nil {
 		t.Error("getEnvFilesMap should not have been able to parse \"key1,.env;key2\"!")
 	}
@@ -107,7 +107,7 @@ func TestGetEnvFilesMap(t *testing.T) {
 }
 
 // Tests getFilesMap function.
-func TestGetFilesMap(t *testing.T) {
+func TestOrbitContext_getFilesMap(t *testing.T) {
 	if _, err := getFilesMap("key1,file;key2"); err == nil {
 		t.Error("getFilesMap should not have been able to parse \"key1,file;key2\"!")
 	}
@@ -156,7 +156,7 @@ func TestGetFilesMap(t *testing.T) {
 }
 
 // Tests getRawDataMap function.
-func TestGetRawDataMap(t *testing.T) {
+func TestOrbitContext_getRawDataMap(t *testing.T) {
 	if _, err := getRawDataMap("key1=data;key2"); err == nil {
 		t.Error("getRawDataMap should not have been able to parse \"key1=data;key2\"!")
 	}

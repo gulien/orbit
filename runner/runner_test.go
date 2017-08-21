@@ -9,7 +9,7 @@ import (
 
 // Tests if initializing an OrbitRunner with a wrong configuration file
 // throws an error.
-func TestInstantiate(t *testing.T) {
+func TestNewOrbitRunner(t *testing.T) {
 	config, err := filepath.Abs("../.assets/tests/wrong_template.yml")
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func TestInstantiate(t *testing.T) {
 	}
 }
 
-// Tests executing commands.
-func TestExec(t *testing.T) {
+// Tests Exec function.
+func TestOrbitRunner_Exec(t *testing.T) {
 	config, err := filepath.Abs("../.assets/tests/orbit.yml")
 	if err != nil {
 		panic(err)

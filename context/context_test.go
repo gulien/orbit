@@ -6,7 +6,7 @@ import (
 )
 
 // Tests if initializing an OrbitContext with wrong parameters
-// throws an error.
+// throws an error or no error if the parameters are OK.
 func TestInstantiate(t *testing.T) {
 	if _, err := NewOrbitContext("", "", "", ""); err == nil {
 		t.Error("OrbitContext should not have been instantiated!")
@@ -31,6 +31,20 @@ func TestInstantiate(t *testing.T) {
 
 	if _, err := NewOrbitContext(template, "", "", "wrong_raw_data_parameter"); err == nil {
 		t.Error("OrbitContext should not have been instantiated!")
+	}
+
+	values, err := filepath.Abs("../.assets/tests/values.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	envFile, err := filepath.Abs("../.assets/tests/.env")
+	if err != nil {
+		panic(err)
+	}
+
+	if _, err := NewOrbitContext(template, values, envFile, "key=data"); err != nil {
+		t.Error("OrbitContext should have been instantiated!")
 	}
 }
 

@@ -152,6 +152,6 @@ func TestOrbitGenerator_WriteOutputFile(t *testing.T) {
 	}
 
 	if err := manyGenerator.WriteOutputFile("/...", dataManyTmpl); err == nil {
-		t.Error("WriteOutputFile should not been able to to write the outpout file \"/...\"!")
+		t.Error("WriteOutputFile should not have been able to write the outpout file \"/...\"!")
 	}
 }

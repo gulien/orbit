@@ -1,11 +1,7 @@
 commands:
   - use: "fmt"
     run:
-    {{- if ne .Os "windows" }}
-      - sh .assets/bin/fmt.sh
-    {{- else }}
-      - cmd.exe /c .\.assets\bin\fmt.bat
-    {{- end }}
+      - go fmt ./...
   - use: "lint-install"
     run:
       - go get github.com/golang/lint/golint
@@ -19,8 +15,4 @@ commands:
       - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
   - use: "test"
     run:
-    {{- if ne .Os "windows" }}
-      - sh .assets/bin/test.sh
-    {{- else }}
-      - cmd.exe /c .\.assets\bin\test.bat
-    {{- end }}
+      - go test -race ./...

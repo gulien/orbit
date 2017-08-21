@@ -1,98 +1,140 @@
 package generator
 
 import (
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
 	"github.com/gulien/orbit/context"
-	"github.com/gulien/orbit/helpers"
+
+	"gopkg.in/yaml.v2"
 )
 
-var (
-	// defaultGenerator is an instance of OrbitGenerator used in this test suite which contains one values file and one
-	// .env file.
-	defaultGenerator *OrbitGenerator
+// Tests Parse function.
+func TestOrbitGenerator_Parse(t *testing.T) {
+	template, err := filepath.Abs("../.assets/tests/wrong_template.yml")
+	if err != nil {
+		panic(err)
+	}
 
-	// manyGenerator is an instance of OrbitGenerator used in this test suite which contains two values files and two
-	// .env files.
-	manyGenerator *OrbitGenerator
+	ctx, err := context.NewOrbitContext(template, "", "", "")
+	if err != nil {
+		panic(err)
+	}
 
-	// expectedResult contains the data from the file "expected_result.yml"
-	expectedResult interface{}
-)
+	g := NewOrbitGenerator(ctx)
 
-// init instantiates expectedResult plus the OrbitGenerator defaultGenerator and manyGenerator.
-func init() {
-	// retrieves the data from the file "expected_result.yml".
-	expectedResultPath := helpers.Abs("../.assets/tests/expected_result.yml")
-	expectedResult = helpers.ReadYAML(expectedResultPath)
+	if _, err := g.Parse(); err == nil {
+		t.Error("OrbitGenerator should not have been able to parse the template \"wrong_template.yml\"!")
+	}
+}
 
-	// loads assets.
-	defaultTmpl := helpers.Abs("../.assets/tests/template.yml")
-	manyTmpl := helpers.Abs("../.assets/tests/template_many.yml")
-	values := helpers.Abs("../.assets/tests/values.yml")
-	envFile := helpers.Abs("../.assets/tests/.env")
+// Tests WriteOutputFile function.
+func TestOrbitGenerator_WriteOutputFile(t *testing.T) {
+	expectedResultPath, err := filepath.Abs("../.assets/tests/expected_result.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	data, err := ioutil.ReadFile(expectedResultPath)
+	if err != nil {
+		panic(err)
+	}
+
+	var expectedResult interface{}
+	if err := yaml.Unmarshal(data, &expectedResult); err != nil {
+		panic(err)
+	}
+
+	defaultTmpl, err := filepath.Abs("../.assets/tests/template.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	values, err := filepath.Abs("../.assets/tests/values.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	envFile, err := filepath.Abs("../.assets/tests/.env")
+	if err != nil {
+		panic(err)
+	}
+
 	rawData := "author=Julien Neuhart;comment=A simple file for testing purpose"
 
-	// last but not least, creates our OrbitGenerator instances.
 	ctx, err := context.NewOrbitContext(defaultTmpl, values, envFile, rawData)
 	if err != nil {
 		panic(err)
 	}
 
-	defaultGenerator = NewOrbitGenerator(ctx)
+	g := NewOrbitGenerator(ctx)
+
+	dataDefaultTmpl, err := g.Parse()
+	if err != nil {
+		t.Error("Failed to parse the default template!")
+	}
+
+	if err := g.WriteOutputFile("result.yml", dataDefaultTmpl); err != nil {
+		t.Error("Failed to write the outpout file from the default template!")
+	}
+
+	dataDefaultResult, err := ioutil.ReadFile("result.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	var defaultResult interface{}
+	if err := yaml.Unmarshal(dataDefaultResult, &defaultResult); err != nil {
+		panic(err)
+	}
+
+	os.Remove("result.yml")
+
+	if !reflect.DeepEqual(defaultResult, expectedResult) {
+		t.Error("Result file from the default template should be equal to the expected result!")
+	}
+
+	manyTmpl, err := filepath.Abs("../.assets/tests/template_many.yml")
+	if err != nil {
+		panic(err)
+	}
 
 	ctx, err = context.NewOrbitContext(manyTmpl, "ru,"+values+";usa,"+values, "ru,"+envFile+";usa,"+envFile, rawData)
 	if err != nil {
 		panic(err)
 	}
 
-	manyGenerator = NewOrbitGenerator(ctx)
-}
+	g = NewOrbitGenerator(ctx)
 
-/*
-Tests to parse the template "template.yml" and generate a resulting file "result.yml".
-
-Expects the file "result.yml" to be the same as "expected_result.yml".
-*/
-func TestDefaultTemplate(t *testing.T) {
-	data, err := defaultGenerator.Parse()
-	if err != nil {
-		t.Error("Failed to parse the default template!")
-	}
-
-	if err := defaultGenerator.WriteOutputFile("result.yml", data); err != nil {
-		t.Error("Failed to write the outpout file from the default template!")
-	}
-
-	result := helpers.ReadYAML("result.yml")
-	os.Remove("result.yml")
-
-	if !reflect.DeepEqual(result, expectedResult) {
-		t.Error("Result file from the default template should be equal to the expected result!")
-	}
-}
-
-/*
-Tests to parse the template "template_many.yml" and generate a resulting file "result.yml".
-
-Expects the file "result.yml" to be the same as "expected_result.yml".
-*/
-func TestManyTemplate(t *testing.T) {
-	data, err := manyGenerator.Parse()
+	dataManyTmpl, err := g.Parse()
 	if err != nil {
 		t.Error("Failed to parse the many template!")
 	}
 
-	if err := manyGenerator.WriteOutputFile("result.yml", data); err != nil {
+	if err := g.WriteOutputFile("result.yml", dataManyTmpl); err != nil {
 		t.Error("Failed to write the outpout file from the many template!")
 	}
 
-	result := helpers.ReadYAML("result.yml")
+	dataManyResult, err := ioutil.ReadFile("result.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	var manyResult interface{}
+	if err := yaml.Unmarshal(dataManyResult, &manyResult); err != nil {
+		panic(err)
+	}
+
 	os.Remove("result.yml")
 
-	if !reflect.DeepEqual(result, expectedResult) {
+	if !reflect.DeepEqual(manyResult, expectedResult) {
 		t.Error("Result file from the many template should be equal to the expected result!")
+	}
+
+	if err := g.WriteOutputFile("/...", dataManyTmpl); err == nil {
+		t.Error("WriteOutputFile should not been able to to write the outpout file \"/...\"!")
 	}
 }

@@ -5,3 +5,6 @@ commands:
   - use: "sputnik"
     run:
       - glide
+  - use: "challenger"
+    run:
+      - crash

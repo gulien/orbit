@@ -1,0 +1,10 @@
+author: {{ .RawData.author }}
+comment: {{ .RawData.comment }}
+usa:
+  info: {{ .EnvFiles.default.USA }}
+  satellites:
+    {{- range $value := .Values.default.satellites.usa }}
+ru:
+  info: {{ .EnvFiles.default.RU }}
+  satellites:
+    {{- range $value := .Values.default.satellites.ru }}

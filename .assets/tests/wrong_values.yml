@@ -1,0 +1,13 @@
+satellites: [
+  {
+    usa: [
+      Explorer 1
+      Explorer 2
+      Explorer 3
+    ]
+  },
+  {
+    ru: [
+       ...
+  }
+]

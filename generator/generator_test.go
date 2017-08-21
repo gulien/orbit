@@ -80,6 +80,25 @@ func init() {
 	manyGenerator = NewOrbitGenerator(ctx)
 }
 
+// Tests Parse function.
+func TestOrbitGenerator_Parse(t *testing.T) {
+	template, err := filepath.Abs("../.assets/tests/wrong_template.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	ctx, err := context.NewOrbitContext(template, "", "", "")
+	if err != nil {
+		panic(err)
+	}
+
+	g := NewOrbitGenerator(ctx)
+
+	if _, err := g.Parse(); err == nil {
+		t.Error("OrbitGenerator should not have been able to parse the template \"wrong_template.yml\"!")
+	}
+}
+
 // Tests WriteOutputFile function.
 func TestOrbitGenerator_WriteOutputFile(t *testing.T) {
 	dataDefaultTmpl, err := defaultGenerator.Parse()

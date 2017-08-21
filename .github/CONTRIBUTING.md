@@ -8,7 +8,7 @@ find below useful information about how to contribute to the Orbit project.
 ### Install from sources
 
 1. Fork this repository
-2. Clone it to your local GO environment
+2. Clone it to your local GO environment (requires *Go* >= 1.9)
 3. Install the package manager *Glide*: `go get github.com/Masterminds/glide`
 4. Install vendor dependencies: `glide install`
 5. Install the latest Orbit release

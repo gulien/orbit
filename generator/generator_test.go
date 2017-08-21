@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/gulien/orbit/context"
-	"github.com/gulien/orbit/helpers"
 
 	"gopkg.in/yaml.v2"
 )

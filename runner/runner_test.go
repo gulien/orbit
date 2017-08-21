@@ -8,7 +8,7 @@ import (
 )
 
 // Tests if initializing an OrbitRunner with a wrong configuration file
-// throw an error.
+// throws an error.
 func TestInstantiate(t *testing.T) {
 	config, err := filepath.Abs("../.assets/tests/wrong_template.yml")
 	if err != nil {

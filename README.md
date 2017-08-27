@@ -100,9 +100,9 @@ Specify the output file which will be generated from the template.
 The flag `-v` allows you to specify one or many *YAML* files:
 
 ```
-orbit generate [...] -v=file.yml
-orbit generate [...] -v=key_1,file_1.yml
-orbit generate [...] -v=key_1,file_1.yml;key_2,file_2.yml
+orbit generate [...] -v file.yml
+orbit generate [...] -v key_1,file_1.yml
+orbit generate [...] -v key_1,file_1.yml;key_2,file_2.yml
 ```
 
 As you can see, you're able to provide a basic mapping for your files:
@@ -115,9 +115,9 @@ As you can see, you're able to provide a basic mapping for your files:
 The flag `-e` allows you to specify one or many *.env* files:
 
 ```
-orbit generate [...] -e=.env
-orbit generate [...] -e=key_1,.env_1
-orbit generate [...] -e=key_1,.env_1;key_2,.env_2
+orbit generate [...] -e .env
+orbit generate [...] -e key_1,.env_1
+orbit generate [...] -e key_1,.env_1;key_2,.env_2
 ```
 
 As you can see, it works the same way as the `-v` flag:
@@ -130,8 +130,8 @@ As you can see, it works the same way as the `-v` flag:
 The flag `-r` allows you to specify data directly from the CLI.
 
 ```
-orbit generate [...] -r=key_1=value_1
-orbit generate [...] -r=key_1=value_1;key_2=value_2
+orbit generate [...] -r key_1=value_1
+orbit generate [...] -r key_1=value_1;key_2=value_2
 ```
 
 Your data will be accessible in your template through `{{ .RawData.my_key }}`.
@@ -174,7 +174,7 @@ USA="Some satellites launched by the USA (1950s)"
 The command for generating a file from this template is quite simple:
 
 ```
-orbit generate -t=satellites_tmpl.yml -e=.env -v=usa_satellites.yml -o=satellites.yml
+orbit generate -t satellites_tmpl.yml -e .env -v usa_satellites.yml -o satellites.yml
 ```
 
 This command will create the `satellites.yml` file with this content:

@@ -244,18 +244,16 @@ For example, if you need to run a platform specific script, you may write:
 commands:
   - use: "script"
     run:
-    {{- if ne .Os "windows" }}
-      - sh my_script.sh
-    {{- else }}
+    {{ if ne .Os "windows" }}
+      - /bin/bash my_script.sh
+    {{ else }}
       - cmd.exe /c .\my_script.bat
-    {{- end }}
+    {{ end }}
 ```
 
-There are two important things to notice:
-
-1. Orbit provides the OS name at runtime with `{{ .Os }}` (you may find
-all available names in the [official documentation](https://golang.org/doc/install/source#environment) - `$GOOS` column).
-2. Adding a dash (e.g `{{-`) will not add break lines / spaces.
+As you can see, Orbit provides the OS name at runtime with `{{ .Os }}`
+(you may find all available names in the
+[official documentation](https://golang.org/doc/install/source#environment) - `$GOOS` column).
 
 ##### `-v --values`
 
@@ -287,11 +285,11 @@ Let's create our simple configuration file `orbit.yml`:
 commands:
   - use: "os"
     run:
-    {{- if ne .Os "windows" }}
+    {{ if ne .Os "windows" }}
       - echo Current OS is {{ .Os }}
-    {{- else }}
+    {{ else }}
       - cmd.exe /c echo Current OS is {{ .Os }}
-    {(- end }}
+    {( end }}
 ```
 
 You are now able to run:

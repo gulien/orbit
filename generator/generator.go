@@ -7,11 +7,12 @@ package generator
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"text/template"
 
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/errors"
+	"github.com/gulien/orbit/logger"
 )
 
 // OrbitGenerator provides a set of functions which help to execute a data-driven template.
@@ -37,12 +38,14 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 
 	tmpl, err := template.ParseFiles(g.context.TemplateFilePath)
 	if err != nil {
-		return data, fmt.Errorf("unable to parse the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
+		return data, errors.NewOrbitErrorf("unable to parse the template file %s. Details: %s", g.context.TemplateFilePath, err)
 	}
 
 	if err := tmpl.Execute(&data, g.context); err != nil {
-		return data, fmt.Errorf("unable to execute the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
+		return data, errors.NewOrbitErrorf("unable to execute the template file %s. Details: %s", g.context.TemplateFilePath, err)
 	}
+
+	logger.Debugf("template file %s has been parsed and the following data have been retrieved:\n%s", g.context.TemplateFilePath, data.String())
 
 	return data, nil
 }
@@ -57,18 +60,20 @@ This function should be called after Parse function.
 func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
-		return fmt.Errorf("unable to create the output file \"%s\":\n%s", outputPath, err)
+		return errors.NewOrbitErrorf("unable to create the output file %s. Details: %s", outputPath, err)
 	}
 
 	_, err = file.Write(data.Bytes())
 	if err != nil {
-		return fmt.Errorf("unable to write into the output file \"%s\":\n%s", outputPath, err)
+		return errors.NewOrbitErrorf("unable to write into the output file %s. Details: %s", outputPath, err)
 	}
 
 	err = file.Close()
 	if err != nil {
 		return err
 	}
+
+	logger.Debugf("the template file %s has been executed to the output file %s", g.context.TemplateFilePath, outputPath)
 
 	return nil
 }

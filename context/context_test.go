@@ -6,7 +6,7 @@ import (
 )
 
 // Tests if initializing an OrbitContext with wrong parameters
-// throws an error or no error if the parameters are OK.
+// throws an errors or no errors if the parameters are OK.
 func TestNewOrbitContext(t *testing.T) {
 	if _, err := NewOrbitContext("", "", "", ""); err == nil {
 		t.Error("OrbitContext should not have been instantiated!")

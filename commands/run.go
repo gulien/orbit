@@ -1,9 +1,8 @@
 package commands
 
 import (
-	"errors"
-
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/errors"
 	"github.com/gulien/orbit/runner"
 
 	"github.com/spf13/cobra"
@@ -29,11 +28,11 @@ func init() {
 	RootCmd.AddCommand(runCmd)
 }
 
-// runner executes one or more stacks of commands defined in the configuration file.
+// run executes one or more stacks of commands defined in the configuration file.
 func run(cmd *cobra.Command, args []string) error {
 	// if no args, bye!
 	if len(args) == 0 {
-		return errors.New("no command to run")
+		return errors.NewOrbitError("no command to run")
 	}
 
 	// alright, let's instantiate our Orbit context...

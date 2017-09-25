@@ -5,6 +5,7 @@ import (
 
 	"github.com/gulien/orbit/context"
 	"github.com/gulien/orbit/generator"
+	"github.com/gulien/orbit/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -58,6 +59,8 @@ func generate(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	} else {
+		logger.Debugf("no output file given, printing the result to Stdout")
+
 		// ok, no output file given, let's print the result to Stdout.
 		fmt.Println(string(data.Bytes()))
 	}

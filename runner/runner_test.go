@@ -8,7 +8,7 @@ import (
 )
 
 // Tests if initializing an OrbitRunner with a wrong configuration file
-// throws an error.
+// throws an errors.
 func TestNewOrbitRunner(t *testing.T) {
 	config, err := filepath.Abs("../.assets/tests/wrong_template.yml")
 	if err != nil {
@@ -56,13 +56,13 @@ func TestOrbitRunner_Exec(t *testing.T) {
 		panic(err)
 	}
 
-	// tests if calling an unknown Orbit command throws an error.
+	// tests if calling an unknown Orbit command throws an errors.
 	if err := r.Exec("discovery"); err == nil {
 		t.Error("Orbit command should not exist!")
 	}
 
 	// tests if calling an Orbit command with a non-existing external command
-	// throws an error.
+	// throws an errors.
 	if err := r.Exec("challenger"); err == nil {
 		t.Error("Orbit command should have failed!")
 	}

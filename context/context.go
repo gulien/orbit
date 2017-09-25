@@ -6,12 +6,13 @@ The main goal of the application context is to gather all the data which will be
 package context
 
 import (
-	"fmt"
 	"io/ioutil"
 	"runtime"
 	"strings"
 
+	"github.com/gulien/orbit/errors"
 	"github.com/gulien/orbit/helpers"
+	"github.com/gulien/orbit/logger"
 
 	"github.com/joho/godotenv"
 	"gopkg.in/yaml.v2"
@@ -52,7 +53,7 @@ type (
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string, rawData string) (*OrbitContext, error) {
 	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {
-		return nil, fmt.Errorf("template file \"%s\" does not exist", templateFilePath)
+		return nil, errors.NewOrbitErrorf("template file %s does not exist", templateFilePath)
 	}
 
 	// let's instantiates our OrbitContext!
@@ -60,6 +61,8 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		TemplateFilePath: templateFilePath,
 		Os:               runtime.GOOS,
 	}
+
+	logger.Debugf("context has been instantiated with %s as template file and %s as Os", ctx.TemplateFilePath, ctx.Os)
 
 	// checks if files with values have been specified.
 	if valuesFiles != "" {
@@ -71,6 +74,8 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.Values = data
 	}
 
+	logger.Debugf("context has been populated with %s as values", ctx.Values)
+
 	// checks if .env files have been specified.
 	if envFiles != "" {
 		data, err := getEnvFilesMap(envFiles)
@@ -81,6 +86,8 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.EnvFiles = data
 	}
 
+	logger.Debugf("context has been populated with %s as env files", ctx.EnvFiles)
+
 	// checks if raw data have been specified.
 	if rawData != "" {
 		data, err := getRawDataMap(rawData)
@@ -90,6 +97,8 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 
 		ctx.RawData = data
 	}
+
+	logger.Debugf("context has been populated with %s as raw data", ctx.RawData)
 
 	return ctx, nil
 }
@@ -105,19 +114,19 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 	for _, f := range filesMap {
 		// first, checks if the file exists
 		if !helpers.FileExists(f.Path) {
-			return nil, fmt.Errorf("values file \"%s\" does not exist", f.Path)
+			return nil, errors.NewOrbitErrorf("values file %s does not exist", f.Path)
 		}
 
 		// alright, let's read it to retrieve its data!
 		data, err := ioutil.ReadFile(f.Path)
 		if err != nil {
-			return nil, fmt.Errorf("failed to read the values file \"%s\":\n%s", f.Path, err)
+			return nil, errors.NewOrbitErrorf("failed to read the values file %s. Details: %s", f.Path, err)
 		}
 
 		// last but not least, parses the YAML.
 		var values interface{}
 		if err := yaml.Unmarshal(data, &values); err != nil {
-			return nil, fmt.Errorf("unable to parse the values file \"%s\":\n%s", f.Path, err)
+			return nil, errors.NewOrbitErrorf("unable to parse the values file %s. Details: %s", f.Path, err)
 		}
 
 		valuesMap[f.Name] = values
@@ -137,13 +146,13 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 	for _, f := range filesMap {
 		// first, checks if the file exists
 		if !helpers.FileExists(f.Path) {
-			return nil, fmt.Errorf("env file \"%s\" does not exist", f.Path)
+			return nil, errors.NewOrbitErrorf("env file %s does not exist", f.Path)
 		}
 
 		// then parses the .env file to retrieve pairs.
 		envFilesMap[f.Name], err = godotenv.Read(f.Path)
 		if err != nil {
-			return nil, fmt.Errorf("unable to parse the env file \"%s\":\n%s", f.Path, err)
+			return nil, errors.NewOrbitErrorf("unable to parse the env file %s. Details: %s", f.Path, err)
 		}
 	}
 
@@ -167,7 +176,7 @@ func getFilesMap(s string) ([]*OrbitFileMap, error) {
 		for _, part := range parts {
 			data := strings.Split(part, ",")
 			if len(data) != 2 {
-				return filesMap, fmt.Errorf("unable to process the files map \"%s\"", s)
+				return filesMap, errors.NewOrbitErrorf("unable to process the files map %s", s)
 			}
 
 			filesMap = append(filesMap, &OrbitFileMap{
@@ -188,7 +197,7 @@ func getRawDataMap(s string) (map[string]string, error) {
 	for _, part := range parts {
 		data := strings.Split(part, "=")
 		if len(data) != 2 {
-			return rawDataMap, fmt.Errorf("unable to process the raw data \"%s\"", s)
+			return rawDataMap, errors.NewOrbitErrorf("unable to process the raw data %s", s)
 		}
 
 		rawDataMap[data[0]] = data[1]

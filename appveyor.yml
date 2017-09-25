@@ -17,6 +17,8 @@ install:
   - set PATH=%GOPATH%\bin;%PATH%
   - go version
   - go env
+  - go get -u github.com/golang/dep/cmd/dep
+  - dep init
   - go install
   - orbit run install
 

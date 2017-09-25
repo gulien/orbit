@@ -1,5 +1,5 @@
 /*
-Package logger implements a simple helper for displaying output to users.
+Package logger implements a simple helper for displaying output to the user.
 */
 package logger
 
@@ -11,7 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// OrbitLogger provides the underlying implementation that displays output to users.
+// OrbitLogger provides the underlying implementation that displays output to the user.
 type OrbitLogger struct {
 	// Log is an instance of logrus logger.
 	Log *logrus.Logger

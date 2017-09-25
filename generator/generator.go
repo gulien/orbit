@@ -21,7 +21,7 @@ type OrbitGenerator struct {
 	context *context.OrbitContext
 }
 
-// NewOrbitGenerator instantiates a new instance of OrbitGenerator.
+// NewOrbitGenerator creates an instance of OrbitGenerator.
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	return &OrbitGenerator{
 		context: context,

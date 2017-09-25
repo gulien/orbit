@@ -1,3 +1,6 @@
+/*
+Package logger implements a simple helper for displaying output to users.
+*/
 package logger
 
 import (
@@ -17,7 +20,7 @@ type OrbitLogger struct {
 	Silent bool
 }
 
-// newOrbitLogged creates a default OrbitLogger.
+// newOrbitLogged creates an instance of OrbitLogger.
 func newOrbitLogger() *OrbitLogger {
 	log := logrus.New()
 	log.Out = os.Stdout

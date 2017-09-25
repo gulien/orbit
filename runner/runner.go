@@ -48,7 +48,7 @@ type (
 	}
 )
 
-// NewOrbitRunner instantiates a new instance of OrbitRunner.
+// NewOrbitRunner creates an instance of OrbitRunner.
 func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 	// first retrieves the data from the configuration file...
 	gen := generator.NewOrbitGenerator(context)

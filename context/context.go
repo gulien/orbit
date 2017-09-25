@@ -49,7 +49,7 @@ type (
 	}
 )
 
-// NewOrbitContext instantiates a new OrbitContext.
+// NewOrbitContext creates an instance of OrbitContext.
 func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string, rawData string) (*OrbitContext, error) {
 	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {

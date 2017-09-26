@@ -39,6 +39,26 @@ func TestNewOrbitRunner(t *testing.T) {
 	}
 }
 
+// Tests Print function.
+func TestOrbitRunner_Print(t *testing.T) {
+	config, err := filepath.Abs("../.assets/tests/orbit.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	ctx, err := context.NewOrbitContext(config, "", "", "")
+	if err != nil {
+		panic(err)
+	}
+
+	r, err := NewOrbitRunner(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	r.Print()
+}
+
 // Tests Exec function.
 func TestOrbitRunner_Exec(t *testing.T) {
 	config, err := filepath.Abs("../.assets/tests/orbit.yml")

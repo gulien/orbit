@@ -2,7 +2,6 @@ commands:
   - use: install
     run:
       - go get -u github.com/golang/dep/cmd/dep
-      - dep ensure
       - go get -u github.com/golang/lint/golint
       - go get -u github.com/alecthomas/gometalinter
       - go get -u github.com/client9/misspell/cmd/misspell

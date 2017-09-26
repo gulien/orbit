@@ -11,8 +11,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// OrbitLogger provides the underlying implementation that displays output to the user.
-type OrbitLogger struct {
+// orbitLogger provides the underlying implementation that displays output to the user.
+type orbitLogger struct {
 	// log is an instance of logrus logger.
 	log *logrus.Logger
 
@@ -20,19 +20,19 @@ type OrbitLogger struct {
 	silent bool
 }
 
-// newOrbitLogged creates an instance of OrbitLogger.
-func newOrbitLogger() *OrbitLogger {
+// newOrbitLogged creates an instance of orbitLogger.
+func newOrbitLogger() *orbitLogger {
 	log := logrus.New()
 	log.Out = os.Stdout
 	log.Level = logrus.DebugLevel
 
-	return &OrbitLogger{
+	return &orbitLogger{
 		log:    log,
 		silent: false,
 	}
 }
 
-// Houston is the OrbitLogger instance used by the application.
+// Houston is the logger instance used by the application.
 var Houston = newOrbitLogger()
 
 // Mute disables logging.

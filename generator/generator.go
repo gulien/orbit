@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"text/template"
 
 	"github.com/gulien/orbit/context"
@@ -17,7 +18,6 @@ import (
 	"github.com/gulien/orbit/logger"
 
 	"github.com/Masterminds/sprig"
-	"runtime"
 )
 
 // OrbitGenerator provides a set of functions which help to execute a data-driven template.

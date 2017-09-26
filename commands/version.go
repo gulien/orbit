@@ -13,6 +13,7 @@ var (
 	versionCmd = &cobra.Command{
 		Use:           "version",
 		Short:         "Prints the version number of Orbit",
+		Long:          "Prints the version number of Orbit.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Run: func(cmd *cobra.Command, args []string) {

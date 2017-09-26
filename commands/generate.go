@@ -18,6 +18,7 @@ var (
 	generateCmd = &cobra.Command{
 		Use:           "generate",
 		Short:         "Generates a file according to a template",
+		Long:          "Generates a file according to a template.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		RunE:          generate,

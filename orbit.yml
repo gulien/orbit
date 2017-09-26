@@ -1,5 +1,6 @@
 commands:
   - use: install
+    short: Installs all required dependencies
     run:
       - go get -u github.com/golang/dep/cmd/dep
       - go get -u github.com/golang/lint/golint
@@ -9,11 +10,14 @@ commands:
       - go get -u golang.org/x/tools/cmd/goimports
       - go get -u github.com/tsenart/deadcode
   - use: fmt
+    short: Simple shortcut for go fmt ./...
     run:
       - go fmt ./...
   - use: lint
+    short: Statically checks for errors and warnings
     run:
       - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
   - use: test
+    short: Simple shortcut for go test -race ./...
     run:
       - go test -race ./...

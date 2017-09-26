@@ -10,10 +10,12 @@ Thanks to the generator package, the configuration file may be a data-driven tem
 package runner
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/gulien/orbit/context"
 	"github.com/gulien/orbit/errors"
@@ -34,6 +36,9 @@ type (
 	OrbitCommand struct {
 		// Use is the name of the Orbit command.
 		Use string `yaml:"use"`
+
+		// Short is the short description of the Orbit Command.
+		Short string `yaml:"short,omitempty"`
 
 		// Run is the stack of external commands to run.
 		Run []string `yaml:"run"`
@@ -104,6 +109,25 @@ func newOrbitExternalCommand(c string) *orbitExternalCommand {
 	}
 
 	return extCmd
+}
+
+// Print prints the available Orbit commands from the configuration file
+// to Stdout.
+func (r *OrbitRunner) Print() {
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.TabIndent)
+
+	fmt.Fprint(w, "Configuration file:")
+	fmt.Fprintf(w, "\n  %s\t\n", r.context.TemplateFilePath)
+	fmt.Fprint(w, "\nAvailable Commands:")
+
+	for _, c := range r.config.Commands {
+		fmt.Fprintf(w, "\n  %s\t%s", c.Use, c.Short)
+	}
+
+	// clears the writer as it may contain some weird characters.
+	fmt.Fprintln(w, "")
+
+	w.Flush()
 }
 
 // Exec executes the given Orbit commands.

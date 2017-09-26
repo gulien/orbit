@@ -24,6 +24,7 @@ var (
 	RootCmd = &cobra.Command{
 		Use:           "orbit",
 		Short:         "A simple tool for running commands and generating files from templates",
+		Long:          "A simple tool for running commands and generating files from templates.",
 		SilenceErrors: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if !debug {

@@ -7,7 +7,6 @@ package context
 
 import (
 	"io/ioutil"
-	"runtime"
 	"strings"
 
 	"github.com/gulien/orbit/errors"
@@ -32,9 +31,6 @@ type (
 
 		// RawData contains data past directly in the CLI.
 		RawData map[string]string
-
-		// Os is the OS name at runtime.
-		Os string
 	}
 
 	// OrbitFileMap represents a value given to some flags of generate and run commands.
@@ -59,10 +55,9 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 	// let's instantiates our OrbitContext!
 	ctx := &OrbitContext{
 		TemplateFilePath: templateFilePath,
-		Os:               runtime.GOOS,
 	}
 
-	logger.Debugf("context has been instantiated with template file %s and OS %s", ctx.TemplateFilePath, ctx.Os)
+	logger.Debugf("context has been instantiated with template file %s", ctx.TemplateFilePath)
 
 	// checks if files with values have been specified.
 	if valuesFiles != "" {

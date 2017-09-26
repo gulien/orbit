@@ -17,21 +17,29 @@ import (
 	"github.com/gulien/orbit/logger"
 
 	"github.com/Masterminds/sprig"
+	"runtime"
 )
 
 // OrbitGenerator provides a set of functions which help to execute a data-driven template.
 type OrbitGenerator struct {
 	// context is an instance of OrbitContext.
 	context *context.OrbitContext
+
+	// funcMap contains sprig functions and custom os function.
+	funcMap template.FuncMap
 }
 
 // NewOrbitGenerator creates an instance of OrbitGenerator.
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
+	funcMap := sprig.TxtFuncMap()
+	funcMap["os"] = func() string { return runtime.GOOS }
+
 	g := &OrbitGenerator{
 		context: context,
+		funcMap: funcMap,
 	}
 
-	logger.Debugf("generator has been instantiated with context %s", g.context)
+	logger.Debugf("generator has been instantiated with context %s and functions map %s", g.context, g.funcMap)
 
 	return g
 }
@@ -44,7 +52,7 @@ Returns the resulting bytes.
 func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	var data bytes.Buffer
 
-	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(sprig.TxtFuncMap()).ParseFiles(g.context.TemplateFilePath)
+	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(g.funcMap).ParseFiles(g.context.TemplateFilePath)
 	if err != nil {
 		return data, errors.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}

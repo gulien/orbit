@@ -99,14 +99,15 @@ func TestOrbitGenerator_Parse(t *testing.T) {
 	}
 }
 
-// Tests WriteOutputFile function.
-func TestOrbitGenerator_WriteOutputFile(t *testing.T) {
+// Tests Output function.
+func TestOrbitGenerator_Output(t *testing.T) {
 	dataDefaultTmpl, err := defaultGenerator.Parse()
 	if err != nil {
 		t.Error("Failed to parse the default template!")
 	}
 
-	if err := defaultGenerator.WriteOutputFile("result.yml", dataDefaultTmpl); err != nil {
+	defaultGenerator.Output("", dataDefaultTmpl)
+	if err := defaultGenerator.Output("result.yml", dataDefaultTmpl); err != nil {
 		t.Error("Failed to write the outpout file from the default template!")
 	}
 
@@ -131,7 +132,8 @@ func TestOrbitGenerator_WriteOutputFile(t *testing.T) {
 		t.Error("Failed to parse the many template!")
 	}
 
-	if err := manyGenerator.WriteOutputFile("result.yml", dataManyTmpl); err != nil {
+	manyGenerator.Output("", dataManyTmpl)
+	if err := manyGenerator.Output("result.yml", dataManyTmpl); err != nil {
 		t.Error("Failed to write the outpout file from the many template!")
 	}
 
@@ -151,7 +153,7 @@ func TestOrbitGenerator_WriteOutputFile(t *testing.T) {
 		t.Error("Result file from the many template should be equal to the expected result!")
 	}
 
-	if err := manyGenerator.WriteOutputFile("/...", dataManyTmpl); err == nil {
+	if err := manyGenerator.Output("/...", dataManyTmpl); err == nil {
 		t.Error("WriteOutputFile should not have been able to write the outpout file \"/...\"!")
 	}
 }

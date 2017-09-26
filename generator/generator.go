@@ -33,6 +33,7 @@ type OrbitGenerator struct {
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	funcMap := sprig.TxtFuncMap()
 	funcMap["os"] = func() string { return runtime.GOOS }
+	funcMap["debug"] = func() bool { return !logger.IsSilent() }
 
 	g := &OrbitGenerator{
 		context: context,

@@ -40,6 +40,11 @@ func Mute() {
 	Houston.silent = true
 }
 
+// IsSilent returns true if logging is disabled.
+func IsSilent() bool {
+	return Houston.silent
+}
+
 // Debugf logs debug information using the Houston logger.
 func Debugf(message string, args ...interface{}) {
 	if !Houston.silent {

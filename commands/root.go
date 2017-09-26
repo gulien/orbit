@@ -37,5 +37,5 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&ValuesFiles, "values", "v", "", "specify a YAML file or a map of YAML files listing values used in the template")
 	RootCmd.PersistentFlags().StringVarP(&EnvFiles, "env", "e", "", "specify a .env file or a map of .env files listing values used in the template")
 	RootCmd.PersistentFlags().StringVarP(&RawData, "raw", "r", "", "specify a map of values used in the template")
-	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "display a detailed output")
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "display a detailed output")
 }

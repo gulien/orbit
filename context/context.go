@@ -62,7 +62,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		Os:               runtime.GOOS,
 	}
 
-	logger.Debugf("context has been instantiated with template file %s and Os %s", ctx.TemplateFilePath, ctx.Os)
+	logger.Debugf("context has been instantiated with template file %s and OS %s", ctx.TemplateFilePath, ctx.Os)
 
 	// checks if files with values have been specified.
 	if valuesFiles != "" {
@@ -74,7 +74,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.Values = data
 	}
 
-	logger.Debugf("context has been populated with %s as values", ctx.Values)
+	logger.Debugf("context has been populated with values %s", ctx.Values)
 
 	// checks if .env files have been specified.
 	if envFiles != "" {
@@ -86,7 +86,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.EnvFiles = data
 	}
 
-	logger.Debugf("context has been populated with %s as env files", ctx.EnvFiles)
+	logger.Debugf("context has been populated with env files' data %s", ctx.EnvFiles)
 
 	// checks if raw data have been specified.
 	if rawData != "" {
@@ -98,7 +98,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		ctx.RawData = data
 	}
 
-	logger.Debugf("context has been populated with %s as raw data", ctx.RawData)
+	logger.Debugf("context has been populated with raw data %s", ctx.RawData)
 
 	return ctx, nil
 }

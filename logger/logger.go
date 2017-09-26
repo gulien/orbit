@@ -13,11 +13,11 @@ import (
 
 // OrbitLogger provides the underlying implementation that displays output to the user.
 type OrbitLogger struct {
-	// Log is an instance of logrus logger.
-	Log *logrus.Logger
+	// log is an instance of logrus logger.
+	log *logrus.Logger
 
-	// Silent disables logging if true.
-	Silent bool
+	// silent disables logging if true.
+	silent bool
 }
 
 // newOrbitLogged creates an instance of OrbitLogger.
@@ -27,8 +27,8 @@ func newOrbitLogger() *OrbitLogger {
 	log.Level = logrus.DebugLevel
 
 	return &OrbitLogger{
-		Log:    log,
-		Silent: false,
+		log:    log,
+		silent: false,
 	}
 }
 
@@ -37,24 +37,24 @@ var Houston = newOrbitLogger()
 
 // Mute disables logging.
 func Mute() {
-	Houston.Silent = true
+	Houston.silent = true
 }
 
-// Debugf logs information using the Houston logger.
+// Debugf logs debug information using the Houston logger.
 func Debugf(message string, args ...interface{}) {
-	if !Houston.Silent {
-		Houston.Log.Debugf(message, args...)
+	if !Houston.silent {
+		Houston.log.Debugf(message, args...)
 	}
 }
 
 // Error logs error information using the Houston logger.
 func Error(err error) {
-	if !Houston.Silent {
-		Houston.Log.Error(err.Error())
+	if !Houston.silent {
+		Houston.log.Error(err.Error())
 	}
 }
 
 // NotifyOrbitError prints an error which have to be displayed to the user.
 func NotifyOrbitError(err *errors.OrbitError) {
-	Houston.Log.Error(err.Error())
+	Houston.log.Error(err.Error())
 }

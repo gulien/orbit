@@ -7,12 +7,16 @@ package generator
 
 import (
 	"bytes"
+	"fmt"
 	"os"
+	"path/filepath"
 	"text/template"
 
 	"github.com/gulien/orbit/context"
 	"github.com/gulien/orbit/errors"
 	"github.com/gulien/orbit/logger"
+
+	"github.com/Masterminds/sprig"
 )
 
 // OrbitGenerator provides a set of functions which help to execute a data-driven template.
@@ -40,7 +44,7 @@ Returns the resulting bytes.
 func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	var data bytes.Buffer
 
-	tmpl, err := template.ParseFiles(g.context.TemplateFilePath)
+	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(sprig.TxtFuncMap()).ParseFiles(g.context.TemplateFilePath)
 	if err != nil {
 		return data, errors.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}
@@ -55,13 +59,26 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 }
 
 /*
-WriteOutputFile writes bytes into a file.
-
-If the file does not exist, this function will create it.
+Output writes bytes into a file or to Stdout if no output path given.
 
 This function should be called after Parse function.
 */
-func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
+func (g *OrbitGenerator) Output(outputPath string, data bytes.Buffer) error {
+	if outputPath != "" {
+		return g.writeOutputFile(outputPath, data)
+	}
+
+	// ok, no output file given, let's print the result to Stdout.
+	g.printOutput(data)
+	return nil
+}
+
+/*
+writeOutputFile writes bytes into a file.
+
+If the file does not exist, this function will create it.
+*/
+func (g *OrbitGenerator) writeOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
 		return errors.NewOrbitErrorf("unable to create the output file %s. Details:\n%s", outputPath, err)
@@ -80,4 +97,10 @@ func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) e
 	logger.Debugf("the template file %s has been executed to the output file %s", g.context.TemplateFilePath, outputPath)
 
 	return nil
+}
+
+// printOutput writes bytes to Stdout.
+func (g *OrbitGenerator) printOutput(data bytes.Buffer) {
+	logger.Debugf("no output file given, printing the result to Stdout")
+	fmt.Println(string(data.Bytes()))
 }

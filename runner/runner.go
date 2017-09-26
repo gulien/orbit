@@ -60,13 +60,17 @@ func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 	// then populates the OrbitRunnerConfig.
 	var config = &OrbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
-		return nil, errors.NewOrbitErrorf("configuration file %s is not a valid YAML file. Details: %s", context.TemplateFilePath, err)
+		return nil, errors.NewOrbitErrorf("configuration file %s is not a valid YAML file. Details:\n%s", context.TemplateFilePath, err)
 	}
 
-	return &OrbitRunner{
+	r := &OrbitRunner{
 		config:  config,
 		context: context,
-	}, nil
+	}
+
+	logger.Debugf("runner has been instantiated with config %s and context %s", r.config, r.context)
+
+	return r, nil
 }
 
 // Exec executes the given Orbit commands.

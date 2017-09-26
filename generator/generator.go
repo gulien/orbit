@@ -23,9 +23,13 @@ type OrbitGenerator struct {
 
 // NewOrbitGenerator creates an instance of OrbitGenerator.
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
-	return &OrbitGenerator{
+	g := &OrbitGenerator{
 		context: context,
 	}
+
+	logger.Debugf("generator has been instantiated with context %s", g.context)
+
+	return g
 }
 
 /*
@@ -38,11 +42,11 @@ func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 
 	tmpl, err := template.ParseFiles(g.context.TemplateFilePath)
 	if err != nil {
-		return data, errors.NewOrbitErrorf("unable to parse the template file %s. Details: %s", g.context.TemplateFilePath, err)
+		return data, errors.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}
 
 	if err := tmpl.Execute(&data, g.context); err != nil {
-		return data, errors.NewOrbitErrorf("unable to execute the template file %s. Details: %s", g.context.TemplateFilePath, err)
+		return data, errors.NewOrbitErrorf("unable to execute the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}
 
 	logger.Debugf("template file %s has been parsed and the following data have been retrieved:\n%s", g.context.TemplateFilePath, data.String())
@@ -60,12 +64,12 @@ This function should be called after Parse function.
 func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
-		return errors.NewOrbitErrorf("unable to create the output file %s. Details: %s", outputPath, err)
+		return errors.NewOrbitErrorf("unable to create the output file %s. Details:\n%s", outputPath, err)
 	}
 
 	_, err = file.Write(data.Bytes())
 	if err != nil {
-		return errors.NewOrbitErrorf("unable to write into the output file %s. Details: %s", outputPath, err)
+		return errors.NewOrbitErrorf("unable to write into the output file %s. Details:\n%s", outputPath, err)
 	}
 
 	err = file.Close()

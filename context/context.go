@@ -62,7 +62,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		Os:               runtime.GOOS,
 	}
 
-	logger.Debugf("context has been instantiated with %s as template file and %s as Os", ctx.TemplateFilePath, ctx.Os)
+	logger.Debugf("context has been instantiated with template file %s and Os %s", ctx.TemplateFilePath, ctx.Os)
 
 	// checks if files with values have been specified.
 	if valuesFiles != "" {
@@ -120,13 +120,13 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 		// alright, let's read it to retrieve its data!
 		data, err := ioutil.ReadFile(f.Path)
 		if err != nil {
-			return nil, errors.NewOrbitErrorf("failed to read the values file %s. Details: %s", f.Path, err)
+			return nil, errors.NewOrbitErrorf("failed to read the values file %s. Details:\n%s", f.Path, err)
 		}
 
 		// last but not least, parses the YAML.
 		var values interface{}
 		if err := yaml.Unmarshal(data, &values); err != nil {
-			return nil, errors.NewOrbitErrorf("unable to parse the values file %s. Details: %s", f.Path, err)
+			return nil, errors.NewOrbitErrorf("unable to parse the values file %s. Details:\n%s", f.Path, err)
 		}
 
 		valuesMap[f.Name] = values
@@ -152,7 +152,7 @@ func getEnvFilesMap(envFiles string) (map[string]map[string]string, error) {
 		// then parses the .env file to retrieve pairs.
 		envFilesMap[f.Name], err = godotenv.Read(f.Path)
 		if err != nil {
-			return nil, errors.NewOrbitErrorf("unable to parse the env file %s. Details: %s", f.Path, err)
+			return nil, errors.NewOrbitErrorf("unable to parse the env file %s. Details:\n%s", f.Path, err)
 		}
 	}
 

@@ -14,7 +14,6 @@ import (
 	"github.com/gulien/orbit/logger"
 
 	"github.com/joho/godotenv"
-	"gopkg.in/yaml.v2"
 )
 
 type (
@@ -120,7 +119,7 @@ func getValuesMap(valuesFiles string) (map[string]interface{}, error) {
 
 		// last but not least, parses the YAML.
 		var values interface{}
-		if err := yaml.Unmarshal(data, &values); err != nil {
+		if err := helpers.Unmarshal(data, &values); err != nil {
 			return nil, errors.NewOrbitErrorf("unable to parse the values file %s. Details:\n%s", f.Path, err)
 		}
 

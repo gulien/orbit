@@ -79,7 +79,7 @@ Also, Orbit provides [Sprig](http://masterminds.github.io/sprig/) library
 and two custom functions:
 
 * `os` which returns the current OS name at runtime (you may find all available names in the
-[official documentation](https://golang.org/doc/install/source#environment) - `$GOOS` column).
+[official documentation](https://golang.org/doc/install/source#environment)).
 * `debug` which returns `true` if the `-d --debug` flag has been past to Orbit.
 
 ### Command description

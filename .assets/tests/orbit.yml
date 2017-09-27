@@ -1,10 +1,10 @@
 commands:
   - use: "explorer"
     run:
-      - glide
+      - dep status
   - use: "sputnik"
     run:
-      - glide
+      - dep status
   - use: "challenger"
     run:
-      - crash
+      - faildep status

@@ -27,7 +27,7 @@ Explain the **motivation** for making this change. What existing problem does th
 
 Demonstrate the code is solid. Example: The exact commands you ran and their output.
 
-<!-- Make sure tests pass on both Travis and Circle CI. -->
+<!-- Make sure tests pass on both Travis and AppVeyor. -->
 
 **Closing issues**
 

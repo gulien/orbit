@@ -75,6 +75,13 @@ The [Go documentation](https://golang.org/pkg/text/template/) and the
 a lot of features that aren't mentioned here. Don't hesitate to take a look
 at these links to understand the *Go* template engine! :smiley:
 
+Also, Orbit provides [Sprig](http://masterminds.github.io/sprig/) library
+and two custom functions:
+
+* `os` which returns the current OS name at runtime (you may find all available names in the
+[official documentation](https://golang.org/doc/install/source#environment)).
+* `debug` which returns `true` if the `-d --debug` flag has been past to Orbit.
+
 ### Command description
 
 #### Base
@@ -136,9 +143,9 @@ orbit generate [...] -r key_1=value_1;key_2=value_2
 
 Your data will be accessible in your template through `{{ .RawData.my_key }}`.
 
-##### `-s --silent`
+##### `-d --debug`
 
-Disables the notifications.
+Displays a detailed output.
 
 ### Basic example
 
@@ -208,12 +215,14 @@ your Orbit commands:
 
 ```yaml
 commands:
-  - use: "my_first_command"
+  - use: my_first_command
+    short: My first command short description
     run:
       - command [args]
       - command [args]
       - ...
-  - use: "my_second_command"
+  - use: my_second_command
+    short: My second command short description
     run:
       - command [args]
       - command [args]
@@ -221,6 +230,7 @@ commands:
 ```
 
 * the `use` attribute is the name of your Orbit command.
+* the `short` attribute is optional and is displayed when running `orbit run`
 * the `run` attribute is the stack of external commands to run.
 * an external command is a binary which is available in your `$PATH`.
 
@@ -242,18 +252,26 @@ For example, if you need to run a platform specific script, you may write:
 
 ```yaml
 commands:
-  - use: "script"
+  - use: script
     run:
-    {{ if ne .Os "windows" }}
-      - /bin/bash my_script.sh
+    {{ if ne "windows" os }}
+      - /bin/sh -c my_script.sh
     {{ else }}
       - cmd.exe /c .\my_script.bat
     {{ end }}
 ```
 
-As you can see, Orbit provides the OS name at runtime with `{{ .Os }}`
-(you may find all available names in the
-[official documentation](https://golang.org/doc/install/source#environment) - `$GOOS` column).
+Last but not least, you're also able to write complex commands:
+
+```yaml
+commands:
+  - use: complex
+    run:
+      - /bin/sh -c "ls -all | grep orbit"
+```
+
+Notice that the arguments are wrapped with `"`. You may also wrap them
+using `` ` `` or `'`.
 
 ##### `-v --values`
 
@@ -273,9 +291,9 @@ The flag `-r` allows you to specify data directly from the CLI.
 
 It works the same as the `-r` flag from the `generate` command.
 
-##### `-s --silent`
+##### `-d --debug`
 
-Disables the notifications.
+Displays a detailed output.
 
 ### Basic example
 
@@ -283,12 +301,12 @@ Let's create our simple configuration file `orbit.yml`:
 
 ```yaml
 commands:
-  - use: "os"
+  - use: os
     run:
-    {{ if ne .Os "windows" }}
-      - echo Current OS is {{ .Os }}
+    {{ if ne "windows" os }}
+      - echo Current OS is {{ os }}
     {{ else }}
-      - cmd.exe /c echo Current OS is {{ .Os }}
+      - cmd.exe /c echo Current OS is {{ os }}
     {( end }}
 ```
 
@@ -301,8 +319,6 @@ orbit run os
 This command will print something like:
 
 ```
-[i] starting Orbit command "os"
-[i] running "echo Current OS is darwin"
 Current OS is darwin
 ```
 

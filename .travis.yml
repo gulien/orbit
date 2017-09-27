@@ -1,7 +1,7 @@
 language: go
 
 go:
-  - 1.8.3
+  - 1.9
   - tip
 
 matrix:
@@ -10,10 +10,10 @@ matrix:
   fast_finish: true
 
 install:
-  - go get github.com/Masterminds/glide
-  - glide install
+  - go version
+  - go env
   - go install
-  - orbit run lint-install
+  - orbit run install
 
 script:
   - orbit run lint

@@ -9,22 +9,40 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"text/template"
 
 	"github.com/gulien/orbit/context"
+	"github.com/gulien/orbit/errors"
+	"github.com/gulien/orbit/logger"
+
+	"github.com/Masterminds/sprig"
 )
 
 // OrbitGenerator provides a set of functions which help to execute a data-driven template.
 type OrbitGenerator struct {
 	// context is an instance of OrbitContext.
 	context *context.OrbitContext
+
+	// funcMap contains sprig functions and custom os function.
+	funcMap template.FuncMap
 }
 
-// NewOrbitGenerator instantiates a new instance of OrbitGenerator.
+// NewOrbitGenerator creates an instance of OrbitGenerator.
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
-	return &OrbitGenerator{
+	funcMap := sprig.TxtFuncMap()
+	funcMap["os"] = func() string { return runtime.GOOS }
+	funcMap["debug"] = func() bool { return !logger.IsSilent() }
+
+	g := &OrbitGenerator{
 		context: context,
+		funcMap: funcMap,
 	}
+
+	logger.Debugf("generator has been instantiated with context %s and functions map %s", g.context, g.funcMap)
+
+	return g
 }
 
 /*
@@ -35,34 +53,49 @@ Returns the resulting bytes.
 func (g *OrbitGenerator) Parse() (bytes.Buffer, error) {
 	var data bytes.Buffer
 
-	tmpl, err := template.ParseFiles(g.context.TemplateFilePath)
+	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(g.funcMap).ParseFiles(g.context.TemplateFilePath)
 	if err != nil {
-		return data, fmt.Errorf("unable to parse the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
+		return data, errors.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}
 
 	if err := tmpl.Execute(&data, g.context); err != nil {
-		return data, fmt.Errorf("unable to execute the template file \"%s\":\n%s", g.context.TemplateFilePath, err)
+		return data, errors.NewOrbitErrorf("unable to execute the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}
+
+	logger.Debugf("template file %s has been parsed and the following data have been retrieved:\n%s", g.context.TemplateFilePath, data.String())
 
 	return data, nil
 }
 
 /*
-WriteOutputFile writes bytes into a file.
-
-If the file does not exist, this function will create it.
+Output writes bytes into a file or to Stdout if no output path given.
 
 This function should be called after Parse function.
 */
-func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) error {
+func (g *OrbitGenerator) Output(outputPath string, data bytes.Buffer) error {
+	if outputPath != "" {
+		return g.writeOutputFile(outputPath, data)
+	}
+
+	// ok, no output file given, let's print the result to Stdout.
+	g.printOutput(data)
+	return nil
+}
+
+/*
+writeOutputFile writes bytes into a file.
+
+If the file does not exist, this function will create it.
+*/
+func (g *OrbitGenerator) writeOutputFile(outputPath string, data bytes.Buffer) error {
 	file, err := os.Create(outputPath)
 	if err != nil {
-		return fmt.Errorf("unable to create the output file \"%s\":\n%s", outputPath, err)
+		return errors.NewOrbitErrorf("unable to create the output file %s. Details:\n%s", outputPath, err)
 	}
 
 	_, err = file.Write(data.Bytes())
 	if err != nil {
-		return fmt.Errorf("unable to write into the output file \"%s\":\n%s", outputPath, err)
+		return errors.NewOrbitErrorf("unable to write into the output file %s. Details:\n%s", outputPath, err)
 	}
 
 	err = file.Close()
@@ -70,5 +103,13 @@ func (g *OrbitGenerator) WriteOutputFile(outputPath string, data bytes.Buffer) e
 		return err
 	}
 
+	logger.Debugf("the template file %s has been executed to the output file %s", g.context.TemplateFilePath, outputPath)
+
 	return nil
+}
+
+// printOutput writes bytes to Stdout.
+func (g *OrbitGenerator) printOutput(data bytes.Buffer) {
+	logger.Debugf("no output file given, printing the result to Stdout")
+	fmt.Println(string(data.Bytes()))
 }

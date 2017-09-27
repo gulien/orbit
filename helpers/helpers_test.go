@@ -30,4 +30,18 @@ func TestUnmarshal(t *testing.T) {
 	if err := Unmarshal(data, &values); err != nil {
 		t.Error("File should have been parsed as YAML!")
 	}
+
+	path, err = filepath.Abs("../.assets/tests/wrong_values.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	data, err = ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := Unmarshal(data, &values); err == nil {
+		t.Error("File should not have been parsed as YAML!")
+	}
 }

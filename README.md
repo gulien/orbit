@@ -261,7 +261,7 @@ commands:
     {{ end }}
 ```
 
-Last but not least, you're also able to specify complex command:
+Last but not least, you're also able to write complex commands:
 
 ```yaml
 commands:

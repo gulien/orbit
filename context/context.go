@@ -19,21 +19,14 @@ import (
 type (
 	// OrbitContext contains the data necessary for executing a data-driven template.
 	OrbitContext struct {
-		// TemplateFilePath is the path of the data-driven template.
+		// TemplateFilePath is the path of a data-driven template.
 		TemplateFilePath string
 
-		// Values map contains data from YAML files.
-		Values map[string]interface{}
-
-		// EnvFiles map contains pairs from .env files.
-		EnvFiles map[string]map[string]string
-
-		// RawData contains data past directly in the CLI.
-		RawData map[string]string
+		// Payload map contains data from various entries.
+		Payload map[string]interface{}
 	}
 
-	// OrbitFileMap represents a value given to some flags of generate and run commands.
-	// Flags: -v --values, -e --env
+	// OrbitFileMap represents a value given to the --payload flag of generate and run commands.
 	// Value format: name,path;name,path;...
 	OrbitFileMap struct {
 		// Name is the given name of the file.
@@ -45,10 +38,14 @@ type (
 )
 
 // NewOrbitContext creates an instance of OrbitContext.
-func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles string, rawData string) (*OrbitContext, error) {
+func NewOrbitContext(templateFilePath string, payloadEntries string) (*OrbitContext, error) {
 	// as the data-driven template is mandatory, we must check its validity.
-	if templateFilePath == "" || !helpers.FileExists(templateFilePath) {
-		return nil, errors.NewOrbitErrorf("template file %s does not exist", templateFilePath)
+	if templateFilePath == "" {
+		return nil, errors.NewOrbitErrorf("no data-driven template given", templateFilePath)
+	}
+
+	if !helpers.FileExists(templateFilePath) {
+		return nil, errors.NewOrbitErrorf("the data-driven template file %s does not exist", templateFilePath)
 	}
 
 	// let's instantiates our OrbitContext!
@@ -56,7 +53,7 @@ func NewOrbitContext(templateFilePath string, valuesFiles string, envFiles strin
 		TemplateFilePath: templateFilePath,
 	}
 
-	logger.Debugf("context has been instantiated with template file %s", ctx.TemplateFilePath)
+	logger.Debugf("context has been instantiated with the data-driven template file %s", ctx.TemplateFilePath)
 
 	// checks if files with values have been specified.
 	if valuesFiles != "" {

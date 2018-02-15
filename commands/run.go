@@ -8,9 +8,6 @@ import (
 )
 
 var (
-	// configFilePath is the path of the file describing commands.
-	configFilePath string
-
 	// runCmd is the instance of run command.
 	runCmd = &cobra.Command{
 		Use:           "run",
@@ -22,9 +19,8 @@ var (
 	}
 )
 
-// init initializes a runCmd instance with some flags and adds it to the RootCmd.
+// init initializes a runCmd instance and adds it to the RootCmd.
 func init() {
-	runCmd.Flags().StringVarP(&configFilePath, "config", "c", "orbit.yml", "specify an alternate configuration file")
 	RootCmd.AddCommand(runCmd)
 }
 
@@ -49,9 +45,5 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	// last but not least, executes Orbit commands.
-	if err := r.Exec(args[:]...); err != nil {
-		return err
-	}
-
-	return nil
+	return r.Exec(args[:]...)
 }

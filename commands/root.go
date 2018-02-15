@@ -8,14 +8,12 @@ import (
 )
 
 var (
-	// ValuesFiles is the path or a map of paths of YAML files listing values used in a data-driven template.
-	ValuesFiles string
+	// templateFilePath is the path of a data-driven template.
+	templateFilePath string
 
-	// EnvFiles is the path or a map of paths of .env files listing values used in a data-driven template.
-	EnvFiles string
-
-	// RawData are a map of values used in a data-driven template.
-	RawData string
+	// payloadEntries represents a map of .env files, YAML files, JSON files, TOML files and raw data.
+	// Value format: key,path;key,path;key,data...
+	payloadEntries string
 
 	// debug enables logging if true.
 	debug bool
@@ -23,8 +21,8 @@ var (
 	// RootCmd is the instance of the root of all commands.
 	RootCmd = &cobra.Command{
 		Use:           "orbit",
-		Short:         "A simple tool for running commands and generating files from templates",
-		Long:          "A simple tool for running commands and generating files from templates.",
+		Short:         "A task runner and a simple tool for generating files from data-driven templates",
+		Long:          "A task runner and a simple tool for generating files from data-driven templates.",
 		SilenceErrors: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if !debug {
@@ -35,8 +33,7 @@ var (
 )
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&ValuesFiles, "values", "v", "", "specify a YAML file or a map of YAML files listing values used in the template")
-	RootCmd.PersistentFlags().StringVarP(&EnvFiles, "env", "e", "", "specify a .env file or a map of .env files listing values used in the template")
-	RootCmd.PersistentFlags().StringVarP(&RawData, "raw", "r", "", "specify a map of values used in the template")
+	RootCmd.PersistentFlags().StringVarP(&templateFilePath, "file", "f", "", "specify the path of a data-driven template")
+	RootCmd.PersistentFlags().StringVarP(&payloadEntries, "payload", "p", "", "specify a map of .env files, YAML files, JSON files, TOML files and raw data")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "display a detailed output")
 }

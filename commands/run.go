@@ -49,9 +49,5 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	// last but not least, executes Orbit commands.
-	if err := r.Exec(args[:]...); err != nil {
-		return err
-	}
-
-	return nil
+	return r.Exec(args[:]...)
 }

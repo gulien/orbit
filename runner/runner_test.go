@@ -94,6 +94,6 @@ func TestOrbitRunner_Exec(t *testing.T) {
 
 	// tests a nested exec.
 	if err := r.Exec("explorer", "sputnik"); err != nil {
-		t.Error("Nested Orbit commands should been executed!")
+		t.Error("Nested Orbit commands should have been executed!")
 	}
 }

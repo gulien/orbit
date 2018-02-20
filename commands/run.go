@@ -24,10 +24,10 @@ func init() {
 	RootCmd.AddCommand(runCmd)
 }
 
-// run executes one or more stacks of commands defined in the configuration file.
+// run executes one or more stacks of commands defined in a configuration file.
 func run(cmd *cobra.Command, args []string) error {
 	// alright, let's instantiate our Orbit context...
-	ctx, err := context.NewOrbitContext(configFilePath, ValuesFiles, EnvFiles, RawData)
+	ctx, err := context.NewOrbitContext(templateFilePath, payload)
 	if err != nil {
 		return err
 	}

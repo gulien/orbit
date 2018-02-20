@@ -35,17 +35,17 @@ If no output file is given, prints the result to Stdout.
 */
 func generate(cmd *cobra.Command, args []string) error {
 	// first, let's instantiate our Orbit context.
-	ctx, err := context.NewOrbitContext(templateFilePath, ValuesFiles, EnvFiles, RawData)
+	ctx, err := context.NewOrbitContext(templateFilePath, payload)
 	if err != nil {
 		return err
 	}
 
 	// then retrieves the data from the template file.
 	g := generator.NewOrbitGenerator(ctx)
-	data, err := g.Parse()
+	data, err := g.Execute()
 	if err != nil {
 		return err
 	}
 
-	return g.Output(outputFilePath, data)
+	return g.Flush(outputFilePath, data)
 }

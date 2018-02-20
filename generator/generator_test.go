@@ -80,7 +80,7 @@ func init() {
 	manyGenerator = NewOrbitGenerator(ctx)
 }
 
-// Tests Parse function.
+// Tests Execute function.
 func TestOrbitGenerator_Parse(t *testing.T) {
 	template, err := filepath.Abs("../.assets/tests/wrong_template.yml")
 	if err != nil {
@@ -94,21 +94,21 @@ func TestOrbitGenerator_Parse(t *testing.T) {
 
 	g := NewOrbitGenerator(ctx)
 
-	if _, err := g.Parse(); err == nil {
+	if _, err := g.Execute(); err == nil {
 		t.Error("OrbitGenerator should not have been able to parse the template \"wrong_template.yml\"!")
 	}
 }
 
-// Tests Output function.
+// Tests Flush function.
 func TestOrbitGenerator_Output(t *testing.T) {
-	dataDefaultTmpl, err := defaultGenerator.Parse()
+	dataDefaultTmpl, err := defaultGenerator.Execute()
 	if err != nil {
 		t.Error("Failed to parse the default template!")
 	}
 
-	defaultGenerator.Output("", dataDefaultTmpl)
-	if err := defaultGenerator.Output("result.yml", dataDefaultTmpl); err != nil {
-		t.Error("Failed to write the outpout file from the default template!")
+	defaultGenerator.Flush("", dataDefaultTmpl)
+	if err := defaultGenerator.Flush("result.yml", dataDefaultTmpl); err != nil {
+		t.Error("Failed to flushToFile the outpout file from the default template!")
 	}
 
 	dataDefaultResult, err := ioutil.ReadFile("result.yml")
@@ -127,14 +127,14 @@ func TestOrbitGenerator_Output(t *testing.T) {
 		t.Error("Result file from the default template should be equal to the expected result!")
 	}
 
-	dataManyTmpl, err := manyGenerator.Parse()
+	dataManyTmpl, err := manyGenerator.Execute()
 	if err != nil {
 		t.Error("Failed to parse the many template!")
 	}
 
-	manyGenerator.Output("", dataManyTmpl)
-	if err := manyGenerator.Output("result.yml", dataManyTmpl); err != nil {
-		t.Error("Failed to write the outpout file from the many template!")
+	manyGenerator.Flush("", dataManyTmpl)
+	if err := manyGenerator.Flush("result.yml", dataManyTmpl); err != nil {
+		t.Error("Failed to flushToFile the outpout file from the many template!")
 	}
 
 	dataManyResult, err := ioutil.ReadFile("result.yml")
@@ -153,7 +153,7 @@ func TestOrbitGenerator_Output(t *testing.T) {
 		t.Error("Result file from the many template should be equal to the expected result!")
 	}
 
-	if err := manyGenerator.Output("/...", dataManyTmpl); err == nil {
-		t.Error("WriteOutputFile should not have been able to write the outpout file \"/...\"!")
+	if err := manyGenerator.Flush("/...", dataManyTmpl); err == nil {
+		t.Error("WriteOutputFile should not have been able to flushToFile the outpout file \"/...\"!")
 	}
 }

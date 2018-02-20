@@ -249,11 +249,14 @@ var genericMap = map[string]interface{}{
 	"reverse": reverse,
 	"uniq":    uniq,
 	"without": without,
-	"has":     func(needle interface{}, haystack []interface{}) bool { return inList(haystack, needle) },
+	"has":     has,
 
 	// Crypto:
-	"genPrivateKey":  generatePrivateKey,
-	"derivePassword": derivePassword,
+	"genPrivateKey":     generatePrivateKey,
+	"derivePassword":    derivePassword,
+	"genCA":             generateCertificateAuthority,
+	"genSelfSignedCert": generateSelfSignedCertificate,
+	"genSignedCert":     generateSignedCertificate,
 
 	// UUIDs:
 	"uuidv4": uuidv4,

@@ -26,14 +26,14 @@ import (
 )
 
 type (
-	// OrbitRunnerConfig represents a YAML configuration file defining Orbit commands.
-	OrbitRunnerConfig struct {
+	// orbitRunnerConfig represents a YAML configuration file defining Orbit commands.
+	orbitRunnerConfig struct {
 		// Commands array represents the Orbit commands.
-		Commands []*OrbitCommand `yaml:"commands"`
+		Commands []*orbitCommand `yaml:"commands"`
 	}
 
-	// OrbitCommand represents an Orbit command as defined in the configuration file.
-	OrbitCommand struct {
+	// orbitCommand represents an Orbit command as defined in the configuration file.
+	orbitCommand struct {
 		// Use is the name of the Orbit command.
 		Use string `yaml:"use"`
 
@@ -46,8 +46,8 @@ type (
 
 	// OrbitRunner helps executing Orbit commands.
 	OrbitRunner struct {
-		// config is an instance of OrbitRunnerConfig.
-		config *OrbitRunnerConfig
+		// config is an instance of orbitRunnerConfig.
+		config *orbitRunnerConfig
 
 		// context is an instance of OrbitContext.
 		context *context.OrbitContext
@@ -67,13 +67,13 @@ type (
 func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 	// first retrieves the data from the configuration file...
 	g := generator.NewOrbitGenerator(context)
-	data, err := g.Parse()
+	data, err := g.Execute()
 	if err != nil {
 		return nil, err
 	}
 
-	// then populates the OrbitRunnerConfig.
-	var config = &OrbitRunnerConfig{}
+	// then populates the orbitRunnerConfig.
+	var config = &orbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
 		return nil, errors.NewOrbitErrorf("configuration file %s is not a valid YAML file. Details:\n%s", context.TemplateFilePath, err)
 	}
@@ -134,7 +134,7 @@ func (r *OrbitRunner) Print() {
 func (r *OrbitRunner) Exec(names ...string) error {
 	// populates an array of instances of Orbit Command.
 	// if a given name doest not match with any Orbit Command defined in the configuration file, throws an error.
-	cmds := make([]*OrbitCommand, len(names))
+	cmds := make([]*orbitCommand, len(names))
 	for index, name := range names {
 		cmds[index] = r.getOrbitCommand(name)
 		if cmds[index] == nil {
@@ -153,7 +153,7 @@ func (r *OrbitRunner) Exec(names ...string) error {
 }
 
 // run runs the stack of external commands from the given Orbit command.
-func (r *OrbitRunner) run(cmd *OrbitCommand) error {
+func (r *OrbitRunner) run(cmd *orbitCommand) error {
 	logger.Debugf("starting Orbit command %s", cmd.Use)
 
 	for _, c := range cmd.Run {
@@ -174,8 +174,8 @@ func (r *OrbitRunner) run(cmd *OrbitCommand) error {
 	return nil
 }
 
-// getOrbitCommand returns an instance of OrbitCommand if found or nil.
-func (r *OrbitRunner) getOrbitCommand(name string) *OrbitCommand {
+// getOrbitCommand returns an instance of orbitCommand if found or nil.
+func (r *OrbitRunner) getOrbitCommand(name string) *orbitCommand {
 	for _, c := range r.config.Commands {
 		if name == c.Use {
 			return c

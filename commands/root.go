@@ -11,9 +11,9 @@ var (
 	// templateFilePath is the path of a data-driven template.
 	templateFilePath string
 
-	// payloadEntries represents a map of .env files, YAML files, JSON files, TOML files and raw data.
+	// payload represents a map of raw data, YAML files, TOML files, JSON files, and .env files.
 	// Value format: key,path;key,path;key,data...
-	payloadEntries string
+	payload string
 
 	// debug enables logging if true.
 	debug bool
@@ -34,6 +34,6 @@ var (
 
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&templateFilePath, "file", "f", "", "specify the path of a data-driven template")
-	RootCmd.PersistentFlags().StringVarP(&payloadEntries, "payload", "p", "", "specify a map of .env files, YAML files, JSON files, TOML files and raw data")
+	RootCmd.PersistentFlags().StringVarP(&payload, "payload", "p", "", "specify a map of raw data, YAML files, TOML files, JSON files, and .env files")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "display a detailed output")
 }

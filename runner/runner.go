@@ -42,6 +42,10 @@ type (
 		// Short is the short description of the Orbit Command.
 		Short string `yaml:"short,omitempty"`
 
+		// Private allows to hide the Orbit command when
+		// printing the available Orbit commands.
+		Private bool `yaml:"private,omitempty"`
+
 		// Run is the stack of external commands to run.
 		Run []string `yaml:"run"`
 	}
@@ -91,7 +95,9 @@ func (r *OrbitRunner) Print() {
 	fmt.Fprint(w, "\nAvailable Commands:")
 
 	for _, c := range r.config.Commands {
-		fmt.Fprintf(w, "\n  %s\t%s", c.Use, c.Short)
+		if !c.Private {
+			fmt.Fprintf(w, "\n  %s\t%s", c.Use, c.Short)
+		}
 	}
 
 	// clears the writer as it may contain some weird characters.

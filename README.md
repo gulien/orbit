@@ -291,7 +291,7 @@ Let's create our simple configuration file `orbit.yml`:
 commands:
   - use: prepare
     run:
-     - orbit generate -f configuration.yml -p Data,config.json
+     - orbit generate -f configuration.template.yml -o configuration.yml -p Data,config.json
      - echo "configuration.yml has been succesfully created!"
 ```
 

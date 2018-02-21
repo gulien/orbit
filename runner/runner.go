@@ -13,8 +13,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
-	"strings"
+	"runtime"
 	"text/tabwriter"
 
 	"github.com/gulien/orbit/context"
@@ -24,6 +23,9 @@ import (
 
 	"gopkg.in/yaml.v2"
 )
+
+const defaultWindowsShellEnvVariable = "COMSPEC"
+const defaultPosixShellEnvVariable = "SHELL"
 
 type (
 	// orbitRunnerConfig represents a YAML configuration file defining Orbit commands.
@@ -52,15 +54,6 @@ type (
 		// context is an instance of OrbitContext.
 		context *context.OrbitContext
 	}
-
-	// orbitExternalCommand represents an external command from an Orbit command.
-	orbitExternalCommand struct {
-		// argc is the binary to call.
-		argc string
-
-		// argv are the arguments of the external command.
-		argv []string
-	}
 )
 
 // NewOrbitRunner creates an instance of OrbitRunner.
@@ -86,29 +79,6 @@ func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 	logger.Debugf("runner has been instantiated with config %s and context %s", r.config, r.context)
 
 	return r, nil
-}
-
-// newOrbitExternalCommand creates an instance of orbitExternalCommand.
-func newOrbitExternalCommand(c string) *orbitExternalCommand {
-	pattern := regexp.MustCompile("'.+'|\".+\"|`.+`|\\S+")
-	parts := pattern.FindAllString(c, -1)
-
-	extCmd := &orbitExternalCommand{
-		argc: parts[0],
-	}
-
-	for _, argv := range parts[1:] {
-		argv = strings.TrimPrefix(argv, "'")
-		argv = strings.TrimSuffix(argv, "'")
-		argv = strings.TrimPrefix(argv, "\"")
-		argv = strings.TrimSuffix(argv, "\"")
-		argv = strings.TrimPrefix(argv, "`")
-		argv = strings.TrimSuffix(argv, "`")
-
-		extCmd.argv = append(extCmd.argv, argv)
-	}
-
-	return extCmd
 }
 
 // Print prints the available Orbit commands from the configuration file
@@ -157,10 +127,15 @@ func (r *OrbitRunner) run(cmd *orbitCommand) error {
 	logger.Debugf("starting Orbit command %s", cmd.Use)
 
 	for _, c := range cmd.Run {
-		extCmd := newOrbitExternalCommand(c)
-		e := exec.Command(extCmd.argc, extCmd.argv...)
 
-		logger.Debugf("running external command %s with args %s", extCmd.argc, extCmd.argv)
+		var e *exec.Cmd
+		if runtime.GOOS == "windows" {
+			e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", c)
+		} else {
+			e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", c)
+		}
+
+		logger.Debugf("running external command %s", e.Args)
 
 		e.Stdout = os.Stdout
 		e.Stderr = os.Stderr

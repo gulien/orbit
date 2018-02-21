@@ -8,12 +8,19 @@ import (
 )
 
 // Tests if initializing an OrbitRunner throws an error
-// with a wrong configuration file or no error with a correct
+// with a wrong/broken configuration file or no error with a correct
 // configuration file.
 func TestNewOrbitRunner(t *testing.T) {
 	// case 1: uses a wrong configuration file.
 	wrongTemplateFilePath, _ := filepath.Abs("../_tests/.env")
 	ctx, _ := context.NewOrbitContext(wrongTemplateFilePath, "")
+	if _, err := NewOrbitRunner(ctx); err == nil {
+		t.Error("OrbitRunner should not have been instantiated!")
+	}
+
+	// case 2: uses a broken configuration file.
+	brokenTemplateFilePath, _ := filepath.Abs("../_tests/broken-template.yml")
+	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "")
 	if _, err := NewOrbitRunner(ctx); err == nil {
 		t.Error("OrbitRunner should not have been instantiated!")
 	}

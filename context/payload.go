@@ -112,8 +112,7 @@ func getDecoder(value string) orbitDecoder {
 	}
 
 	switch extension := filepath.Ext(value); extension {
-	case ".yaml":
-	case ".yml":
+	case ".yaml", ".yml":
 		return &orbitYAMLDecoder{value: value}
 	case ".toml":
 		return &orbitTOMLDecoder{value: value}

@@ -90,6 +90,13 @@ func TestGetDecoder(t *testing.T) {
 		t.Error("Decoder should have been an instance of orbitYAMLDecoder!")
 	}
 
+	YAMLDataSourceFilePath, _ = filepath.Abs("../_tests/data-source.yaml")
+	d = getDecoder(YAMLDataSourceFilePath)
+	YAMLDecoder = &orbitYAMLDecoder{}
+	if reflect.TypeOf(d) != reflect.TypeOf(YAMLDecoder) {
+		t.Error("Decoder should have been an instance of orbitYAMLDecoder!")
+	}
+
 	// case 3: should returns an instance of orbitTOMLDecoder
 	TOMLDataSourceFilePath, _ := filepath.Abs("../_tests/data-source.toml")
 	d = getDecoder(TOMLDataSourceFilePath)

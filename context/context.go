@@ -41,8 +41,14 @@ func NewOrbitContext(templateFilePath string, payload string) (*OrbitContext, er
 	// last but not least, instantiates an orbitPayload which will allow us
 	// to retrieves the data provided by the entries given by the user.
 	p := &orbitPayload{}
-	p.populateFromFile("")
-	p.populateFromString(payload)
+
+	if err := p.populateFromFile(""); err != nil {
+		return nil, err
+	}
+
+	if err := p.populateFromString(payload); err != nil {
+		return nil, err
+	}
 
 	data, err := p.retrieveData()
 	if err != nil {

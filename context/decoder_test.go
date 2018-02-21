@@ -18,22 +18,14 @@ func TestOrbitDumpDecoderDecode(t *testing.T) {
 // or fails if the YAML file is broken.
 func TestOrbitYAMLDecoderDecode(t *testing.T) {
 	// case 1: uses a broken YAML file.
-	brokenDataSourceFilePath, err := filepath.Abs("../_tests/broken-data-source.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	brokenDataSourceFilePath, _ := filepath.Abs("../_tests/broken-data-source.yml")
 	d := &orbitYAMLDecoder{value: brokenDataSourceFilePath}
 	if _, err := d.decode(); err == nil {
 		t.Error("orbitYAMLDecoder should not have been able to decode its value!")
 	}
 
 	// case 2: uses a correct YAML file.
-	dataSourceFilePath, err := filepath.Abs("../_tests/data-source.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.yml")
 	d = &orbitYAMLDecoder{value: dataSourceFilePath}
 	if _, err := d.decode(); err != nil {
 		t.Error("orbitYAMLDecoder should have been able to decode its value!")
@@ -44,22 +36,14 @@ func TestOrbitYAMLDecoderDecode(t *testing.T) {
 // or fails if the TOML file is broken.
 func TestOrbitTOMLDecoderDecode(t *testing.T) {
 	// case 1: uses a broken TOML file.
-	brokenDataSourceFilePath, err := filepath.Abs("../_tests/broken-data-source.toml")
-	if err != nil {
-		panic(err)
-	}
-
+	brokenDataSourceFilePath, _ := filepath.Abs("../_tests/broken-data-source.toml")
 	d := &orbitTOMLDecoder{value: brokenDataSourceFilePath}
 	if _, err := d.decode(); err == nil {
 		t.Error("orbitTOMLDecoder should not have been able to decode its value!")
 	}
 
 	// case 2: uses a correct TOML file.
-	dataSourceFilePath, err := filepath.Abs("../_tests/data-source.toml")
-	if err != nil {
-		panic(err)
-	}
-
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.toml")
 	d = &orbitTOMLDecoder{value: dataSourceFilePath}
 	if _, err := d.decode(); err != nil {
 		t.Error("orbitTOMLDecoder should have been able to decode its value!")
@@ -70,22 +54,14 @@ func TestOrbitTOMLDecoderDecode(t *testing.T) {
 // or fails if the JSON file is broken.
 func TestOrbitJSONDecoderDecode(t *testing.T) {
 	// case 1: uses a broken JSON file.
-	brokenDataSourceFilePath, err := filepath.Abs("../_tests/broken-data-source.json")
-	if err != nil {
-		panic(err)
-	}
-
+	brokenDataSourceFilePath, _ := filepath.Abs("../_tests/broken-data-source.json")
 	d := &orbitJSONDecoder{value: brokenDataSourceFilePath}
 	if _, err := d.decode(); err == nil {
 		t.Error("orbitJSONDecoder should not have been able to decode its value!")
 	}
 
 	// case 2: uses a correct JSON file.
-	dataSourceFilePath, err := filepath.Abs("../_tests/data-source.json")
-	if err != nil {
-		panic(err)
-	}
-
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.json")
 	d = &orbitJSONDecoder{value: dataSourceFilePath}
 	if _, err := d.decode(); err != nil {
 		t.Error("orbitJSONDecoder should have been able to decode its value!")
@@ -96,22 +72,14 @@ func TestOrbitJSONDecoderDecode(t *testing.T) {
 // or fails if the .env file is broken.
 func TestOrbitEnvFileDecoderDecode(t *testing.T) {
 	// case 1: uses a broken .env file.
-	brokenDataSourceFilePath, err := filepath.Abs("../_tests/.broken-env")
-	if err != nil {
-		panic(err)
-	}
-
+	brokenDataSourceFilePath, _ := filepath.Abs("../_tests/.broken-env")
 	d := &orbitEnvFileDecoder{value: brokenDataSourceFilePath}
 	if _, err := d.decode(); err == nil {
 		t.Error("orbitEnvFileDecoder should not have been able to decode its value!")
 	}
 
 	// case 2: uses a correct .env file.
-	dataSourceFilePath, err := filepath.Abs("../_tests/.env")
-	if err != nil {
-		panic(err)
-	}
-
+	dataSourceFilePath, _ := filepath.Abs("../_tests/.env")
 	d = &orbitEnvFileDecoder{value: dataSourceFilePath}
 	if _, err := d.decode(); err != nil {
 		t.Error("orbitEnvFileDecoder should have been able to decode its value!")

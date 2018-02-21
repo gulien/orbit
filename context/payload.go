@@ -73,13 +73,13 @@ func (p *orbitPayload) populateFromString(payload string) error {
 	entries := strings.Split(payload, ";")
 	for _, entry := range entries {
 		entry := strings.Split(entry, ",")
-		if len(entry) != 2 {
+		if len(entry) == 1 {
 			return errors.NewOrbitErrorf("unable to process the payload entry %s", entry)
 		}
 
 		p.PayloadEntries = append(p.PayloadEntries, &orbitPayloadEntry{
 			Key:   entry[0],
-			Value: entry[1],
+			Value: strings.Join(entry[1:], ","),
 		})
 	}
 

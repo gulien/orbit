@@ -19,11 +19,7 @@ func TestNewOrbitContext(t *testing.T) {
 	}
 
 	// case 3: uses an existing template file path.
-	templateFilePath, err := filepath.Abs("../_tests/template.txt")
-	if err != nil {
-		panic(err)
-	}
-
+	templateFilePath, _ := filepath.Abs("../_tests/template.yml")
 	if _, err := NewOrbitContext(templateFilePath, ""); err != nil {
 		t.Error("OrbitContext should have been instantiated!")
 	}

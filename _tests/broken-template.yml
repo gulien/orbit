@@ -1,0 +1,19 @@
+companies:
+
+{{ range $company := .Values.companies }}
+  - name: {{ $company.name }}
+  - launchers:
+  {{ range $launcher := $company.launchers }}
+    - {{ $launcher }}
+  {{ end }}
+{{ end }}
+
+agencies:
+
+{{ range $agency := .Values.agencies }}
+  - name: {{ $agency.name }}
+  - launchers:
+  {{ range $launcher := $agency.launchers }}
+    - {{ $launcher }}
+  {{ end }}
+{{ end }}

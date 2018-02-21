@@ -16,22 +16,14 @@ func TestPopulateFromFile(t *testing.T) {
 	}
 
 	// case 2: uses a broken payload file.
-	brokenPayloadFilePath, err := filepath.Abs("../_tests/broken-orbit-payload.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	brokenPayloadFilePath, _ := filepath.Abs("../_tests/broken-orbit-payload.yml")
 	p = &orbitPayload{}
 	if err := p.populateFromFile(brokenPayloadFilePath); err == nil {
 		t.Error("orbitPayload should not have been populated!")
 	}
 
 	// case 3: uses an existing payload file path.
-	customPayloadFilePath, err := filepath.Abs("../_tests/orbit-payload.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	customPayloadFilePath, _ := filepath.Abs("../_tests/orbit-payload.yml")
 	p = &orbitPayload{}
 	if err := p.populateFromFile(customPayloadFilePath); err != nil {
 		t.Error("orbitPayload should have been populated!")
@@ -64,31 +56,17 @@ func TestPopulateFromString(t *testing.T) {
 // with a wrong payload entry or no error if the payload entry is correct.
 func TestRetrieveData(t *testing.T) {
 	// case 1: uses a broken payload entry.
-	brokenDataSourceFilePath, err := filepath.Abs("../_tests/broken-data-source.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	brokenDataSourceFilePath, _ := filepath.Abs("../_tests/broken-data-source.yml")
 	p := &orbitPayload{}
-	if err := p.populateFromString("key," + brokenDataSourceFilePath); err != nil {
-		panic(err)
-	}
-
+	p.populateFromString("key," + brokenDataSourceFilePath)
 	if _, err := p.retrieveData(); err == nil {
 		t.Error("orbitPayload should not have been hable to retrieve data!")
 	}
 
 	// case 2: uses a correct payload entry.
-	dataSourceFilePath, err := filepath.Abs("../_tests/data-source.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.yml")
 	p = &orbitPayload{}
-	if err := p.populateFromString("key," + dataSourceFilePath); err != nil {
-		panic(err)
-	}
-
+	p.populateFromString("key," + dataSourceFilePath)
 	if _, err := p.retrieveData(); err != nil {
 		t.Error("orbitPayload should have been hable to retrieve data!")
 	}
@@ -100,17 +78,12 @@ func TestGetDecoder(t *testing.T) {
 	// case 1: should returns an instance of orbitDumbDecoder
 	d := getDecoder("raw data")
 	dumbDecoder := &orbitDumbDecoder{}
-
 	if reflect.TypeOf(d) != reflect.TypeOf(dumbDecoder) {
 		t.Error("Decoder should have been an instance of orbitDumbDecoder!")
 	}
 
 	// case 2: should returns an instance of orbitYAMLDecoder
-	YAMLDataSourceFilePath, err := filepath.Abs("../_tests/data-source.yml")
-	if err != nil {
-		panic(err)
-	}
-
+	YAMLDataSourceFilePath, _ := filepath.Abs("../_tests/data-source.yml")
 	d = getDecoder(YAMLDataSourceFilePath)
 	YAMLDecoder := &orbitYAMLDecoder{}
 	if reflect.TypeOf(d) != reflect.TypeOf(YAMLDecoder) {
@@ -118,11 +91,7 @@ func TestGetDecoder(t *testing.T) {
 	}
 
 	// case 3: should returns an instance of orbitTOMLDecoder
-	TOMLDataSourceFilePath, err := filepath.Abs("../_tests/data-source.toml")
-	if err != nil {
-		panic(err)
-	}
-
+	TOMLDataSourceFilePath, _ := filepath.Abs("../_tests/data-source.toml")
 	d = getDecoder(TOMLDataSourceFilePath)
 	TOMLDecoder := &orbitTOMLDecoder{}
 	if reflect.TypeOf(d) != reflect.TypeOf(TOMLDecoder) {
@@ -130,11 +99,7 @@ func TestGetDecoder(t *testing.T) {
 	}
 
 	// case 4: should returns an instance of orbitJSONDecoder
-	JSONDataSourceFilePath, err := filepath.Abs("../_tests/data-source.json")
-	if err != nil {
-		panic(err)
-	}
-
+	JSONDataSourceFilePath, _ := filepath.Abs("../_tests/data-source.json")
 	d = getDecoder(JSONDataSourceFilePath)
 	JSONDecoder := &orbitJSONDecoder{}
 	if reflect.TypeOf(d) != reflect.TypeOf(JSONDecoder) {
@@ -142,11 +107,7 @@ func TestGetDecoder(t *testing.T) {
 	}
 
 	// case 5: should returns an instance of orbitEnvFileDecoder
-	envFileDataSourceFilePath, err := filepath.Abs("../_tests/.env")
-	if err != nil {
-		panic(err)
-	}
-
+	envFileDataSourceFilePath, _ := filepath.Abs("../_tests/.env")
 	d = getDecoder(envFileDataSourceFilePath)
 	envFileDecoder := &orbitEnvFileDecoder{}
 	if reflect.TypeOf(d) != reflect.TypeOf(envFileDecoder) {

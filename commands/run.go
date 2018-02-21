@@ -7,6 +7,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// default Orbit configuration file path.
+const orbitFilePath = "orbit.yml"
+
 var (
 	// runCmd is the instance of run command.
 	runCmd = &cobra.Command{
@@ -27,6 +30,10 @@ func init() {
 // run executes one or more stacks of commands defined in a configuration file.
 func run(cmd *cobra.Command, args []string) error {
 	// alright, let's instantiate our Orbit context...
+	if templateFilePath == "" {
+		templateFilePath = orbitFilePath
+	}
+
 	ctx, err := context.NewOrbitContext(templateFilePath, payload)
 	if err != nil {
 		return err

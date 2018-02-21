@@ -23,5 +23,5 @@ This function is available in
 a data-driven template by using "debug".
 */
 func isDebug() bool {
-	return logger.IsSilent()
+	return !logger.IsSilent()
 }

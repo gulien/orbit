@@ -16,7 +16,7 @@ func TestGetOS(t *testing.T) {
 
 // A dumb test to improve code coverage.
 func TestIsDebug(t *testing.T) {
-	if isDebug() != logger.IsSilent() {
+	if isDebug() != !logger.IsSilent() {
 		t.Error("Dumb test should have been successful!")
 	}
 }

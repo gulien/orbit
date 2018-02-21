@@ -49,7 +49,7 @@ func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 		funcMap: funcMap,
 	}
 
-	logger.Debugf("generator has been instantiated with context %s and functions map %s", g.context, g.funcMap)
+	logger.Debugf("generator has been instantiated with context %s", g.context)
 
 	return g
 }

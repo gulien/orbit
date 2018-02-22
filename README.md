@@ -182,10 +182,10 @@ agencies:
 The command for generating a file from this template is quite simple:
 
 ```
-orbit generate -f template.yml -p Values,data-source.yml -o agencies.yml
+orbit generate -f template.yml -p Values,data-source.yml -o companies.yml
 ```
 
-This command will create the `agencies.yml` file with this content:
+This command will create the `companies.yml` file with this content:
 
 ```yaml
 companies:

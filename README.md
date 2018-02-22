@@ -206,7 +206,7 @@ companies:
 #### Base
 
 ```
-orbit run [commands] [flags]
+orbit run [tasks] [flags]
 ```
 
 #### Flags

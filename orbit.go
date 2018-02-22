@@ -5,7 +5,7 @@ Orbit is a powerful task runner for executing commands and generating files from
 
 Orbit started with the need to find a cross-platform alternative of "make"
 and "sed -i" commands. As it does not aim to be as powerful as these two
-commands, Orbit offers an elegant solution for running commands and generating
+commands, Orbit offers an elegant solution for running tasks and generating
 files from templates, whatever the platform you're using.
 
 For more information, go to https://github.com/gulien/orbit.

@@ -14,8 +14,8 @@ var (
 	// runCmd is the instance of run command.
 	runCmd = &cobra.Command{
 		Use:           "run",
-		Short:         "Runs one or more stack of commands defined in a configuration file",
-		Long:          "Runs one or more stack of commands defined in a configuration file.",
+		Short:         "Runs one or more tasks defined in a configuration file",
+		Long:          "Runs one or more tasks defined in a configuration file.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		RunE:          run,
@@ -27,7 +27,7 @@ func init() {
 	RootCmd.AddCommand(runCmd)
 }
 
-// run executes one or more stacks of commands defined in a configuration file.
+// run runs one or more tasks defined in a configuration file.
 func run(cmd *cobra.Command, args []string) error {
 	// alright, let's instantiate our Orbit context...
 	if templateFilePath == "" {
@@ -45,12 +45,12 @@ func run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// if no args, prints the available Orbit commands to Stdout.
+	// if no args, prints the available tasks to Stdout...
 	if len(args) == 0 {
 		r.Print()
 		return nil
 	}
 
-	// last but not least, executes Orbit commands.
-	return r.Exec(args[:]...)
+	// ... or runs given tasks.
+	return r.Run(args[:]...)
 }

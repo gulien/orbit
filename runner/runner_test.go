@@ -42,30 +42,29 @@ func TestPrint(t *testing.T) {
 	r.Print()
 }
 
-// Tests Exec function by running different kind of commands.
-func TestExec(t *testing.T) {
+// Tests Run function by running different kind of tasks.
+func TestRun(t *testing.T) {
 	templateFilePath, _ := filepath.Abs("../_tests/orbit.yml")
 	ctx, _ := context.NewOrbitContext(templateFilePath, "")
 	r, _ := NewOrbitRunner(ctx)
 
-	// case 1: uses a non existing Orbit command.
-	if err := r.Exec("discovery"); err == nil {
-		t.Error("Orbit command should not exist!")
+	// case 1: uses a non existing task.
+	if err := r.Run("discovery"); err == nil {
+		t.Error("Task should not exist!")
 	}
 
-	// case 2: uses an Orbit command which has a non existing
-	// external command.
-	if err := r.Exec("challenger"); err == nil {
-		t.Error("Orbit command should have failed!")
+	// case 2: uses a task which has a non existing command.
+	if err := r.Run("challenger"); err == nil {
+		t.Error("Task should have failed!")
 	}
 
-	// case 3: uses a correct Orbit command.
-	if err := r.Exec("explorer"); err != nil {
-		t.Error("Orbit command should have been executed!")
+	// case 3: uses a correct task.
+	if err := r.Run("explorer"); err != nil {
+		t.Error("Task should have been ran!")
 	}
 
-	// case 4: uses nested Orbit commands.
-	if err := r.Exec("explorer", "sputnik"); err != nil {
-		t.Error("Nested Orbit commands should have been executed!")
+	// case 4: uses nested tasks.
+	if err := r.Run("explorer", "sputnik"); err != nil {
+		t.Error("Nested tasks should have been ran!")
 	}
 }

@@ -1,4 +1,4 @@
-commands:
+tasks:
   - use: "explorer"
     run:
       - dep status

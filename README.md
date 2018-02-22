@@ -25,14 +25,14 @@
 
 Orbit started with the need to find a cross-platform alternative of `make`
 and `sed -i` commands. As it does not aim to be as powerful as these two
-commands, Orbit offers an elegant solution for running commands and generating
+commands, Orbit offers an elegant solution for running tasks and generating
 files from templates, whatever the platform you're using.
 
 # Menu
 
 * [Install](#install)
 * [Generating a file from a template](#generating-a-file-from-a-template)
-* [Defining and executing commands](#defining-and-executing-commands)
+* [Defining and running tasks](#defining-and-running-tasks)
 
 ## Install
 
@@ -199,7 +199,7 @@ companies:
       - New Glenn
 ```
 
-## Defining and executing commands
+## Defining and running tasks
 
 ### Command description
 
@@ -215,18 +215,18 @@ orbit run [commands] [flags]
 
 Like the `make` command with its `Makefile`, Orbit requires a
 configuration file (*YAML*, by default `orbit.yml`) where you define
-your Orbit commands:
+your tasks:
 
 ```yaml
-commands:
-  - use: my_first_command
-    short: My first command short description
+tasks:
+  - use: my_first_task
+    short: My first task short description
     run:
       - command [args]
       - command [args]
       - ...
-  - use: my_second_command
-    short: My second command short description
+  - use: my_second_task
+    short: My second task short description
     private: true
     run:
       - command [args]
@@ -234,30 +234,30 @@ commands:
       - ...
 ```
 
-* the `use` attribute is the name of your Orbit command.
+* the `use` attribute is the name of your task.
 * the `short` attribute is optional and is displayed when running `orbit run`
-* the `private` attribute is optional and hides the considered command when running `orbit run`
-* the `run` attribute is the stack of external commands to run.
-* an external command is a binary which is available in your `$PATH`.
+* the `private` attribute is optional and hides the considered task when running `orbit run`
+* the `run` attribute is the stack of commands to run.
+* a command is a binary which is available in your `$PATH`.
 
 Once you've created your `orbit.yml` file, you're able
-to run your Orbit commands with:
+to run your tasks with:
 
 ```
-orbit run my_first_command
-orbit run my_second_command
-orbit run my_first_command my_second_command
+orbit run my_first_task
+orbit run my_second_task
+orbit run my_first_task my_second_task
 ```
 
-Notice that you may run nested Orbit commands :metal:!
+Notice that you may run nested tasks :metal:!
 
 Also a cool feature of Orbit is its ability to read its configuration through
 a template.
 
-For example, if you need to run a platform specific script, you may write:
+For example, if you need to execute a platform specific script, you may write:
 
 ```yaml
-commands:
+tasks:
   - use: script
     run:
     {{ if ne "windows" os }}
@@ -268,7 +268,7 @@ commands:
 ```
 
 **Note:** Orbit will automatically detect the shell you're using. 
-Executing the command `script` from the previous example will in fact run `cmd.exe /c \.my_script.bat` on
+Running the task `script` from the previous example will in fact executes `cmd.exe /c \.my_script.bat` on
 Windows or `/bin/sh -c my_script.sh` (or `/bin/zsh -c my_script.sh` etc.) on others OS.
 
 ##### `-p --payload`
@@ -288,20 +288,20 @@ Displays a detailed output.
 Let's create our simple configuration file `orbit.yml`:
 
 ```yaml
-commands:
+tasks:
   - use: prepare
     run:
      - orbit generate -f configuration.template.yml -o configuration.yml -p Data,config.json
      - echo "configuration.yml has been succesfully created!"
 ```
 
-You are now able to run:
+You are now able to run the task `prepare` with:
 
 ```
 orbit run prepare
 ```
 
-This command will:
+This task will:
 
 * create a file named `configuration.yml`
 * print `configuration.yml has been succesfully created!`

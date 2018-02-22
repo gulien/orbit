@@ -1,4 +1,4 @@
-commands:
+tasks:
 
   - use: install
     short: Installs all required dependencies

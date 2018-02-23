@@ -7,93 +7,64 @@ import (
 	"github.com/gulien/orbit/context"
 )
 
-// Tests if initializing an OrbitRunner with a wrong configuration file
-// throws an error.
+// Tests if initializing an OrbitRunner throws an error
+// with a wrong/broken configuration file or no error with a correct
+// configuration file.
 func TestNewOrbitRunner(t *testing.T) {
-	config, err := filepath.Abs("../.assets/tests/wrong_template.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err := context.NewOrbitContext(config, "", "", "")
-	if err != nil {
-		panic(err)
-	}
-
+	// case 1: uses a wrong configuration file.
+	wrongTemplateFilePath, _ := filepath.Abs("../_tests/.env")
+	ctx, _ := context.NewOrbitContext(wrongTemplateFilePath, "")
 	if _, err := NewOrbitRunner(ctx); err == nil {
 		t.Error("OrbitRunner should not have been instantiated!")
 	}
 
-	config, err = filepath.Abs("../.assets/tests/.env")
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err = context.NewOrbitContext(config, "", "", "")
-	if err != nil {
-		panic(err)
-	}
-
+	// case 2: uses a broken configuration file.
+	brokenTemplateFilePath, _ := filepath.Abs("../_tests/broken-template.yml")
+	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "")
 	if _, err := NewOrbitRunner(ctx); err == nil {
 		t.Error("OrbitRunner should not have been instantiated!")
+	}
+
+	// case 2: uses a correct configuration file.
+	templateFilePath, _ := filepath.Abs("../_tests/orbit.yml")
+	ctx, _ = context.NewOrbitContext(templateFilePath, "")
+	if _, err := NewOrbitRunner(ctx); err != nil {
+		t.Error("OrbitRunner should have been instantiated!")
 	}
 }
 
-// Tests Print function.
-func TestOrbitRunner_Print(t *testing.T) {
-	config, err := filepath.Abs("../.assets/tests/orbit.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err := context.NewOrbitContext(config, "", "", "")
-	if err != nil {
-		panic(err)
-	}
-
-	r, err := NewOrbitRunner(ctx)
-	if err != nil {
-		panic(err)
-	}
+// A dumb test to improve code coverage.
+func TestPrint(t *testing.T) {
+	templateFilePath, _ := filepath.Abs("../_tests/orbit.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "")
+	r, _ := NewOrbitRunner(ctx)
 
 	r.Print()
 }
 
-// Tests Exec function.
-func TestOrbitRunner_Exec(t *testing.T) {
-	config, err := filepath.Abs("../.assets/tests/orbit.yml")
-	if err != nil {
-		panic(err)
+// Tests Run function by running different kind of tasks.
+func TestRun(t *testing.T) {
+	templateFilePath, _ := filepath.Abs("../_tests/orbit.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "")
+	r, _ := NewOrbitRunner(ctx)
+
+	// case 1: uses a non existing task.
+	if err := r.Run("discovery"); err == nil {
+		t.Error("Task should not exist!")
 	}
 
-	ctx, err := context.NewOrbitContext(config, "", "", "")
-	if err != nil {
-		panic(err)
+	// case 2: uses a task which has a non existing command.
+	if err := r.Run("challenger"); err == nil {
+		t.Error("Task should have failed!")
 	}
 
-	r, err := NewOrbitRunner(ctx)
-	if err != nil {
-		panic(err)
+	// case 3: uses a correct task.
+	if err := r.Run("explorer"); err != nil {
+		t.Error("Task should have been ran!")
 	}
 
-	// tests if calling an unknown Orbit command throws an error.
-	if err := r.Exec("discovery"); err == nil {
-		t.Error("Orbit command should not exist!")
-	}
-
-	// tests if calling an Orbit command with a non-existing external command
-	// throws an error.
-	if err := r.Exec("challenger"); err == nil {
-		t.Error("Orbit command should have failed!")
-	}
-
-	// tests a simple exec.
-	if err := r.Exec("explorer"); err != nil {
-		t.Error("Orbit command should have been executed!")
-	}
-
-	// tests a nested exec.
-	if err := r.Exec("explorer", "sputnik"); err != nil {
-		t.Error("Nested Orbit commands should have been executed!")
+	// case 4: uses nested tasks.
+	if err := r.Run("explorer", "sputnik"); err != nil {
+		t.Error("Nested tasks should have been ran!")
 	}
 }

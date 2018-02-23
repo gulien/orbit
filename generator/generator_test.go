@@ -12,148 +12,228 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var (
-	// defaultGenerator is an instance of OrbitGenerator used in this test suite which contains one values file and one
-	// .env file.
-	defaultGenerator *OrbitGenerator
+// Tests if executing a data-driven template throws an error if it's broken
+// or no error if it's correct.
+func TestExecute(t *testing.T) {
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.yml")
 
-	// manyGenerator is an instance of OrbitGenerator used in this test suite which contains two values files and two
-	// .env files.
-	manyGenerator *OrbitGenerator
-
-	// expectedResult contains the data from the file "expected_result.yml"
-	expectedResult interface{}
-)
-
-// init instantiates expectedResult plus the OrbitGenerator defaultGenerator and manyGenerator.
-func init() {
-	// retrieves the data from the file "expected_result.yml".
-	expectedResultPath, err := filepath.Abs("../.assets/tests/expected_result.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	data, err := ioutil.ReadFile(expectedResultPath)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := yaml.Unmarshal(data, &expectedResult); err != nil {
-		panic(err)
-	}
-
-	// loads assets.
-	defaultTmpl, err := filepath.Abs("../.assets/tests/template.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	values, err := filepath.Abs("../.assets/tests/values.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	envFile, err := filepath.Abs("../.assets/tests/.env")
-	if err != nil {
-		panic(err)
-	}
-
-	rawData := "author=Julien Neuhart;comment=A simple file for testing purpose"
-
-	ctx, err := context.NewOrbitContext(defaultTmpl, values, envFile, rawData)
-	if err != nil {
-		panic(err)
-	}
-
-	defaultGenerator = NewOrbitGenerator(ctx)
-
-	manyTmpl, err := filepath.Abs("../.assets/tests/template_many.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err = context.NewOrbitContext(manyTmpl, "ru,"+values+";usa,"+values, "ru,"+envFile+";usa,"+envFile, rawData)
-	if err != nil {
-		panic(err)
-	}
-
-	manyGenerator = NewOrbitGenerator(ctx)
-}
-
-// Tests Parse function.
-func TestOrbitGenerator_Parse(t *testing.T) {
-	template, err := filepath.Abs("../.assets/tests/wrong_template.yml")
-	if err != nil {
-		panic(err)
-	}
-
-	ctx, err := context.NewOrbitContext(template, "", "", "")
-	if err != nil {
-		panic(err)
-	}
-
+	// case 1: uses a broken data-driven template.
+	brokenTemplateFilePath, _ := filepath.Abs("../_tests/broken-template.yml")
+	ctx, _ := context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath)
 	g := NewOrbitGenerator(ctx)
+	if _, err := g.Execute(); err == nil {
+		t.Errorf("OrbitGenerator should not have been able to parse the data-driven template %s", brokenTemplateFilePath)
+	}
 
-	if _, err := g.Parse(); err == nil {
-		t.Error("OrbitGenerator should not have been able to parse the template \"wrong_template.yml\"!")
+	// case 2: uses a correct data-driven template.
+	templateFilePath, _ := filepath.Abs("../_tests/template.yml")
+	ctx, _ = context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	g = NewOrbitGenerator(ctx)
+	if _, err := g.Execute(); err != nil {
+		t.Errorf("OrbitGenerator should have been able to parse the data-driven template %s", templateFilePath)
 	}
 }
 
-// Tests Output function.
-func TestOrbitGenerator_Output(t *testing.T) {
-	dataDefaultTmpl, err := defaultGenerator.Parse()
-	if err != nil {
-		t.Error("Failed to parse the default template!")
+// Tests if flushing from raw data source works as expected.
+func TestFlushFromRawDataSource(t *testing.T) {
+	templateFilePath, _ := filepath.Abs("../_tests/template-raw.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "SPACEX_LAUNCHERS,Falcon 9, Falcon Heavy;BLUE_ORIGIN_LAUNCHERS,New Shepard, New Glenn;ESA_LAUNCHERS,Ariane 5, Vega")
+	g := NewOrbitGenerator(ctx)
+	data, _ := g.Execute()
+
+	// case 1: uses an empty output path.
+	if err := g.Flush("", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to Stdout!")
 	}
 
-	defaultGenerator.Output("", dataDefaultTmpl)
-	if err := defaultGenerator.Output("result.yml", dataDefaultTmpl); err != nil {
-		t.Error("Failed to write the outpout file from the default template!")
+	// case 2: uses a broken output path.
+	if err := g.Flush("/...", data); err == nil {
+		t.Error("OrbitGenerator should not have been able to flush to result file /...!")
 	}
 
-	dataDefaultResult, err := ioutil.ReadFile("result.yml")
-	if err != nil {
-		panic(err)
+	// case 3: uses a correct output path.
+	if err := g.Flush("result.yml", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to result file result.yml!")
 	}
 
-	var defaultResult interface{}
-	if err := yaml.Unmarshal(dataDefaultResult, &defaultResult); err != nil {
-		panic(err)
-	}
+	expectedResultFilePath, _ := filepath.Abs("../_tests/expected-result-raw-env.yml")
+	expectedResultFileData, _ := ioutil.ReadFile(expectedResultFilePath)
+
+	var expectedResult interface{}
+	yaml.Unmarshal(expectedResultFileData, &expectedResult)
+
+	resultFileData, _ := ioutil.ReadFile("result.yml")
+
+	var result interface{}
+	yaml.Unmarshal(resultFileData, &result)
 
 	os.Remove("result.yml")
 
-	if !reflect.DeepEqual(defaultResult, expectedResult) {
-		t.Error("Result file from the default template should be equal to the expected result!")
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("result.yml should be equal to expected-result-raw-env.yml!")
+	}
+}
+
+// Tests if flushing from YAML data source works as expected.
+func TestFlushFromYAMLDataSource(t *testing.T) {
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.yml")
+	templateFilePath, _ := filepath.Abs("../_tests/template.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	g := NewOrbitGenerator(ctx)
+	data, _ := g.Execute()
+
+	// case 1: uses an empty output path.
+	if err := g.Flush("", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to Stdout!")
 	}
 
-	dataManyTmpl, err := manyGenerator.Parse()
-	if err != nil {
-		t.Error("Failed to parse the many template!")
+	// case 2: uses a broken output path.
+	if err := g.Flush("/...", data); err == nil {
+		t.Error("OrbitGenerator should not have been able to flush to result file /...!")
 	}
 
-	manyGenerator.Output("", dataManyTmpl)
-	if err := manyGenerator.Output("result.yml", dataManyTmpl); err != nil {
-		t.Error("Failed to write the outpout file from the many template!")
+	// case 3: uses a correct output path.
+	if err := g.Flush("result.yml", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to result file result.yml!")
 	}
 
-	dataManyResult, err := ioutil.ReadFile("result.yml")
-	if err != nil {
-		panic(err)
-	}
+	expectedResultFilePath, _ := filepath.Abs("../_tests/data-source.yml")
+	expectedResultFileData, _ := ioutil.ReadFile(expectedResultFilePath)
 
-	var manyResult interface{}
-	if err := yaml.Unmarshal(dataManyResult, &manyResult); err != nil {
-		panic(err)
-	}
+	var expectedResult interface{}
+	yaml.Unmarshal(expectedResultFileData, &expectedResult)
+
+	resultFileData, _ := ioutil.ReadFile("result.yml")
+
+	var result interface{}
+	yaml.Unmarshal(resultFileData, &result)
 
 	os.Remove("result.yml")
 
-	if !reflect.DeepEqual(manyResult, expectedResult) {
-		t.Error("Result file from the many template should be equal to the expected result!")
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("result.yml should be equal to data-source.yml!")
+	}
+}
+
+// Tests if flushing from TOML data source works as expected.
+func TestFlushFromTOMLDataSource(t *testing.T) {
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.toml")
+	templateFilePath, _ := filepath.Abs("../_tests/template.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	g := NewOrbitGenerator(ctx)
+	data, _ := g.Execute()
+
+	// case 1: uses an empty output path.
+	if err := g.Flush("", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to Stdout!")
 	}
 
-	if err := manyGenerator.Output("/...", dataManyTmpl); err == nil {
-		t.Error("WriteOutputFile should not have been able to write the outpout file \"/...\"!")
+	// case 2: uses a broken output path.
+	if err := g.Flush("/...", data); err == nil {
+		t.Error("OrbitGenerator should not have been able to flush to result file /...!")
+	}
+
+	// case 3: uses a correct output path.
+	if err := g.Flush("result.yml", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to result file result.yml!")
+	}
+
+	expectedResultFilePath, _ := filepath.Abs("../_tests/data-source.yml")
+	expectedResultFileData, _ := ioutil.ReadFile(expectedResultFilePath)
+
+	var expectedResult interface{}
+	yaml.Unmarshal(expectedResultFileData, &expectedResult)
+
+	resultFileData, _ := ioutil.ReadFile("result.yml")
+
+	var result interface{}
+	yaml.Unmarshal(resultFileData, &result)
+
+	os.Remove("result.yml")
+
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("result.yml should be equal to data-source.yml!")
+	}
+}
+
+// Tests if flushing from JSON data source works as expected.
+func TestFlushFromJSONDataSource(t *testing.T) {
+	dataSourceFilePath, _ := filepath.Abs("../_tests/data-source.json")
+	templateFilePath, _ := filepath.Abs("../_tests/template.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	g := NewOrbitGenerator(ctx)
+	data, _ := g.Execute()
+
+	// case 1: uses an empty output path.
+	if err := g.Flush("", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to Stdout!")
+	}
+
+	// case 2: uses a broken output path.
+	if err := g.Flush("/...", data); err == nil {
+		t.Error("OrbitGenerator should not have been able to flush to result file /...!")
+	}
+
+	// case 3: uses a correct output path.
+	if err := g.Flush("result.yml", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to result file result.yml!")
+	}
+
+	expectedResultFilePath, _ := filepath.Abs("../_tests/data-source.yml")
+	expectedResultFileData, _ := ioutil.ReadFile(expectedResultFilePath)
+
+	var expectedResult interface{}
+	yaml.Unmarshal(expectedResultFileData, &expectedResult)
+
+	resultFileData, _ := ioutil.ReadFile("result.yml")
+
+	var result interface{}
+	yaml.Unmarshal(resultFileData, &result)
+
+	os.Remove("result.yml")
+
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("result.yml should be equal to data-source.yml!")
+	}
+}
+
+// Tests if flushing from .env data source works as expected.
+func TestFlushFromEnvFileDataSource(t *testing.T) {
+	dataSourceFilePath, _ := filepath.Abs("../_tests/.env")
+	templateFilePath, _ := filepath.Abs("../_tests/template-env.yml")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	g := NewOrbitGenerator(ctx)
+	data, _ := g.Execute()
+
+	// case 1: uses an empty output path.
+	if err := g.Flush("", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to Stdout!")
+	}
+
+	// case 2: uses a broken output path.
+	if err := g.Flush("/...", data); err == nil {
+		t.Error("OrbitGenerator should not have been able to flush to result file /...!")
+	}
+
+	// case 3: uses a correct output path.
+	if err := g.Flush("result.yml", data); err != nil {
+		t.Error("OrbitGenerator should have been able to flush to result file result.yml!")
+	}
+
+	expectedResultFilePath, _ := filepath.Abs("../_tests/expected-result-raw-env.yml")
+	expectedResultFileData, _ := ioutil.ReadFile(expectedResultFilePath)
+
+	var expectedResult interface{}
+	yaml.Unmarshal(expectedResultFileData, &expectedResult)
+
+	resultFileData, _ := ioutil.ReadFile("result.yml")
+
+	var result interface{}
+	yaml.Unmarshal(resultFileData, &result)
+
+	os.Remove("result.yml")
+
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Error("result.yml should be equal to expected-result-raw-env.yml!")
 	}
 }

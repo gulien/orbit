@@ -1,0 +1,27 @@
+{
+  "companies": [
+    {
+      "name": "SpaceX",
+      "launchers": [
+        "Falcon 9",
+        "Falcon Heavy"
+      ]
+    },
+    {
+      "name": "Blue Origin",
+      "launchers": [
+        "New Shepard",
+        "New Glenn"
+      ]
+    }
+  ],
+  "agencies": [
+    {
+      "name": "ESA",
+      "launchers": [
+        "Ariane 5",
+        ...
+      ]
+    }
+  ]
+}

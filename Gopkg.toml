@@ -40,3 +40,7 @@
 [[constraint]]
   name = "github.com/Masterminds/sprig"
   version = "2.13.0"
+
+[[constraint]]
+  name = "github.com/BurntSushi/toml"
+  version = "0.3.0"

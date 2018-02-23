@@ -2,7 +2,7 @@
     <img src="https://user-images.githubusercontent.com/8983173/26898223-7187b060-4bcb-11e7-831b-7174ce586fc5.png" alt="orbit's logo" width="200" height="200" />
 </p>
 <h3 align="center">Orbit</h3>
-<p align="center">A simple tool for running commands and generating files from templates</p>
+<p align="center">A cross-platform task runner for executing commands and generating files from templates</p>
 <p align="center">
     <a href="https://travis-ci.org/gulien/orbit">
         <img src="https://img.shields.io/travis/gulien/orbit.svg?label=linux+build" alt="Travis CI">
@@ -25,14 +25,14 @@
 
 Orbit started with the need to find a cross-platform alternative of `make`
 and `sed -i` commands. As it does not aim to be as powerful as these two
-commands, Orbit offers an elegant solution for running commands and generating
+commands, Orbit offers an elegant solution for running tasks and generating
 files from templates, whatever the platform you're using.
 
 # Menu
 
 * [Install](#install)
 * [Generating a file from a template](#generating-a-file-from-a-template)
-* [Defining and running commands](#defining-and-running-commands)
+* [Defining and running tasks](#defining-and-running-tasks)
 
 ## Install
 
@@ -92,7 +92,7 @@ orbit generate [flags]
 
 #### Flags
 
-##### `-t --template`
+##### `-f --file`
 
 Specify the path of the template. This flag is **required**.
 
@@ -102,46 +102,43 @@ Specify the output file which will be generated from the template.
 
 **Good to know:** if no output is specified, Orbit will print the result to *Stdout*.
 
-##### `-v --values`
+##### `-p --payload`
 
-The flag `-v` allows you to specify one or many *YAML* files:
-
-```
-orbit generate [...] -v file.yml
-orbit generate [...] -v key_1,file_1.yml
-orbit generate [...] -v key_1,file_1.yml;key_2,file_2.yml
-```
-
-As you can see, you're able to provide a basic mapping for your files:
-
-* with mapping, your data will be accessible in your template through `{{ .Values.my_key.my_data }}`.
-* otherwise through `{{ .Values.default.my_data }}`.
-
-##### `-e --env`
-
-The flag `-e` allows you to specify one or many *.env* files:
+The flag `-p` allows you to specify many data sources which will be applied to your template:
 
 ```
-orbit generate [...] -e .env
-orbit generate [...] -e key_1,.env_1
-orbit generate [...] -e key_1,.env_1;key_2,.env_2
+orbit generate [...] -p key_1,file_1.yml
+orbit generate [...] -p key_1,file_1.yml;key_2,file_2.toml;key_3,file_3.json;key_4,.env;key_5,some raw data
 ```
 
-As you can see, it works the same way as the `-v` flag:
+As you can see, Orbit handles 5 types of data sources:
 
-* with mapping, your data will be accessible in your template through `{{ .EnvFiles.my_key.my_data }}`.
-* otherwise through `{{ .EnvFiles.default.my_data }}`.
+* *YAML* files (`*.yaml`, `*.yml`)
+* *TOML* files (`*.toml`)
+* *JSON* files (`*.json`)
+* *.env* files
+* raw data
 
-##### `-r --raw`
+The data will be accessible in your template through `{{ .Orbit.my_key.my_data }}`.
 
-The flag `-r` allows you to specify data directly from the CLI.
+If you don't want to specify the payload each time your running `orbit generate`,
+you may also create a file named `orbit-payload.yml` in the folder where your running your command:
 
+```yaml
+payload:
+
+    - key: my_key
+      value: my_file.yml
+      
+    - key: my_other_key
+      value: "Some raw data"
 ```
-orbit generate [...] -r key_1=value_1
-orbit generate [...] -r key_1=value_1;key_2=value_2
-```
 
-Your data will be accessible in your template through `{{ .RawData.my_key }}`.
+By doing so, running `orbit generate [...]` will be equivalent to 
+running `orbit generate [...] -p my_key,my_file.yml;my_other_key,"Some raw data"`.
+
+**Note:** you are able to override a data source from the file `orbit-payload.yml` if
+you set the same key in the `-p` flag.
 
 ##### `-d --debug`
 
@@ -149,147 +146,146 @@ Displays a detailed output.
 
 ### Basic example
 
-Let's create our simple template `satellites_tmpl.yml`:
+Let's create our simple template `template.yml`:
 
 ```yaml
-usa:
-  info: {{ .EnvFiles.default.USA }}
-  satellites:
-    {{- range $value := .Values.default.satellites.usa }}
-    - {{ $value }}
-    {{- end}}
+companies:
+
+{{- range $company := .Orbit.Values.companies }}
+  - name: {{ $company.name }}
+    launchers:
+  {{- range $launcher := $company.launchers }}
+    - {{ $launcher }}
+  {{ end }}
+{{- end }}
 ```
 
-And the data provided by:
-
-* a *YAML* file named `usa_satellites.yml`:
+And the data provided a *YAML* file named `data-source.yml`:
 
 ```yaml
-satellites:
-  usa:
-    - Explorer 1
-    - Explorer 2
-    - Explorer 3
-```
+companies:
 
-* a .env file named `.env`:
+  - name: SpaceX
+    launchers:
+      - Falcon 9
+      - Falcon Heavy
+      
+  - name: Blue Origin
+    launchers:
+      - New Shepard
+      - New Glenn
 
-```
-USA="Some satellites launched by the USA (1950s)"
+agencies:
+
+  - name: ESA
+    launchers:
+      - Ariane 5
+      - Vega
 ```
 
 The command for generating a file from this template is quite simple:
 
 ```
-orbit generate -t satellites_tmpl.yml -e .env -v usa_satellites.yml -o satellites.yml
+orbit generate -f template.yml -p Values,data-source.yml -o companies.yml
 ```
 
-This command will create the `satellites.yml` file with this content:
+This command will create the `companies.yml` file with this content:
 
 ```yaml
-usa:
-  info: Some satellites launched by the USA (1950s)
-  satellites:
-    - Explorer 1
-    - Explorer 2
-    - Explorer 3
+companies:
+
+  - name: SpaceX
+    launchers:
+      - Falcon 9
+      - Falcon Heavy
+      
+  - name: Blue Origin
+    launchers:
+      - New Shepard
+      - New Glenn
 ```
 
-## Defining and running commands
+## Defining and running tasks
 
 ### Command description
 
 #### Base
 
 ```
-orbit run [commands] [flags]
+orbit run [tasks] [flags]
 ```
 
 #### Flags
 
-##### `-c --config`
+##### `-f --file`
 
 Like the `make` command with its `Makefile`, Orbit requires a
 configuration file (*YAML*, by default `orbit.yml`) where you define
-your Orbit commands:
+your tasks:
 
 ```yaml
-commands:
-  - use: my_first_command
-    short: My first command short description
+tasks:
+
+  - use: my_first_task
+    short: My first task short description
     run:
       - command [args]
       - command [args]
       - ...
-  - use: my_second_command
-    short: My second command short description
+      
+  - use: my_second_task
+    private: true
     run:
       - command [args]
       - command [args]
       - ...
 ```
 
-* the `use` attribute is the name of your Orbit command.
+* the `use` attribute is the name of your task.
 * the `short` attribute is optional and is displayed when running `orbit run`
-* the `run` attribute is the stack of external commands to run.
-* an external command is a binary which is available in your `$PATH`.
+* the `private` attribute is optional and hides the considered task when running `orbit run`
+* the `run` attribute is the stack of commands to run.
+* a command is a binary which is available in your `$PATH`.
 
 Once you've created your `orbit.yml` file, you're able
-to run your Orbit commands with:
+to run your tasks with:
 
 ```
-orbit run my_first_command
-orbit run my_second_command
-orbit run my_first_command my_second_command
+orbit run my_first_task
+orbit run my_second_task
+orbit run my_first_task my_second_task
 ```
 
-Notice that you may run nested Orbit commands :metal:!
+Notice that you may run nested tasks :metal:!
 
 Also a cool feature of Orbit is its ability to read its configuration through
 a template.
 
-For example, if you need to run a platform specific script, you may write:
+For example, if you need to execute a platform specific script, you may write:
 
 ```yaml
-commands:
+tasks:
+
   - use: script
     run:
     {{ if ne "windows" os }}
-      - /bin/sh -c my_script.sh
+      - my_script.sh
     {{ else }}
-      - cmd.exe /c .\my_script.bat
+      - .\my_script.bat
     {{ end }}
 ```
 
-Last but not least, you're also able to write complex commands:
+**Note:** Orbit will automatically detect the shell you're using. 
+Running the task `script` from the previous example will in fact executes `cmd.exe /c \.my_script.bat` on
+Windows or `/bin/sh -c my_script.sh` (or `/bin/zsh -c my_script.sh` etc.) on others OS.
 
-```yaml
-commands:
-  - use: complex
-    run:
-      - /bin/sh -c "ls -all | grep orbit"
-```
+##### `-p --payload`
 
-Notice that the arguments are wrapped with `"`. You may also wrap them
-using `` ` `` or `'`.
+The flag `-p` allows you to specify many data sources which will be applied to your configuration file.
 
-##### `-v --values`
+It works the same as the `-p` flag from the `generate` command.
 
-The flag `-v` allows you to specify one or many *YAML* files.
-
-It works the same as the `-v` flag from the `generate` command.
-
-##### `-e --env`
-
-The flag `-e` allows you to specify one or many *.env* files.
-
-It works the same as the `-e` flag from the `generate` command.
-
-##### `-r --raw`
-
-The flag `-r` allows you to specify data directly from the CLI.
-
-It works the same as the `-r` flag from the `generate` command.
+Of course, you may also create a file named `orbit-payload.yml` in the same folder where you're executing Orbit.
 
 ##### `-d --debug`
 
@@ -300,27 +296,25 @@ Displays a detailed output.
 Let's create our simple configuration file `orbit.yml`:
 
 ```yaml
-commands:
-  - use: os
+tasks:
+
+  - use: prepare
     run:
-    {{ if ne "windows" os }}
-      - echo Current OS is {{ os }}
-    {{ else }}
-      - cmd.exe /c echo Current OS is {{ os }}
-    {( end }}
+     - orbit generate -f configuration.template.yml -o configuration.yml -p Data,config.json
+     - echo "configuration.yml has been succesfully created!"
 ```
 
-You are now able to run:
+You are now able to run the task `prepare` with:
 
 ```
-orbit run os
+orbit run prepare
 ```
 
-This command will print something like:
+This task will:
 
-```
-Current OS is darwin
-```
+* create a file named `configuration.yml`
+* print `configuration.yml has been succesfully created!` to *Stdout*
+
 
 Voilà! :smiley:
 

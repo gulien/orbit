@@ -1,14 +1,11 @@
-commands:
+tasks:
+
   - use: install
     short: Installs all required dependencies
     run:
       - go get -u github.com/golang/dep/cmd/dep
-      - go get -u github.com/golang/lint/golint
       - go get -u github.com/alecthomas/gometalinter
-      - go get -u github.com/client9/misspell/cmd/misspell
-      - go get -u github.com/gordonklaus/ineffassign
-      - go get -u golang.org/x/tools/cmd/goimports
-      - go get -u github.com/tsenart/deadcode
+      - gometalinter --install
 
   - use: fmt
     short: Simple shortcut for go fmt ./...
@@ -18,7 +15,7 @@ commands:
   - use: lint
     short: Statically checks for errors and warnings
     run:
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode --tests --vendor ./...
+      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode -E gocyclo --vendor ./...
 
   - use: test
     short: Simple shortcut for go test -race ./...

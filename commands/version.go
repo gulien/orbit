@@ -22,7 +22,7 @@ var (
 	}
 )
 
-// init adds versionCmd to the RootCmd.
+// init initializes a versionCmd instance and adds it to the RootCmd.
 func init() {
 	RootCmd.AddCommand(versionCmd)
 }

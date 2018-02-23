@@ -1,0 +1,11 @@
+tasks:
+  - use: "explorer"
+    run:
+      - dep status
+  - use: "sputnik"
+    private: true
+    run:
+      - dep status
+  - use: "challenger"
+    run:
+      - faildep status

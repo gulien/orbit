@@ -1,8 +1,8 @@
 /*
-Package runner implements a solution to executes one or more commands which have been defined
+Package runner implements a solution to run one or more tasks which have been defined
 in a configuration file (by default "orbit.yml").
 
-These commands, also called Orbit commands, runs one ore more external commands one by one.
+These tasks executes one ore more commands one by one.
 
 Thanks to the generator package, the configuration file may be a data-driven template which is executed at runtime
 (e.g. no file generated).
@@ -13,8 +13,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"regexp"
-	"strings"
+	"runtime"
 	"text/tabwriter"
 
 	"github.com/gulien/orbit/context"
@@ -25,41 +24,39 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+const defaultWindowsShellEnvVariable = "COMSPEC"
+const defaultPosixShellEnvVariable = "SHELL"
+
 type (
-	// OrbitRunnerConfig represents a YAML configuration file defining Orbit commands.
-	OrbitRunnerConfig struct {
-		// Commands array represents the Orbit commands.
-		Commands []*OrbitCommand `yaml:"commands"`
+	// orbitRunnerConfig represents a YAML configuration file defining tasks.
+	orbitRunnerConfig struct {
+		// Tasks array represents the tasks defined in the configuration file.
+		Tasks []*orbitTask `yaml:"tasks"`
 	}
 
-	// OrbitCommand represents an Orbit command as defined in the configuration file.
-	OrbitCommand struct {
-		// Use is the name of the Orbit command.
+	// orbitTask represents a task as defined in the configuration file.
+	orbitTask struct {
+		// Use is the name of the task.
 		Use string `yaml:"use"`
 
-		// Short is the short description of the Orbit Command.
+		// Short is the short description of the task.
 		Short string `yaml:"short,omitempty"`
 
-		// Run is the stack of external commands to run.
+		// Private allows to hide the task when
+		// printing the available tasks.
+		Private bool `yaml:"private,omitempty"`
+
+		// Run is the stack of commands to execute.
 		Run []string `yaml:"run"`
 	}
 
-	// OrbitRunner helps executing Orbit commands.
+	// OrbitRunner helps executing tasks.
 	OrbitRunner struct {
-		// config is an instance of OrbitRunnerConfig.
-		config *OrbitRunnerConfig
+		// config is an instance of orbitRunnerConfig.
+		config *orbitRunnerConfig
 
 		// context is an instance of OrbitContext.
 		context *context.OrbitContext
-	}
-
-	// orbitExternalCommand represents an external command from an Orbit command.
-	orbitExternalCommand struct {
-		// argc is the binary to call.
-		argc string
-
-		// argv are the arguments of the external command.
-		argv []string
 	}
 )
 
@@ -67,13 +64,13 @@ type (
 func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 	// first retrieves the data from the configuration file...
 	g := generator.NewOrbitGenerator(context)
-	data, err := g.Parse()
+	data, err := g.Execute()
 	if err != nil {
 		return nil, err
 	}
 
-	// then populates the OrbitRunnerConfig.
-	var config = &OrbitRunnerConfig{}
+	// then populates the orbitRunnerConfig.
+	var config = &orbitRunnerConfig{}
 	if err := yaml.Unmarshal(data.Bytes(), &config); err != nil {
 		return nil, errors.NewOrbitErrorf("configuration file %s is not a valid YAML file. Details:\n%s", context.TemplateFilePath, err)
 	}
@@ -88,40 +85,19 @@ func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 	return r, nil
 }
 
-// newOrbitExternalCommand creates an instance of orbitExternalCommand.
-func newOrbitExternalCommand(c string) *orbitExternalCommand {
-	pattern := regexp.MustCompile("'.+'|\".+\"|`.+`|\\S+")
-	parts := pattern.FindAllString(c, -1)
-
-	extCmd := &orbitExternalCommand{
-		argc: parts[0],
-	}
-
-	for _, argv := range parts[1:] {
-		argv = strings.TrimPrefix(argv, "'")
-		argv = strings.TrimSuffix(argv, "'")
-		argv = strings.TrimPrefix(argv, "\"")
-		argv = strings.TrimSuffix(argv, "\"")
-		argv = strings.TrimPrefix(argv, "`")
-		argv = strings.TrimSuffix(argv, "`")
-
-		extCmd.argv = append(extCmd.argv, argv)
-	}
-
-	return extCmd
-}
-
-// Print prints the available Orbit commands from the configuration file
+// Print prints the available tasks from the configuration file
 // to Stdout.
 func (r *OrbitRunner) Print() {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 1, ' ', tabwriter.TabIndent)
 
 	fmt.Fprint(w, "Configuration file:")
 	fmt.Fprintf(w, "\n  %s\t\n", r.context.TemplateFilePath)
-	fmt.Fprint(w, "\nAvailable Commands:")
+	fmt.Fprint(w, "\nAvailable tasks:")
 
-	for _, c := range r.config.Commands {
-		fmt.Fprintf(w, "\n  %s\t%s", c.Use, c.Short)
+	for _, task := range r.config.Tasks {
+		if !task.Private {
+			fmt.Fprintf(w, "\n  %s\t%s", task.Use, task.Short)
+		}
 	}
 
 	// clears the writer as it may contain some weird characters.
@@ -130,21 +106,21 @@ func (r *OrbitRunner) Print() {
 	w.Flush()
 }
 
-// Exec executes the given Orbit commands.
-func (r *OrbitRunner) Exec(names ...string) error {
-	// populates an array of instances of Orbit Command.
-	// if a given name doest not match with any Orbit Command defined in the configuration file, throws an error.
-	cmds := make([]*OrbitCommand, len(names))
+// Run runs the given tasks.
+func (r *OrbitRunner) Run(names ...string) error {
+	// populates an array of instances of orbitTask.
+	// if a given name doest not match with any tasks defined in the configuration file, throws an error.
+	tasks := make([]*orbitTask, len(names))
 	for index, name := range names {
-		cmds[index] = r.getOrbitCommand(name)
-		if cmds[index] == nil {
-			return errors.NewOrbitErrorf("Orbit command %s does not exist in configuration file %s", name, r.context.TemplateFilePath)
+		tasks[index] = r.getTask(name)
+		if tasks[index] == nil {
+			return errors.NewOrbitErrorf("Task %s does not exist in configuration file %s", name, r.context.TemplateFilePath)
 		}
 	}
 
-	// alright, let's run each Orbit command.
-	for _, cmd := range cmds {
-		if err := r.run(cmd); err != nil {
+	// alright, let's run each task.
+	for _, task := range tasks {
+		if err := r.run(task); err != nil {
 			return err
 		}
 	}
@@ -152,15 +128,20 @@ func (r *OrbitRunner) Exec(names ...string) error {
 	return nil
 }
 
-// run runs the stack of external commands from the given Orbit command.
-func (r *OrbitRunner) run(cmd *OrbitCommand) error {
-	logger.Debugf("starting Orbit command %s", cmd.Use)
+// run executes the stack of commands from the given task.
+func (r *OrbitRunner) run(task *orbitTask) error {
+	logger.Debugf("running task %s", task.Use)
 
-	for _, c := range cmd.Run {
-		extCmd := newOrbitExternalCommand(c)
-		e := exec.Command(extCmd.argc, extCmd.argv...)
+	for _, cmd := range task.Run {
 
-		logger.Debugf("running external command %s with args %s", extCmd.argc, extCmd.argv)
+		var e *exec.Cmd
+		if runtime.GOOS == "windows" {
+			e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", cmd)
+		} else {
+			e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", cmd)
+		}
+
+		logger.Debugf("executing command %s", e.Args)
 
 		e.Stdout = os.Stdout
 		e.Stderr = os.Stderr
@@ -174,11 +155,11 @@ func (r *OrbitRunner) run(cmd *OrbitCommand) error {
 	return nil
 }
 
-// getOrbitCommand returns an instance of OrbitCommand if found or nil.
-func (r *OrbitRunner) getOrbitCommand(name string) *OrbitCommand {
-	for _, c := range r.config.Commands {
-		if name == c.Use {
-			return c
+// getTask returns an instance of orbitTask if found or nil.
+func (r *OrbitRunner) getTask(name string) *orbitTask {
+	for _, task := range r.config.Tasks {
+		if name == task.Use {
+			return task
 		}
 	}
 

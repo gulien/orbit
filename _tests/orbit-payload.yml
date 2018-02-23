@@ -1,0 +1,16 @@
+payload:
+
+  - key: "raw"
+    value: "data"
+
+  - key: "YAML"
+    value: "data_source.yaml"
+
+  - key: "TOML"
+    value: "data-source.toml"
+
+  - key: "JSON"
+    value: "data-source.json"
+
+  - key: ".env"
+    value: ".env"

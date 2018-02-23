@@ -2,7 +2,7 @@
     <img src="https://user-images.githubusercontent.com/8983173/26898223-7187b060-4bcb-11e7-831b-7174ce586fc5.png" alt="orbit's logo" width="200" height="200" />
 </p>
 <h3 align="center">Orbit</h3>
-<p align="center">A powerful task runner for executing commands and generating files from templates</p>
+<p align="center">A cross-platform task runner for executing commands and generating files from templates</p>
 <p align="center">
     <a href="https://travis-ci.org/gulien/orbit">
         <img src="https://img.shields.io/travis/gulien/orbit.svg?label=linux+build" alt="Travis CI">
@@ -150,12 +150,13 @@ Let's create our simple template `template.yml`:
 
 ```yaml
 companies:
+
 {{- range $company := .Orbit.Values.companies }}
   - name: {{ $company.name }}
     launchers:
   {{- range $launcher := $company.launchers }}
     - {{ $launcher }}
-  {{- end }}
+  {{ end }}
 {{- end }}
 ```
 
@@ -163,16 +164,19 @@ And the data provided a *YAML* file named `data-source.yml`:
 
 ```yaml
 companies:
+
   - name: SpaceX
     launchers:
       - Falcon 9
       - Falcon Heavy
+      
   - name: Blue Origin
     launchers:
       - New Shepard
       - New Glenn
 
 agencies:
+
   - name: ESA
     launchers:
       - Ariane 5
@@ -189,10 +193,12 @@ This command will create the `companies.yml` file with this content:
 
 ```yaml
 companies:
+
   - name: SpaceX
     launchers:
       - Falcon 9
       - Falcon Heavy
+      
   - name: Blue Origin
     launchers:
       - New Shepard
@@ -219,12 +225,14 @@ your tasks:
 
 ```yaml
 tasks:
+
   - use: my_first_task
     short: My first task short description
     run:
       - command [args]
       - command [args]
       - ...
+      
   - use: my_second_task
     short: My second task short description
     private: true
@@ -258,6 +266,7 @@ For example, if you need to execute a platform specific script, you may write:
 
 ```yaml
 tasks:
+
   - use: script
     run:
     {{ if ne "windows" os }}
@@ -289,6 +298,7 @@ Let's create our simple configuration file `orbit.yml`:
 
 ```yaml
 tasks:
+
   - use: prepare
     run:
      - orbit generate -f configuration.template.yml -o configuration.yml -p Data,config.json

@@ -21,8 +21,8 @@ var (
 	// RootCmd is the instance of the root of all commands.
 	RootCmd = &cobra.Command{
 		Use:           "orbit",
-		Short:         "A powerful task runner for executing commands and generating files from templates",
-		Long:          "A powerful task runner for executing commands and generating files from templates.",
+		Short:         "A cross-platform task runner for executing commands and generating files from templates",
+		Long:          "A cross-platform task runner for executing commands and generating files from templates.",
 		SilenceErrors: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			if !debug {

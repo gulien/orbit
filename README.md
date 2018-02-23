@@ -131,11 +131,11 @@ payload:
       value: my_file.yml
       
     - key: my_other_key
-      value: Some raw data
+      value: "Some raw data"
 ```
 
 By doing so, running `orbit generate [...]` will be equivalent to 
-running `orbit generate [...] -p my_key,my_file.yml;my_other_key,Some raw data`.
+running `orbit generate [...] -p my_key,my_file.yml;my_other_key,"Some raw data"`.
 
 **Note:** you are able to override a data source from the file `orbit-payload.yml` if
 you set the same key in the `-p` flag.

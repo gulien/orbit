@@ -234,7 +234,6 @@ tasks:
       - ...
       
   - use: my_second_task
-    short: My second task short description
     private: true
     run:
       - command [args]
@@ -286,7 +285,7 @@ The flag `-p` allows you to specify many data sources which will be applied to y
 
 It works the same as the `-p` flag from the `generate` command.
 
-Of course, you may also create a file named `orbit-payload.yml` in the same folder as your configuration file.
+Of course, you may also create a file named `orbit-payload.yml` in the same folder where you're executing Orbit.
 
 ##### `-d --debug`
 
@@ -314,7 +313,7 @@ orbit run prepare
 This task will:
 
 * create a file named `configuration.yml`
-* print `configuration.yml has been succesfully created!`
+* print `configuration.yml has been succesfully created!` to *Stdout*
 
 
 Voilà! :smiley:

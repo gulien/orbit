@@ -3,7 +3,7 @@ Package main is the root package of the application.
 
 Orbit is a cross-platform task runner for executing commands and generating files from templates.
 
-Orbit started with the need to find a cross-platform alternative of "make"
+It started with the need to find a cross-platform alternative of "make"
 and "sed -i" commands. As it does not aim to be as powerful as these two
 commands, Orbit offers an elegant solution for running tasks and generating
 files from templates, whatever the platform you're using.

@@ -107,8 +107,8 @@ Specify the output file which will be generated from the template.
 The flag `-p` allows you to specify many data sources which will be applied to your template:
 
 ```
-orbit generate [...] -p key_1,file_1.yml
-orbit generate [...] -p key_1,file_1.yml;key_2,file_2.toml;key_3,file_3.json;key_4,.env;key_5,some raw data
+orbit generate [...] -p "key_1,file_1.yml"
+orbit generate [...] -p "key_1,file_1.yml;key_2,file_2.toml;key_3,file_3.json;key_4,.env;key_5,some raw data"
 ```
 
 As you can see, Orbit handles 5 types of data sources:
@@ -131,11 +131,11 @@ payload:
       value: my_file.yml
       
     - key: my_other_key
-      value: "Some raw data"
+      value: Some raw data
 ```
 
 By doing so, running `orbit generate [...]` will be equivalent to 
-running `orbit generate [...] -p my_key,my_file.yml;my_other_key,"Some raw data"`.
+running `orbit generate [...] -p "my_key,my_file.yml;my_other_key,Some raw data"`.
 
 **Note:** you are able to override a data source from the file `orbit-payload.yml` if
 you set the same key in the `-p` flag.
@@ -186,7 +186,7 @@ agencies:
 The command for generating a file from this template is quite simple:
 
 ```
-orbit generate -f template.yml -p Values,data-source.yml -o companies.yml
+orbit generate -f template.yml -p "Values,data-source.yml" -o companies.yml
 ```
 
 This command will create the `companies.yml` file with this content:
@@ -300,7 +300,7 @@ tasks:
 
   - use: prepare
     run:
-     - orbit generate -f configuration.template.yml -o configuration.yml -p Data,config.json
+     - orbit generate -f configuration.template.yml -o configuration.yml -p "Data,config.json"
      - echo "configuration.yml has been succesfully created!"
 ```
 

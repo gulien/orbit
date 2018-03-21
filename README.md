@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/8983173/26898223-7187b060-4bcb-11e7-831b-7174ce586fc5.png" alt="orbit's logo" width="200" height="200" />
+    <img src="https://user-images.githubusercontent.com/8983173/37715581-ae698ff2-2d1c-11e8-906a-16a84837c964.png" alt="orbit's logo" width="250" height="148" />
 </p>
 <h3 align="center">Orbit</h3>
 <p align="center">A cross-platform task runner for executing commands and generating files from templates</p>

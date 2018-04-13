@@ -5,10 +5,10 @@
 <p align="center">A cross-platform task runner for executing commands and generating files from templates</p>
 <p align="center">
     <a href="https://travis-ci.org/gulien/orbit">
-        <img src="https://img.shields.io/travis/gulien/orbit.svg?label=linux+build" alt="Travis CI">
+        <img src="https://travis-ci.org/gulien/orbit.svg?branch=master" alt="Travis CI">
     </a>
     <a href="https://ci.appveyor.com/project/gulien/orbit">
-        <img src="https://img.shields.io/appveyor/ci/gulien/orbit.svg?label=windows+build" alt="AppVeyor">
+        <img src="https://ci.appveyor.com/api/projects/status/fj6q6y75vdugn99i/branch/master?svg=true" alt="AppVeyor">
     </a>
     <a href="https://godoc.org/github.com/gulien/orbit">
         <img src="https://godoc.org/github.com/gulien/orbit?status.svg" alt="GoDoc">
@@ -16,7 +16,7 @@
     <a href="https://goreportcard.com/report/gulien/orbit">
         <img src="https://goreportcard.com/badge/github.com/gulien/orbit" alt="Go Report Card">
     </a>
-    <a href="https://codecov.io/gh/gulien/orbit">
+    <a href="https://codecov.io/gh/gulien/orbit/branch/master">
         <img src="https://codecov.io/gh/gulien/orbit/branch/master/graph/badge.svg" alt="Codecov">
     </a>
 </p>

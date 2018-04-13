@@ -1,26 +1,33 @@
+sudo: required
+
 language: go
 
-go:
-  - "1.10"
-  - tip
+addons:
+  apt:
+    packages:
+    - rpm
+    - snapcraft
 
-matrix:
-  allow_failures:
-    - go: tip
-  fast_finish: true
+env:
+  - PATH=/snap/bin:$PATH
 
-install:
-  - go version
-  - go env
-  - go install
-  - orbit run install
+services:
+  - docker
+
+before_install:
+  - wget -qO- https://github.com/gulien/orbit/releases/download/v3.0.0/orbit_Linux_x86_64.tar.gz | tar xvz -C .
+  - sudo mv ./orbit /usr/local/bin && chmod +x /usr/local/bin/orbit
+  - sudo snap install snapcraft --classic
 
 script:
-  - orbit run lint
-  - ./codecov.sh
-
-after_success:
+  - orbit run ci -p "Version,${TRAVIS_BRANCH}"
+  # Uploads coverage.
   - bash <(curl -s https://codecov.io/bash)
 
-notifications:
-  email: false
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL http://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux

@@ -9,8 +9,6 @@ find below useful information about how to contribute to the Orbit project.
 
 1. Fork this repository
 2. Clone it to your local Go environment (requires *Go* >= 1.10)
-5. Install the latest Orbit release
-6. Install dependencies by running `orbit run install`
 
 ### Working with git
 

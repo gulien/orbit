@@ -1,3 +1,2 @@
-.idea
 dist
-orbit
+.ci/coverage.txt

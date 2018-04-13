@@ -1,23 +1,20 @@
 tasks:
 
-  - use: install
-    short: Installs all required dependencies
-    run:
-      - go get -u github.com/golang/dep/cmd/dep
-      - go get -u github.com/alecthomas/gometalinter
-      - gometalinter --install
-
   - use: fmt
-    short: Simple shortcut for go fmt ./...
+    short: Runs go fmt ./...
     run:
       - go fmt ./...
 
-  - use: lint
-    short: Statically checks for errors and warnings
+  - use: ci
+    short: Runs CI process inside a container on Linux and MacOS, or directly on host on Windows
     run:
-      - gometalinter --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode -E gocyclo --vendor ./...
-
-  - use: test
-    short: Simple shortcut for go test -race ./...
-    run:
+      {{ if ne "windows" os }}
+      - docker build -t gulien/orbit:ci .
+      - docker run --rm -e "VERSION={{ .Orbit.Version }}" -v "$(pwd)/.ci:/go/src/github.com/gulien/orbit/.ci" gulien/orbit:ci
+      {{ else }}
+      - go get -u gopkg.in/alecthomas/gometalinter.v2
+      - gometalinter.v2 --install
+      - go get -d -v ./...
+      - gometalinter.v2 --disable-all -E vet -E gofmt -E misspell -E ineffassign -E goimports -E deadcode -E gocyclo --vendor ./...;
       - go test -race ./...
+      {{ end }}

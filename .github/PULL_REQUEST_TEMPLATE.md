@@ -37,8 +37,8 @@ Fixes #
 **Checklist**
 
 - [ ] Have you followed the guidelines in our [CONTRIBUTING](CONTRIBUTING.md) guide?
-- [ ] Have you lint your code locally prior to submission (`orbit run fmt lint`)?
+- [ ] Have you fmt your code locally prior to submission (`orbit run fmt`)?
 - [ ] Have you written new tests for your core changes, as applicable?
-- [ ] Have you successfully ran tests with your changes locally (`orbit run test`)?
+- [ ] Have you successfully ran tests with your changes locally (`orbit run ci`)?
 - [ ] I have squashed any insignificant commits
 - [ ] This change has comments for package types, values, functions, and non-obvious lines of code

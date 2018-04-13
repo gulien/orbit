@@ -1,26 +1,15 @@
-language: go
+sudo: required
 
-go:
-  - "1.10"
-  - tip
+language: generic
 
-matrix:
-  allow_failures:
-    - go: tip
-  fast_finish: true
+services:
+  - docker
 
-install:
-  - go version
-  - go env
-  - go install
-  - orbit run install
+before_install:
+  - wget -qO- https://github.com/gulien/orbit/releases/download/v3.0.0/orbit_Linux_x86_64.tar.gz | tar xvz -C .
+  - sudo mv ./orbit /usr/local/bin && chmod +x /usr/local/bin/orbit
 
 script:
-  - orbit run lint
-  - ./codecov.sh
-
-after_success:
+  - orbit run ci -p "Version,${TRAVIS_BRANCH}"
+  # Uploads coverage.
   - bash <(curl -s https://codecov.io/bash)
-
-notifications:
-  email: false

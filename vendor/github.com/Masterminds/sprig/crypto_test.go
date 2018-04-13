@@ -2,6 +2,7 @@ package sprig
 
 import (
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/pem"
 	"fmt"
 	"strings"
@@ -18,6 +19,12 @@ const (
 func TestSha256Sum(t *testing.T) {
 	tpl := `{{"abc" | sha256sum}}`
 	if err := runt(tpl, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"); err != nil {
+		t.Error(err)
+	}
+}
+func TestSha1Sum(t *testing.T) {
+	tpl := `{{"abc" | sha1sum}}`
+	if err := runt(tpl, "a9993e364706816aba3e25717850c26c9cd0d89d"); err != nil {
 		t.Error(err)
 	}
 }
@@ -117,6 +124,31 @@ func TestUUIDGeneration(t *testing.T) {
 	if out == out2 {
 		t.Error("Expected subsequent UUID generations to be different")
 	}
+}
+
+func TestBuildCustomCert(t *testing.T) {
+	ca, _ := generateCertificateAuthority("example.com", 365)
+	tpl := fmt.Sprintf(
+		`{{- $ca := buildCustomCert "%s" "%s"}}
+{{- $ca.Cert }}`,
+		base64.StdEncoding.EncodeToString([]byte(ca.Cert)),
+		base64.StdEncoding.EncodeToString([]byte(ca.Key)),
+	)
+	out, err := runRaw(tpl, nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	tpl2 := fmt.Sprintf(
+		`{{- $ca := buildCustomCert "%s" "%s"}}
+{{- $ca.Cert }}`,
+		base64.StdEncoding.EncodeToString([]byte("fail")),
+		base64.StdEncoding.EncodeToString([]byte(ca.Key)),
+	)
+	out2, _ := runRaw(tpl2, nil)
+
+	assert.Equal(t, out, ca.Cert)
+	assert.NotEqual(t, out2, ca.Cert)
 }
 
 func TestGenCA(t *testing.T) {

@@ -32,15 +32,11 @@ func TestExecute(t *testing.T) {
 	if _, err := g.Execute(); err != nil {
 		t.Errorf("OrbitGenerator should have been able to parse the data-driven template %s", templateFilePath)
 	}
-}
 
-func TestExecuteMissingVariableError(t *testing.T) {
-	dataSourceFilePath, _ := filepath.Abs("../../_tests/data-source.yml")
-
-	// case 1: uses a broken data-driven template.
-	brokenTemplateFilePath, _ := filepath.Abs("../../_tests/broken-template-missing-var.yml")
-	ctx, _ := context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath)
-	g := NewOrbitGenerator(ctx)
+	// case 3: uses a broken data-driven template with a missing variable.
+	brokenTemplateFilePath, _ = filepath.Abs("../../_tests/broken-template-missing-var.yml")
+	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath)
+	g = NewOrbitGenerator(ctx)
 	if _, err := g.Execute(); err == nil {
 		t.Errorf("OrbitGenerator should not have been able to render the data-driven template %s", brokenTemplateFilePath)
 	}

@@ -67,6 +67,8 @@ func (g *OrbitGenerator) Execute() (bytes.Buffer, error) {
 		return data, OrbitError.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}
 
+	tmpl.Option("missingkey=error")
+
 	orbitData := &orbitData{
 		Orbit: g.context.Payload,
 	}

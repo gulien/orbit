@@ -34,6 +34,18 @@ func TestExecute(t *testing.T) {
 	}
 }
 
+func TestExecuteMissingVariableError(t *testing.T) {
+	dataSourceFilePath, _ := filepath.Abs("../../_tests/data-source.yml")
+
+	// case 1: uses a broken data-driven template.
+	brokenTemplateFilePath, _ := filepath.Abs("../../_tests/broken-template-missing-var.yml")
+	ctx, _ := context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath)
+	g := NewOrbitGenerator(ctx)
+	if _, err := g.Execute(); err == nil {
+		t.Errorf("OrbitGenerator should not have been able to render the data-driven template %s", brokenTemplateFilePath)
+	}
+}
+
 // Tests if flushing from raw data source works as expected.
 func TestFlushFromRawDataSource(t *testing.T) {
 	templateFilePath, _ := filepath.Abs("../../_tests/template-raw.yml")

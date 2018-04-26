@@ -9,3 +9,15 @@ tasks:
   - use: "challenger"
     run:
       - faildep status
+  - use: "zuma"
+    shell: nope.sh
+    run:
+      - dep status
+  - use: "falcon"
+    shell: bash -c
+    run:
+      - dep status
+  - use: "ariane"
+    shell: ls
+    run:
+      - -l

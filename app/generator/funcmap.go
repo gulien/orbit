@@ -19,7 +19,7 @@ func getOS() string {
 }
 
 /*
-isInfo returns true if the info flag has been given.
+isInfo returns true if the logs are set to info level.
 
 This function is available in
 a data-driven template by using "info".
@@ -29,7 +29,7 @@ func isInfo() bool {
 }
 
 /*
-isDebug returns true if the debug flag has been given.
+isDebug returns true if the logs are set to debug level.
 
 This function is available in
 a data-driven template by using "debug".

@@ -21,7 +21,7 @@ type orbitLogger struct {
 func newOrbitLogger() *orbitLogger {
 	l := logrus.New()
 	l.Out = os.Stdout
-	l.Level = logrus.PanicLevel
+	l.Level = logrus.ErrorLevel
 
 	return &orbitLogger{
 		logger: l,

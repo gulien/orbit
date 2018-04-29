@@ -80,8 +80,8 @@ and two custom functions:
 
 * `os` which returns the current OS name at runtime (you may find all available names in the
 [official documentation](https://golang.org/doc/install/source#environment)).
-* `info` which returns `true` if the `-i --info` flag has been given to Orbit.
-* `debug` which returns `true` if the `-d --debug` flag has been given to Orbit.
+* `info` which returns `true` if logging is set to info level.
+* `debug` which returns `true` if logging is set to debug level.
 
 ### Command description
 
@@ -143,11 +143,11 @@ you set the same key in the `-p` flag.
 
 ##### `-i --info`
 
-Displays info logs.
+Sets logging to info level.
 
 ##### `-d --debug`
 
-Displays debug logs.
+Sets logging to debug level.
 
 ### Basic example
 
@@ -296,11 +296,11 @@ Of course, you may also create a file named `orbit-payload.yml` in the same fold
 
 ##### `-i --info`
 
-Displays info logs.
+Sets logging to info level.
 
 ##### `-d --debug`
 
-Displays debug logs.
+Sets logging to debug level.
 
 ### Basic example
 

@@ -280,7 +280,9 @@ tasks:
     {{ end }}
 ```
 
-**Note:** Orbit will automatically detect the shell you're using. 
+Orbit will automatically detect the shell you're using (using to the `SHELL` environment variable on POSIX system 
+and `COMSPEC` on Windows). 
+
 Running the task `script` from the previous example will in fact executes `cmd.exe /c .\my_script.bat` on
 Windows or `/bin/sh -c my_script.sh` (or `/bin/zsh -c my_script.sh` etc.) on others OS.
 

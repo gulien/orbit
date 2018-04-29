@@ -43,6 +43,6 @@ var (
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&templateFilePath, "file", "f", "", "specify the path of a data-driven template")
 	RootCmd.PersistentFlags().StringVarP(&payload, "payload", "p", "", "specify a map of YAML files, TOML files, JSON files, .env files and raw data")
-	RootCmd.PersistentFlags().BoolVarP(&info, "info", "i", false, "set logs to info level")
-	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "set logs to debug level")
+	RootCmd.PersistentFlags().BoolVarP(&info, "info", "i", false, "set logging to info level")
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "set logging to debug level")
 }

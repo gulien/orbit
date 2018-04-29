@@ -42,6 +42,7 @@ type (
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	funcMap := sprig.TxtFuncMap()
 	funcMap["os"] = getOS
+	funcMap["info"] = isInfo
 	funcMap["debug"] = isDebug
 
 	g := &OrbitGenerator{
@@ -115,13 +116,13 @@ func flushToFile(outputPath string, data bytes.Buffer) error {
 		return OrbitError.NewOrbitErrorf("unable to flushToFile into the output file %s. Details:\n%s", outputPath, err)
 	}
 
-	logger.Debugf("output file %s has been created", outputPath)
+	logger.Infof("output file %s has been created", outputPath)
 
 	return nil
 }
 
 // flushToStdout writes bytes to Stdout.
 func flushToStdout(data bytes.Buffer) {
-	logger.Debugf("no output file given, printing the result to Stdout")
+	logger.Infof("no output file given, printing the result to Stdout")
 	fmt.Println(string(data.Bytes()))
 }

@@ -13,53 +13,51 @@ import (
 
 // orbitLogger provides the underlying implementation that displays output to the user.
 type orbitLogger struct {
-	// log is an instance of logrus logger.
-	log *logrus.Logger
-
-	// silent disables logging if true.
-	silent bool
+	// logger is an instance of logrus logger.
+	logger *logrus.Logger
 }
 
 // newOrbitLogged creates an instance of orbitLogger.
 func newOrbitLogger() *orbitLogger {
-	log := logrus.New()
-	log.Out = os.Stdout
-	log.Level = logrus.DebugLevel
+	l := logrus.New()
+	l.Out = os.Stdout
+	l.Level = logrus.PanicLevel
 
 	return &orbitLogger{
-		log:    log,
-		silent: false,
+		logger: l,
 	}
 }
 
-// Houston is the logger instance used by the application.
-var Houston = newOrbitLogger()
+// houston is the logger instance used by the application.
+var houston = newOrbitLogger()
 
-// Mute disables logging.
-func Mute() {
-	Houston.silent = true
+// SetLevel updates the level of messages which will be logged.
+func SetLevel(level logrus.Level) {
+	houston.logger.SetLevel(level)
 }
 
-// IsSilent returns true if logging is disabled.
-func IsSilent() bool {
-	return Houston.silent
+// GetLevel returns the current level of messages which are logged.
+func GetLevel() logrus.Level {
+	return houston.logger.Level
+}
+
+// Infof logs information using the Houston logger.
+func Infof(message string, args ...interface{}) {
+	houston.logger.Infof(message, args...)
 }
 
 // Debugf logs debug information using the Houston logger.
 func Debugf(message string, args ...interface{}) {
-	if !Houston.silent {
-		Houston.log.Debugf(message, args...)
-	}
+	houston.logger.Debugf(message, args...)
 }
 
 // Error logs error information using the Houston logger.
 func Error(err error) {
-	if !Houston.silent {
-		Houston.log.Error(err.Error())
+	if _, ok := err.(*OrbitError.OrbitError); ok {
+		houston.logger.Error(err.Error())
+	} else if GetLevel() == logrus.DebugLevel {
+		// errors which are not "OrbitError" are not relevant unless we are
+		// in debug mode.
+		houston.logger.Error(err.Error())
 	}
-}
-
-// NotifyOrbitError prints an error which have to be displayed to the user.
-func NotifyOrbitError(err *OrbitError.OrbitError) {
-	Houston.log.Error(err.Error())
 }

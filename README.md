@@ -247,7 +247,7 @@ tasks:
 ```
 
 * the `use` attribute is the name of your task.
-* the `short` attribute is optional and is displayed when running `orbit run`
+* the `short` attribute is optional and is displayed when running `orbit run` or when the flag `-i --info` has been given.
 * the `private` attribute is optional and hides the considered task when running `orbit run`
 * the `run` attribute is the stack of commands to run.
 * a command is a binary which is available in your `$PATH`.

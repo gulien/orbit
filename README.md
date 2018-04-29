@@ -76,7 +76,7 @@ a lot of features that aren't mentioned here. Don't hesitate to take a look
 at these links to understand the *Go* template engine! :smiley:
 
 Also, Orbit provides [Sprig](http://masterminds.github.io/sprig/) library
-and two custom functions:
+and three custom functions:
 
 * `os` which returns the current OS name at runtime (you may find all available names in the
 [official documentation](https://golang.org/doc/install/source#environment)).

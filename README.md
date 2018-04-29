@@ -80,8 +80,8 @@ and two custom functions:
 
 * `os` which returns the current OS name at runtime (you may find all available names in the
 [official documentation](https://golang.org/doc/install/source#environment)).
-* `info` which returns `true` if the `-i --info` flag has been past to Orbit.
-* `debug` which returns `true` if the `-d --debug` flag has been past to Orbit.
+* `info` which returns `true` if the `-i --info` flag has been given to Orbit.
+* `debug` which returns `true` if the `-d --debug` flag has been given to Orbit.
 
 ### Command description
 
@@ -247,8 +247,8 @@ tasks:
 ```
 
 * the `use` attribute is the name of your task.
-* the `short` attribute is optional and is displayed when running `orbit run` or when the flag `-i --info` has been given.
-* the `private` attribute is optional and hides the considered task when running `orbit run`
+* the `short` attribute is optional and is displayed when running `orbit run`.
+* the `private` attribute is optional and hides the considered task when running `orbit run`.
 * the `run` attribute is the stack of commands to run.
 * a command is a binary which is available in your `$PATH`.
 

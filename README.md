@@ -80,6 +80,7 @@ and two custom functions:
 
 * `os` which returns the current OS name at runtime (you may find all available names in the
 [official documentation](https://golang.org/doc/install/source#environment)).
+* `info` which returns `true` if the `-i --info` flag has been past to Orbit.
 * `debug` which returns `true` if the `-d --debug` flag has been past to Orbit.
 
 ### Command description
@@ -140,9 +141,13 @@ running `orbit generate [...] -p "my_key,my_file.yml;my_other_key,Some raw data"
 **Note:** you are able to override a data source from the file `orbit-payload.yml` if
 you set the same key in the `-p` flag.
 
+##### `-i --info`
+
+Displays info logs.
+
 ##### `-d --debug`
 
-Displays a detailed output.
+Displays debug logs.
 
 ### Basic example
 
@@ -287,9 +292,13 @@ It works the same as the `-p` flag from the `generate` command.
 
 Of course, you may also create a file named `orbit-payload.yml` in the same folder where you're executing Orbit.
 
+##### `-i --info`
+
+Displays info logs.
+
 ##### `-d --debug`
 
-Displays a detailed output.
+Displays debug logs.
 
 ### Basic example
 

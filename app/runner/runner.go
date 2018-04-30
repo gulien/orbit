@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/gulien/orbit/app/context"
@@ -45,6 +46,10 @@ type (
 		// Private allows to hide the task when
 		// printing the available tasks.
 		Private bool `yaml:"private,omitempty"`
+
+		// Shell allows to choose which binary will
+		// be called to run the commands.
+		Shell string `yaml:"shell,omitempty"`
 
 		// Run is the stack of commands to execute.
 		Run []string `yaml:"run"`
@@ -135,10 +140,17 @@ func (r *OrbitRunner) run(task *orbitTask) error {
 	for _, cmd := range task.Run {
 
 		var e *exec.Cmd
-		if runtime.GOOS == "windows" {
-			e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", cmd)
+		if task.Shell != "" {
+			shellAndParams := strings.Fields(task.Shell)
+			shell := shellAndParams[0]
+			parameters := append(shellAndParams[1:], cmd)
+			e = exec.Command(shell, parameters...)
 		} else {
-			e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", cmd)
+			if runtime.GOOS == "windows" {
+				e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", cmd)
+			} else {
+				e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", cmd)
+			}
 		}
 
 		logger.Infof("executing command %s", e.Args)

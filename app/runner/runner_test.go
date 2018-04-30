@@ -60,11 +60,27 @@ func TestRun(t *testing.T) {
 
 	// case 3: uses a correct task.
 	if err := r.Run("explorer"); err != nil {
-		t.Error("Task should have been ran!")
+		t.Error("Task should have been run!")
 	}
 
 	// case 4: uses nested tasks.
 	if err := r.Run("explorer", "sputnik"); err != nil {
-		t.Error("Nested tasks should have been ran!")
+		t.Error("Nested tasks should have been run!")
 	}
+
+	// case 5: uses custom shell with non-existent shell.
+	if err := r.Run("zuma"); err == nil {
+		t.Error("Custom shell task should have failed!")
+	}
+
+	// case 6: uses custom shell with existent shell.
+	if err := r.Run("falcon"); err != nil {
+		t.Error("Custom shell task should have been run!")
+	}
+
+	// case 7: uses custom shell without parameter.
+	if err := r.Run("ariane"); err != nil {
+		t.Error("Custom shell task should have been run!")
+	}
+
 }

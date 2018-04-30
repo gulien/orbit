@@ -1,7 +1,9 @@
 package generator
 
 import (
+	"fmt"
 	"runtime"
+	"strings"
 
 	"github.com/gulien/orbit/app/logger"
 
@@ -36,4 +38,15 @@ a data-driven template by using "debug".
 */
 func isDebug() bool {
 	return logger.GetLevel() == logrus.DebugLevel
+}
+
+/*
+run returns a string which will be parsed by a regex pattern
+in our runner.
+
+This function is available in
+a data-driven template by using "run".
+*/
+func run(tasks ...string) string {
+	return fmt.Sprintf("run@%s", strings.Join(tasks, ","))
 }

@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strings"
 	"text/tabwriter"
@@ -40,16 +41,16 @@ type (
 		// Use is the name of the task.
 		Use string `yaml:"use"`
 
+		// Shell allows to choose which binary will
+		// be called to run the commands.
+		Shell string `yaml:"shell,omitempty"`
+
 		// Short is the short description of the task.
 		Short string `yaml:"short,omitempty"`
 
 		// Private allows to hide the task when
 		// printing the available tasks.
 		Private bool `yaml:"private,omitempty"`
-
-		// Shell allows to choose which binary will
-		// be called to run the commands.
-		Shell string `yaml:"shell,omitempty"`
 
 		// Run is the stack of commands to execute.
 		Run []string `yaml:"run"`
@@ -133,40 +134,6 @@ func (r *OrbitRunner) Run(names ...string) error {
 	return nil
 }
 
-// run executes the stack of commands from the given task.
-func (r *OrbitRunner) run(task *orbitTask) error {
-	logger.Infof("running task %s: %s", task.Use, task.Short)
-
-	for _, cmd := range task.Run {
-
-		var e *exec.Cmd
-		if task.Shell != "" {
-			shellAndParams := strings.Fields(task.Shell)
-			shell := shellAndParams[0]
-			parameters := append(shellAndParams[1:], cmd)
-			e = exec.Command(shell, parameters...)
-		} else {
-			if runtime.GOOS == "windows" {
-				e = exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", cmd)
-			} else {
-				e = exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", cmd)
-			}
-		}
-
-		logger.Infof("executing command %s", e.Args)
-
-		e.Stdout = os.Stdout
-		e.Stderr = os.Stderr
-		e.Stdin = os.Stdin
-
-		if err := e.Run(); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 // getTask returns an instance of orbitTask if found or nil.
 func (r *OrbitRunner) getTask(name string) *orbitTask {
 	for _, task := range r.config.Tasks {
@@ -176,4 +143,73 @@ func (r *OrbitRunner) getTask(name string) *orbitTask {
 	}
 
 	return nil
+}
+
+// run executes the stack of commands from the given task.
+func (r *OrbitRunner) run(task *orbitTask) error {
+	if task.Short == "" {
+		logger.Infof("running task %s", task.Use)
+	} else {
+		logger.Infof("running task %s: %s", task.Use, task.Short)
+	}
+
+	for _, cmd := range task.Run {
+		// check if the current command is calling others tasks.
+		tasks := r.interpret(cmd)
+		if tasks != nil {
+			if err := r.Run(tasks...); err != nil {
+				return err
+			}
+		} else {
+			e := r.buildCommand(cmd, task)
+			e.Stdout = os.Stdout
+			e.Stderr = os.Stderr
+			e.Stdin = os.Stdin
+
+			logger.Infof("executing command %s from task %s", e.Args, task.Use)
+
+			if err := e.Run(); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+// compiledRegexp is a simple regex pattern used to match a string created by
+// the template function run.
+var compiledRegexp = regexp.MustCompile(`^run@(.+)$`)
+
+// interpret checks if the command is calling others tasks.
+func (r *OrbitRunner) interpret(cmd string) []string {
+	// let's check if the command match our pattern.
+	match := compiledRegexp.FindStringSubmatch(cmd)
+
+	if len(match) == 0 {
+		// nop, it's just a command.
+		return nil
+	}
+
+	// ok, let's retrieve the tasks from the command.
+	return strings.Split(match[1], ",")
+}
+
+// buildCommand returns an exec.Cmd instance.
+func (r *OrbitRunner) buildCommand(cmd string, task *orbitTask) *exec.Cmd {
+	if task.Shell != "" {
+		// the user has specified a custom binary to use.
+		shellAndParams := strings.Fields(task.Shell)
+		shell := shellAndParams[0]
+		parameters := append(shellAndParams[1:], cmd)
+
+		return exec.Command(shell, parameters...)
+	}
+
+	// if no custom binary specified, detects the current shell of the user.
+	if runtime.GOOS == "windows" {
+		return exec.Command(os.Getenv(defaultWindowsShellEnvVariable), "/c", cmd)
+	}
+
+	return exec.Command(os.Getenv(defaultPosixShellEnvVariable), "-c", cmd)
 }

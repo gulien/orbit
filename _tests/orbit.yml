@@ -1,23 +1,31 @@
 tasks:
   - use: "explorer"
     run:
-      - dep status
+      - echo "I am explorer task"
   - use: "sputnik"
     private: true
     run:
-      - dep status
+      - echo "I am sputnik task"
   - use: "challenger"
     run:
-      - faildep status
+      - failecho "I am challenger task"
   - use: "zuma"
     shell: nope.sh
     run:
-      - dep status
+      - echo "I am zuma task"
   - use: "falcon"
     shell: bash -c
     run:
-      - dep status
+      - echo "I am falcon task"
   - use: "ariane"
     shell: ls
     run:
       - -l
+  - use: "new shepard"
+    run:
+      - echo "I am new shepard task"
+      - {{ run "explorer" "sputnik" }}
+  - use: "new glenn"
+    run:
+    - echo "I am new glenn task"
+    - {{ run "vulcan" }}

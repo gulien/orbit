@@ -4,6 +4,7 @@ package app
 import (
 	"github.com/gulien/orbit/app/logger"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +16,10 @@ var (
 	// Value format: key,path;key,path;key,data...
 	payload string
 
-	// debug enables logging if true.
+	// verbose enables info logs if true.
+	verbose bool
+
+	// debug enables debug logs if true.
 	debug bool
 
 	// RootCmd is the instance of the root of all commands.
@@ -25,8 +29,12 @@ var (
 		Long:          "A cross-platform task runner for executing commands and generating files from templates.",
 		SilenceErrors: true,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			if !debug {
-				logger.Mute()
+			if verbose {
+				logger.SetLevel(logrus.InfoLevel)
+			}
+
+			if debug {
+				logger.SetLevel(logrus.DebugLevel)
 			}
 		},
 	}
@@ -35,5 +43,6 @@ var (
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&templateFilePath, "file", "f", "", "specify the path of a data-driven template")
 	RootCmd.PersistentFlags().StringVarP(&payload, "payload", "p", "", "specify a map of YAML files, TOML files, JSON files, .env files and raw data")
-	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "display a detailed output")
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "set logging to info level")
+	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "set logging to debug level")
 }

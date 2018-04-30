@@ -16,7 +16,6 @@ import (
 	"os"
 
 	"github.com/gulien/orbit/app"
-	OrbitError "github.com/gulien/orbit/app/error"
 	"github.com/gulien/orbit/app/logger"
 	OrbitVersion "github.com/gulien/orbit/app/version"
 )
@@ -34,12 +33,7 @@ func main() {
 	OrbitVersion.Current = version
 
 	if err := app.RootCmd.Execute(); err != nil {
-		if orbitError, ok := err.(*OrbitError.OrbitError); ok {
-			logger.NotifyOrbitError(orbitError)
-		} else {
-			logger.Error(err)
-		}
-
+		logger.Error(err)
 		os.Exit(1)
 	}
 }

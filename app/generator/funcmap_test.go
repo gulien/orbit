@@ -3,8 +3,6 @@ package generator
 import (
 	"runtime"
 	"testing"
-
-	"github.com/gulien/orbit/app/logger"
 )
 
 // A dumb test to improve code coverage.
@@ -15,8 +13,15 @@ func TestGetOS(t *testing.T) {
 }
 
 // A dumb test to improve code coverage.
+func TesIsVerbose(t *testing.T) {
+	if isVerbose() != false {
+		t.Error("Dumb test should have been successful!")
+	}
+}
+
+// A dumb test to improve code coverage.
 func TestIsDebug(t *testing.T) {
-	if isDebug() != !logger.IsSilent() {
+	if isDebug() != false {
 		t.Error("Dumb test should have been successful!")
 	}
 }

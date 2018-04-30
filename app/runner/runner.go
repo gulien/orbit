@@ -135,7 +135,7 @@ func (r *OrbitRunner) Run(names ...string) error {
 
 // run executes the stack of commands from the given task.
 func (r *OrbitRunner) run(task *orbitTask) error {
-	logger.Debugf("running task %s", task.Use)
+	logger.Infof("running task %s: %s", task.Use, task.Short)
 
 	for _, cmd := range task.Run {
 
@@ -153,7 +153,7 @@ func (r *OrbitRunner) run(task *orbitTask) error {
 			}
 		}
 
-		logger.Debugf("executing command %s", e.Args)
+		logger.Infof("executing command %s", e.Args)
 
 		e.Stdout = os.Stdout
 		e.Stderr = os.Stderr

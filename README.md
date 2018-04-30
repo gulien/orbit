@@ -280,11 +280,43 @@ tasks:
     {{ end }}
 ```
 
-Orbit will automatically detect the shell you're using (with to the `SHELL` environment variable on POSIX system 
+Orbit will automatically detect the shell you're using (with the `SHELL` environment variable on POSIX system 
 and `COMSPEC` on Windows). 
 
 Running the task `script` from the previous example will in fact executes `cmd.exe /c .\my_script.bat` on
 Windows or `/bin/sh -c my_script.sh` (or `/bin/zsh -c my_script.sh` etc.) on others OS.
+
+Of course, if you want to specify the binary which is calling your commands, there is a `shell` attribute available:
+
+```yaml
+tasks:
+
+  - use: script
+    shell: /bin/bash -c
+    run:
+      - command [args]
+      - ...
+```
+
+Last but not least, a task is able to call others tasks within the same context thanks to the `run` function:
+
+```yaml
+tasks:
+
+  - use: task
+    run:
+      - {{ run "subtask_1" "subtask_2" }}
+
+  - use: subtask_1
+    run:
+      - command [args]
+      - ...
+     
+  - use: subtask_2
+    run:
+      - command [args]
+      - ...
+```
 
 ##### `-p --payload`
 

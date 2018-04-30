@@ -19,12 +19,12 @@ func getOS() string {
 }
 
 /*
-isInfo returns true if the logs are set to info level.
+isVerbose returns true if the logs are set to info level.
 
 This function is available in
-a data-driven template by using "info".
+a data-driven template by using "verbose".
 */
-func isInfo() bool {
+func isVerbose() bool {
 	return logger.GetLevel() == logrus.InfoLevel
 }
 

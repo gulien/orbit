@@ -13,8 +13,8 @@ func TestGetOS(t *testing.T) {
 }
 
 // A dumb test to improve code coverage.
-func TestIsInfo(t *testing.T) {
-	if isInfo() != false {
+func TesIsVerbose(t *testing.T) {
+	if isVerbose() != false {
 		t.Error("Dumb test should have been successful!")
 	}
 }

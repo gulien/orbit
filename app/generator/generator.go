@@ -42,7 +42,7 @@ type (
 func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	funcMap := sprig.TxtFuncMap()
 	funcMap["os"] = getOS
-	funcMap["info"] = isInfo
+	funcMap["verbose"] = isVerbose
 	funcMap["debug"] = isDebug
 
 	g := &OrbitGenerator{

@@ -76,11 +76,12 @@ a lot of features that aren't mentioned here. Don't hesitate to take a look
 at these links to understand the *Go* template engine! :smiley:
 
 Also, Orbit provides [Sprig](http://masterminds.github.io/sprig/) library
-and two custom functions:
+and three custom functions:
 
 * `os` which returns the current OS name at runtime (you may find all available names in the
 [official documentation](https://golang.org/doc/install/source#environment)).
-* `debug` which returns `true` if the `-d --debug` flag has been past to Orbit.
+* `verbose` which returns `true` if logging is set to info level.
+* `debug` which returns `true` if logging is set to debug level.
 
 ### Command description
 
@@ -140,9 +141,13 @@ running `orbit generate [...] -p "my_key,my_file.yml;my_other_key,Some raw data"
 **Note:** you are able to override a data source from the file `orbit-payload.yml` if
 you set the same key in the `-p` flag.
 
+##### `-v --verbose`
+
+Sets logging to info level.
+
 ##### `-d --debug`
 
-Displays a detailed output.
+Sets logging to debug level.
 
 ### Basic example
 
@@ -242,8 +247,8 @@ tasks:
 ```
 
 * the `use` attribute is the name of your task.
-* the `short` attribute is optional and is displayed when running `orbit run`
-* the `private` attribute is optional and hides the considered task when running `orbit run`
+* the `short` attribute is optional and is displayed when running `orbit run`.
+* the `private` attribute is optional and hides the considered task when running `orbit run`.
 * the `run` attribute is the stack of commands to run.
 * a command is a binary which is available in your `$PATH`.
 
@@ -275,9 +280,43 @@ tasks:
     {{ end }}
 ```
 
-**Note:** Orbit will automatically detect the shell you're using. 
+Orbit will automatically detect the shell you're using (with the `SHELL` environment variable on POSIX system 
+and `COMSPEC` on Windows). 
+
 Running the task `script` from the previous example will in fact executes `cmd.exe /c .\my_script.bat` on
 Windows or `/bin/sh -c my_script.sh` (or `/bin/zsh -c my_script.sh` etc.) on others OS.
+
+Of course, if you want to specify the binary which is calling your commands, there is a `shell` attribute available:
+
+```yaml
+tasks:
+
+  - use: script
+    shell: /bin/bash -c
+    run:
+      - command [args]
+      - ...
+```
+
+Last but not least, a task is able to call others tasks within the same context thanks to the `run` function:
+
+```yaml
+tasks:
+
+  - use: task
+    run:
+      - {{ run "subtask_1" "subtask_2" }}
+
+  - use: subtask_1
+    run:
+      - command [args]
+      - ...
+     
+  - use: subtask_2
+    run:
+      - command [args]
+      - ...
+```
 
 ##### `-p --payload`
 
@@ -287,9 +326,13 @@ It works the same as the `-p` flag from the `generate` command.
 
 Of course, you may also create a file named `orbit-payload.yml` in the same folder where you're executing Orbit.
 
+##### `-v --verbose`
+
+Sets logging to info level.
+
 ##### `-d --debug`
 
-Displays a detailed output.
+Sets logging to debug level.
 
 ### Basic example
 

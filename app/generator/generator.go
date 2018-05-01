@@ -44,6 +44,7 @@ func NewOrbitGenerator(context *context.OrbitContext) *OrbitGenerator {
 	funcMap["os"] = getOS
 	funcMap["verbose"] = isVerbose
 	funcMap["debug"] = isDebug
+	funcMap["run"] = run
 
 	g := &OrbitGenerator{
 		context: context,

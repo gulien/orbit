@@ -83,4 +83,13 @@ func TestRun(t *testing.T) {
 		t.Error("Custom shell task should have been run!")
 	}
 
+	// case 8: uses a task which calls others tasks
+	if err := r.Run("new shepard"); err != nil {
+		t.Error("Task calling others tasks should have been run!")
+	}
+
+	// case 9: uses a task which calls a non existing task.
+	if err := r.Run("new glenn"); err == nil {
+		t.Error("Task calling another task should not have been run!")
+	}
 }

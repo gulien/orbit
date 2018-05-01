@@ -1,5 +1,6 @@
 tasks:
   - use: "explorer"
+    short: a short description
     run:
       - echo "I am explorer task"
   - use: "sputnik"

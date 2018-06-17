@@ -19,7 +19,7 @@ func TestExecute(t *testing.T) {
 
 	// case 1: uses a broken data-driven template.
 	brokenTemplateFilePath, _ := filepath.Abs("../../_tests/broken-template.yml")
-	ctx, _ := context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ := context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath, "")
 	g := NewOrbitGenerator(ctx)
 	if _, err := g.Execute(); err == nil {
 		t.Errorf("OrbitGenerator should not have been able to parse the data-driven template %s", brokenTemplateFilePath)
@@ -27,7 +27,7 @@ func TestExecute(t *testing.T) {
 
 	// case 2: uses a correct data-driven template.
 	templateFilePath, _ := filepath.Abs("../../_tests/template.yml")
-	ctx, _ = context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ = context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath, "")
 	g = NewOrbitGenerator(ctx)
 	if _, err := g.Execute(); err != nil {
 		t.Errorf("OrbitGenerator should have been able to parse the data-driven template %s", templateFilePath)
@@ -35,17 +35,32 @@ func TestExecute(t *testing.T) {
 
 	// case 3: uses a broken data-driven template with a missing variable.
 	brokenTemplateFilePath, _ = filepath.Abs("../../_tests/broken-template-missing-var.yml")
-	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "Values,"+dataSourceFilePath, "")
 	g = NewOrbitGenerator(ctx)
 	if _, err := g.Execute(); err == nil {
 		t.Errorf("OrbitGenerator should not have been able to render the data-driven template %s", brokenTemplateFilePath)
+	}
+
+	// case 4: uses a data-driven template with a missing additional template.
+	templateWithAdditionalTemplatesFilePath, _ := filepath.Abs("../../_tests/template-with-additional-templates.txt")
+	ctx, _ = context.NewOrbitContext(templateWithAdditionalTemplatesFilePath, "", "../../_tests/template-spacex.txt")
+	g = NewOrbitGenerator(ctx)
+	if _, err := g.Execute(); err == nil {
+		t.Errorf("OrbitGenerator should not have been able to render the data-driven template %s", templateWithAdditionalTemplatesFilePath)
+	}
+
+	// case 4: uses a data-driven template with all additional templates.
+	ctx, _ = context.NewOrbitContext(templateWithAdditionalTemplatesFilePath, "", "../../_tests/template-spacex.txt,../../_tests/template-blue-origin.txt")
+	g = NewOrbitGenerator(ctx)
+	if _, err := g.Execute(); err != nil {
+		t.Errorf("OrbitGenerator should have been able to render the data-driven template %s", templateWithAdditionalTemplatesFilePath)
 	}
 }
 
 // Tests if flushing from raw data source works as expected.
 func TestFlushFromRawDataSource(t *testing.T) {
 	templateFilePath, _ := filepath.Abs("../../_tests/template-raw.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "SPACEX_LAUNCHERS,Falcon 9, Falcon Heavy;BLUE_ORIGIN_LAUNCHERS,New Shepard, New Glenn;ESA_LAUNCHERS,Ariane 5, Vega")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "SPACEX_LAUNCHERS,Falcon 9, Falcon Heavy;BLUE_ORIGIN_LAUNCHERS,New Shepard, New Glenn;ESA_LAUNCHERS,Ariane 5, Vega", "")
 	g := NewOrbitGenerator(ctx)
 	data, _ := g.Execute()
 
@@ -86,7 +101,7 @@ func TestFlushFromRawDataSource(t *testing.T) {
 func TestFlushFromYAMLDataSource(t *testing.T) {
 	dataSourceFilePath, _ := filepath.Abs("../../_tests/data-source.yml")
 	templateFilePath, _ := filepath.Abs("../../_tests/template.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath, "")
 	g := NewOrbitGenerator(ctx)
 	data, _ := g.Execute()
 
@@ -127,7 +142,7 @@ func TestFlushFromYAMLDataSource(t *testing.T) {
 func TestFlushFromTOMLDataSource(t *testing.T) {
 	dataSourceFilePath, _ := filepath.Abs("../../_tests/data-source.toml")
 	templateFilePath, _ := filepath.Abs("../../_tests/template.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath, "")
 	g := NewOrbitGenerator(ctx)
 	data, _ := g.Execute()
 
@@ -168,7 +183,7 @@ func TestFlushFromTOMLDataSource(t *testing.T) {
 func TestFlushFromJSONDataSource(t *testing.T) {
 	dataSourceFilePath, _ := filepath.Abs("../../_tests/data-source.json")
 	templateFilePath, _ := filepath.Abs("../../_tests/template.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath, "")
 	g := NewOrbitGenerator(ctx)
 	data, _ := g.Execute()
 
@@ -209,7 +224,7 @@ func TestFlushFromJSONDataSource(t *testing.T) {
 func TestFlushFromEnvFileDataSource(t *testing.T) {
 	dataSourceFilePath, _ := filepath.Abs("../../_tests/.env")
 	templateFilePath, _ := filepath.Abs("../../_tests/template-env.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath)
+	ctx, _ := context.NewOrbitContext(templateFilePath, "Values,"+dataSourceFilePath, "")
 	g := NewOrbitGenerator(ctx)
 	data, _ := g.Execute()
 

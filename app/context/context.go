@@ -18,10 +18,13 @@ type OrbitContext struct {
 
 	// Payload map contains data from various entries.
 	Payload map[string]interface{}
+
+	// Templates array contains the list of additional templates to parse.
+	Templates []string
 }
 
 // NewOrbitContext creates an instance of OrbitContext.
-func NewOrbitContext(templateFilePath string, payload string) (*OrbitContext, error) {
+func NewOrbitContext(templateFilePath string, payload string, templates string) (*OrbitContext, error) {
 	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" {
 		return nil, OrbitError.NewOrbitErrorf("no data-driven template given")
@@ -46,18 +49,20 @@ func NewOrbitContext(templateFilePath string, payload string) (*OrbitContext, er
 		return nil, err
 	}
 
-	if err := p.populateFromString(payload); err != nil {
+	if err := p.populateFromString(payload, templates); err != nil {
 		return nil, err
 	}
 
-	data, err := p.retrieveData()
+	payloadData, err := p.retrievePayloadData()
 	if err != nil {
 		return nil, err
 	}
 
-	ctx.Payload = data
-
+	ctx.Payload = payloadData
 	logger.Debugf("context has been populated with payload %s", ctx.Payload)
+
+	ctx.Templates = p.TemplatesEntries
+	logger.Debugf("context has been populated with templates %s", ctx.Templates)
 
 	return ctx, nil
 }

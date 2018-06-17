@@ -62,9 +62,14 @@ Execute executes a data-driven template by applying it the data structure provid
 Returns the resulting bytes.
 */
 func (g *OrbitGenerator) Execute() (bytes.Buffer, error) {
-	var data bytes.Buffer
+	var (
+		files []string
+		data  bytes.Buffer
+	)
 
-	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(g.funcMap).ParseFiles(g.context.TemplateFilePath)
+	files = append(files, g.context.TemplateFilePath)
+	files = append(files, g.context.Templates...)
+	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(g.funcMap).ParseFiles(files...)
 	if err != nil {
 		return data, OrbitError.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}

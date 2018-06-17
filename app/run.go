@@ -34,7 +34,7 @@ func run(cmd *cobra.Command, args []string) error {
 		templateFilePath = orbitFilePath
 	}
 
-	ctx, err := context.NewOrbitContext(templateFilePath, payload)
+	ctx, err := context.NewOrbitContext(templateFilePath, payload, templates)
 	if err != nil {
 		return err
 	}

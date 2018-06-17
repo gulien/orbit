@@ -141,6 +141,45 @@ running `orbit generate [...] -p "my_key,my_file.yml;my_other_key,Some raw data"
 **Note:** you are able to override a data source from the file `orbit-payload.yml` if
 you set the same key in the `-p` flag.
 
+##### `-t --templates`
+
+The flag `-t` allows you to specify additional templates which are used in your template:
+
+```
+orbit generate [...] -t "template_1.txt"
+orbit generate [...] -t "template_1.txt,template_2.yml"
+orbit generate [...] -t "template_1.txt,template_2.yml,../../template_3.toml"
+```
+
+So, in order to generate a file from this template:
+
+```
+{{ template "additional_template.txt" }}
+```
+
+You should run:
+
+```
+orbit generate [...] -t "path/to/additional_template.txt"
+```
+
+If you don't want to specify the templates each time your running `orbit generate`,
+you may also use the file `orbit-payload.yml` in the folder where your running your command:
+
+```yaml
+payload:
+
+[...]
+
+templates:
+
+  - template_1.txt
+  - template_2.yml
+```
+
+By doing so, running `orbit generate [...]` will be equivalent to 
+running `orbit generate [...] -t "template_1.txt,template_2.yml"`.
+
 ##### `-v --verbose`
 
 Sets logging to info level.
@@ -323,6 +362,14 @@ tasks:
 The flag `-p` allows you to specify many data sources which will be applied to your configuration file.
 
 It works the same as the `-p` flag from the `generate` command.
+
+Of course, you may also create a file named `orbit-payload.yml` in the same folder where you're executing Orbit.
+
+##### `-t --templates`
+
+The flag `-t` allows you to specify additional templates which are used in your configuration file.
+
+It works the same as the `-t` flag from the `generate` command.
 
 Of course, you may also create a file named `orbit-payload.yml` in the same folder where you're executing Orbit.
 

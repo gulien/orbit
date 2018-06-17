@@ -13,21 +13,21 @@ import (
 func TestNewOrbitRunner(t *testing.T) {
 	// case 1: uses a wrong configuration file.
 	wrongTemplateFilePath, _ := filepath.Abs("../../_tests/.env")
-	ctx, _ := context.NewOrbitContext(wrongTemplateFilePath, "")
+	ctx, _ := context.NewOrbitContext(wrongTemplateFilePath, "", "")
 	if _, err := NewOrbitRunner(ctx); err == nil {
 		t.Error("OrbitRunner should not have been instantiated!")
 	}
 
 	// case 2: uses a broken configuration file.
 	brokenTemplateFilePath, _ := filepath.Abs("../../_tests/broken-template.yml")
-	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "")
+	ctx, _ = context.NewOrbitContext(brokenTemplateFilePath, "", "")
 	if _, err := NewOrbitRunner(ctx); err == nil {
 		t.Error("OrbitRunner should not have been instantiated!")
 	}
 
 	// case 3 uses a correct configuration file.
 	templateFilePath, _ := filepath.Abs("../../_tests/orbit.yml")
-	ctx, _ = context.NewOrbitContext(templateFilePath, "")
+	ctx, _ = context.NewOrbitContext(templateFilePath, "", "")
 	if _, err := NewOrbitRunner(ctx); err != nil {
 		t.Error("OrbitRunner should have been instantiated!")
 	}
@@ -36,7 +36,7 @@ func TestNewOrbitRunner(t *testing.T) {
 // A dumb test to improve code coverage.
 func TestPrint(t *testing.T) {
 	templateFilePath, _ := filepath.Abs("../../_tests/orbit.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "", "")
 	r, _ := NewOrbitRunner(ctx)
 
 	r.Print()
@@ -45,7 +45,7 @@ func TestPrint(t *testing.T) {
 // Tests Run function by running different kind of tasks.
 func TestRun(t *testing.T) {
 	templateFilePath, _ := filepath.Abs("../../_tests/orbit.yml")
-	ctx, _ := context.NewOrbitContext(templateFilePath, "")
+	ctx, _ := context.NewOrbitContext(templateFilePath, "", "")
 	r, _ := NewOrbitRunner(ctx)
 
 	// case 1: uses a non existing task.

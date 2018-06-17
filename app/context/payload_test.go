@@ -33,41 +33,41 @@ func TestPopulateFromFile(t *testing.T) {
 // Tests if populating an orbitPayload from a string throws an error
 // with a wrong parameter or no error if the parameter is correct.
 func TestPopulateFromString(t *testing.T) {
-	// case 1: uses an empty payload string.
+	// case 1: uses empty payload and templates strings.
 	p := &orbitPayload{}
-	if err := p.populateFromString(""); err != nil {
+	if err := p.populateFromString("", ""); err != nil {
 		t.Error("orbitPayload should have been skipped!")
 	}
 
 	// case 2: uses a broken payload string.
 	p = &orbitPayload{}
-	if err := p.populateFromString("key"); err == nil {
+	if err := p.populateFromString("key", ""); err == nil {
 		t.Error("orbitPayload should not have been populated!")
 	}
 
-	// case 3: uses a correct payload string.
+	// case 3: uses correct payload and templates strings.
 	p = &orbitPayload{}
-	if err := p.populateFromString("key,value"); err != nil {
+	if err := p.populateFromString("key,value", "path,path"); err != nil {
 		t.Error("orbitPayload should have been populated!")
 	}
 }
 
 // Tests if retrieving data from an orbitPayload throws an error
 // with a wrong payload entry or no error if the payload entry is correct.
-func TestRetrieveData(t *testing.T) {
+func TestRetrievePayloadData(t *testing.T) {
 	// case 1: uses a broken payload entry.
 	brokenDataSourceFilePath, _ := filepath.Abs("../../_tests/broken-data-source.yml")
 	p := &orbitPayload{}
-	p.populateFromString("key," + brokenDataSourceFilePath)
-	if _, err := p.retrieveData(); err == nil {
+	p.populateFromString("key,"+brokenDataSourceFilePath, "")
+	if _, err := p.retrievePayloadData(); err == nil {
 		t.Error("orbitPayload should not have been hable to retrieve data!")
 	}
 
 	// case 2: uses a correct payload entry.
 	dataSourceFilePath, _ := filepath.Abs("../../_tests/data-source.yml")
 	p = &orbitPayload{}
-	p.populateFromString("key," + dataSourceFilePath)
-	if _, err := p.retrieveData(); err != nil {
+	p.populateFromString("key,"+dataSourceFilePath, "")
+	if _, err := p.retrievePayloadData(); err != nil {
 		t.Error("orbitPayload should have been hable to retrieve data!")
 	}
 }

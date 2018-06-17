@@ -16,6 +16,10 @@ var (
 	// Value format: key,path;key,path;key,data...
 	payload string
 
+	// templates represents a map of additional templates.
+	// Value format: path,path,path...
+	templates string
+
 	// verbose enables info logs if true.
 	verbose bool
 
@@ -43,6 +47,7 @@ var (
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&templateFilePath, "file", "f", "", "specify the path of a data-driven template")
 	RootCmd.PersistentFlags().StringVarP(&payload, "payload", "p", "", "specify a map of YAML files, TOML files, JSON files, .env files and raw data")
+	RootCmd.PersistentFlags().StringVarP(&templates, "templates", "t", "", "specify a map of additional templates")
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "set logging to info level")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "set logging to debug level")
 }

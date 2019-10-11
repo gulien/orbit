@@ -1,4 +1,4 @@
-FROM golang:1.10-stretch
+FROM golang:1.13-stretch
 
 WORKDIR /go/src/github.com/gulien/orbit
 

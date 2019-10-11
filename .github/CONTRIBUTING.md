@@ -8,7 +8,7 @@ find below useful information about how to contribute to the Orbit project.
 ### Install from sources
 
 1. Fork this repository
-2. Clone it to your local Go environment (requires *Go* >= 1.10)
+2. Clone it to your local Go environment (requires _Go_ >= 1.13)
 
 ### Working with git
 

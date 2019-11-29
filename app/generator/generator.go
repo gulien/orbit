@@ -69,7 +69,7 @@ func (g *OrbitGenerator) Execute() (bytes.Buffer, error) {
 
 	files = append(files, g.context.TemplateFilePath)
 	files = append(files, g.context.Templates...)
-	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Funcs(g.funcMap).ParseFiles(files...)
+	tmpl, err := template.New(filepath.Base(g.context.TemplateFilePath)).Delims(g.context.TemplateDelimiters[0], g.context.TemplateDelimiters[1]).Funcs(g.funcMap).ParseFiles(files...)
 	if err != nil {
 		return data, OrbitError.NewOrbitErrorf("unable to parse the template file %s. Details:\n%s", g.context.TemplateFilePath, err)
 	}

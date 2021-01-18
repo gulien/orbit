@@ -21,10 +21,13 @@ type OrbitContext struct {
 
 	// Templates array contains the list of additional templates to parse.
 	Templates []string
+
+	// Optional pair of template delimiters (used to override go defaults "{{" and "}}")
+	TemplateDelimiters []string
 }
 
 // NewOrbitContext creates an instance of OrbitContext.
-func NewOrbitContext(templateFilePath string, payload string, templates string) (*OrbitContext, error) {
+func NewOrbitContext(templateFilePath string, payload string, templates string, templateDelimiters []string) (*OrbitContext, error) {
 	// as the data-driven template is mandatory, we must check its validity.
 	if templateFilePath == "" {
 		return nil, OrbitError.NewOrbitErrorf("no data-driven template given")
@@ -63,6 +66,15 @@ func NewOrbitContext(templateFilePath string, payload string, templates string) 
 
 	ctx.Templates = p.TemplatesEntries
 	logger.Debugf("context has been populated with templates %s", ctx.Templates)
+
+	if templateDelimiters == nil {
+		ctx.TemplateDelimiters = make([]string, 2)
+	} else if len(templateDelimiters) == 2 {
+		ctx.TemplateDelimiters = templateDelimiters
+		logger.Debugf("context has been instantiated with the template delimiters %+v", ctx.TemplateDelimiters)
+	} else {
+		return nil, OrbitError.NewOrbitErrorf("%d delimiter(s) specified: %+v. Exactly two (left,right) must be specified", len(templateDelimiters), templateDelimiters)
+	}
 
 	return ctx, nil
 }

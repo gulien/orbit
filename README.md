@@ -180,6 +180,17 @@ templates:
 By doing so, running `orbit generate [...]` will be equivalent to 
 running `orbit generate [...] -t "template_1.txt,template_2.yml"`.
 
+##### `--delimiters`
+
+The flag `--delimiters` allows you to specify an alternative template delimiter pair (left/open, right/close). If unspecified, the Go defaults (`{{` and `}}`) will be used. Note that, if this option is used, _exactly_ two delimiters must be specified.
+
+Examples:
+```
+orbit generate [...] --delimiters "<<,>>"
+orbit generate [...] --delimiters "<<" --delimiters ">>"
+```
+The first delimiter (`<<` in the examples above) is used for the left/opening delimiter while the second delimiter (`>>` in the examples above) is used for the right/closing delimiter. This applies regardless of whether the delimiters are specified as a comma-separated pair (first example) or by repeated use of the option (second example).
+
 ##### `-v --verbose`
 
 Sets logging to info level.

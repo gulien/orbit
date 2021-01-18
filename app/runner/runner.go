@@ -86,7 +86,7 @@ func NewOrbitRunner(context *context.OrbitContext) (*OrbitRunner, error) {
 		context: context,
 	}
 
-	logger.Debugf("runner has been instantiated with config %s and context %s", r.config, r.context)
+	logger.Debugf("runner has been instantiated with config %v and context %s", r.config, r.context)
 
 	return r, nil
 }

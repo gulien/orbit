@@ -10,6 +10,8 @@ import (
 var (
 	// outputFilePath is the path of the resulting file.
 	outputFilePath string
+	// templateDelimiters is the optional (overriding) pair of template delimiters.
+	templateDelimiters []string
 
 	// generateCmd is the instance of generate command.
 	generateCmd = &cobra.Command{
@@ -25,6 +27,7 @@ var (
 // init initializes a generateCmd instance with some flags and adds it to the RootCmd.
 func init() {
 	generateCmd.Flags().StringVarP(&outputFilePath, "output", "o", "", "specify the output file which will be generated from a data-driven template")
+	generateCmd.Flags().StringSliceVar(&templateDelimiters, "delimiters", make([]string, 2), "optionally specify template delimiters")
 	RootCmd.AddCommand(generateCmd)
 }
 
@@ -35,7 +38,7 @@ If no output file is given, prints the result to Stdout.
 */
 func generate(cmd *cobra.Command, args []string) error {
 	// first, let's instantiate our Orbit context.
-	ctx, err := context.NewOrbitContext(templateFilePath, payload, templates)
+	ctx, err := context.NewOrbitContext(templateFilePath, payload, templates, templateDelimiters)
 	if err != nil {
 		return err
 	}

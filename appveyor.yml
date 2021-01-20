@@ -12,15 +12,14 @@ matrix:
 
 install:
   - rmdir c:\go /s /q
-  - appveyor DownloadFile https://dl.google.com/go/go1.10.windows-amd64.zip
-  - 7z x go1.10.windows-amd64.zip -y -oC:\ > NUL
+  - appveyor DownloadFile https://dl.google.com/go/go1.13.windows-amd64.zip
+  - 7z x go1.13.windows-amd64.zip -y -oC:\ > NUL
   - set PATH=%GOPATH%\bin;%PATH%
   - go version
   - go env
   - go get -u gopkg.in/alecthomas/gometalinter.v2
   - gometalinter.v2 --install
   - go install
-  - go get -u github.com/golang/dep/cmd/dep
 
 build: off
 

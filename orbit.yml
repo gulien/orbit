@@ -4,6 +4,7 @@ tasks:
     short: Runs go fmt ./...
     run:
       - go fmt ./...
+      - go mod tidy
 
   - use: ci
     short: Runs CI process inside a container on Linux and MacOS, or directly on host on Windows
